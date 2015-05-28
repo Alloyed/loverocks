@@ -5,8 +5,8 @@
 
 local function inject()
 	local luarocks_paths = {
-		"rocks_modules/share/lua/5.1/?.lua",
-		"rocks_modules/share/lua/5.1/?/init.lua",
+		"rocks/share/lua/5.1/?.lua",
+		"rocks/share/lua/5.1/?/init.lua",
 	}
 	if love.filesystem.getRequirePath then -- 0.10
 		local all_paths = {unpack(luarocks_paths)}

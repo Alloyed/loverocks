@@ -6,9 +6,8 @@ local new = {}
 function new:build(parser)
 	parser:description "Make a new love project"
 
-	-- parser:argument "template"
-	-- 	:args("?")
-	-- 	:description "the template to follow."
+	parser:option "-t" "--template"
+	 	:description "the template to follow."
 
 	parser:argument "project"
 		:args(1)
@@ -67,7 +66,7 @@ function new:run(args)
 	assert(is_valid_name(env.project_name),
 		("Invalid project name: %q"):format(args.project))
 
-	local template = "love9"
+	local template = args.template or "love9"
 	local tpath = "templates/" .. template
 	
 	print(("Using template %q"):format(template))

@@ -52,5 +52,9 @@ function util.spit(o, dest)
 	end
 end
 
+function util.luarocks(...)
+	local argstr = table.concat({...}, " ")
+	return os.execute("luarocks --tree='rocks' " .. argstr)
+end
 
 return util

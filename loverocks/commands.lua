@@ -1,7 +1,7 @@
 local mod = ...
 
 local cnames = {
-	-- "help",
+	"help",
 	"install",
 	"init",
 	"new",

@@ -1,6 +1,6 @@
 local argparse = require 'argparse'
 
-local commands = require 'commands'
+local commands = require 'loverocks.commands'
 
 local function main(...)
 	local parser = argparse "loverocks" {
@@ -22,4 +22,4 @@ local function main(...)
 	error("commands exhausted")
 end
 
-main(...)
+return main

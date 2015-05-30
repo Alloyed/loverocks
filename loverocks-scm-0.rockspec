@@ -13,7 +13,8 @@ dependencies = {
    "lua >= 5.1, < 5.4",
    "argparse ~> 0.3",
    "etlua ~> 1.2",
-   "luafilesystem ~> 1.6"
+   "luafilesystem ~> 1.6",
+   "datafile ~> 0.1"
 }
 build = {
    type = "builtin",
@@ -26,4 +27,10 @@ build = {
       ["loverocks.commands.lua"]     = "loverocks/commands/lua.lua",
       ["loverocks.commands.install"] = "loverocks/commands/install.lua",
    },
+   install = {
+	   bin = {"bin/loverocks"}
+   },
+   copy_directories = {
+	   "templates",
+   }
 }

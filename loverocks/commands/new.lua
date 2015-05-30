@@ -1,5 +1,6 @@
 local etlua = require 'etlua'
-local util = require 'util'
+local datafile = require 'datafile'
+local util = require 'loverocks.util'
 local new = {}
 
 function new:build(parser)
@@ -61,14 +62,23 @@ local function apply_templates(files, env)
 end
 
 function new:run(args)
-	for k, v in pairs(args) do print(k, v) end
 	local env = table.copy(default_env)
 	env.project_name = args.project
 	assert(is_valid_name(env.project_name),
 		("Invalid project name: %q"):format(args.project))
+
+	local template = "love9"
+	local tpath = "templates/" .. template
 	
-	print("Using template \"love9\"")
-	local files = util.slurp("../templates/" .. "love9")
+	print(("Using template %q"):format(template))
+	-- for some reason datafile.path doesn't work
+	local tmpfile, path = datafile.open(tpath)
+	assert(path, "Template not found")
+	if tmpfile and tmpfile.close then tmpfile:close() tmpfile = nil end
+
+	print(path)
+
+	local files = util.slurp(path)
 	apply_templates(files, env)
 	util.spit(files, env.project_name)
 	print("Done!")

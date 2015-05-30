@@ -6,25 +6,30 @@ log.use = {
 	info = true
 }
 
+local function eprintf(pre, ...)
+	return io.stderr:write(pre .. string.format(...) .. "\n")
+end
+
 function log:fs(...)
 	if self.use.fs then
-		io.stderr:write("$ " .. string.format(...) .. "\n")
+		eprintf("$ ", ...)
 	end
 end
 
 function log:error(...)
-	error(string.format(...))
+	eprintf("ERROR: ", ...)
+	os.exit(1)
 end
 
 function log:warning(...)
 	if self.use.warning then
-		io.stderr:write(string.format(...) .. "\n")
+		eprintf("Warning: ", ...)
 	end
 end
 
 function log:info(...)
 	if self.use.info then
-		io.stderr:write(string.format(...) .. "\n")
+		eprintf("", ...)
 	end
 end
 

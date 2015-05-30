@@ -1,3 +1,5 @@
+local log = require 'loverocks.log'
+
 local help = {}
 help.commands = {}
 
@@ -18,8 +20,7 @@ function help:run(args)
 	if command then
 		local cmd = self.commands[command]
 		if not cmd then
-			print("Error: no such command: " .. tostring(command))
-			os.exit(1)
+			log:error("no such command %s", command)
 		end
 		print(cmd:get_help())
 	else

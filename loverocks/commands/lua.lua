@@ -10,8 +10,6 @@ function lua:build(parser)
 		]])
 end
 
-lua.alias = {}
-
 function lua:run(arg)
 	local s = table.concat(arg, " ")
 	os.execute("luarocks " .. s)

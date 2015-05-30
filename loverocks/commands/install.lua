@@ -14,8 +14,6 @@ function install:build(parser)
 		:description "Fetch rocks/rockspecs from this server, ignoring other servers"
 end
 
-install.aliases = {}
-
 local function install_all(args)
 	local rspec = "*.rockspec"
 	if args.rockspec then
@@ -34,8 +32,7 @@ local function install_all(args)
 end
 
 function install:run(args)
-	if args.new_package then
-		error("TODO")
+	if args.new_package then error("TODO")
 	else
 		install_all(args)
 	end

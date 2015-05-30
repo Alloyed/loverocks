@@ -38,8 +38,8 @@ local function new_env(name, v)
 	}
 end
 
-function is_valid_name(s)
-	return true -- TODO
+function is_valid_name(s) -- TODO
+	return true 
 end
 
 local function apply_templates(files, env)

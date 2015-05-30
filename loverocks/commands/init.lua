@@ -6,8 +6,6 @@ end
 
 init.aliases = {}
 
-function init:run(args)
-	error "TODO"
-end
+function init:run(args) error "TODO" end
 
 return init

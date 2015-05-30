@@ -11,3 +11,4 @@ dependencies = {
    "lua ~> 5.1",
    <%- depstring(versions.love) %>
 }
+build = { type = 'builtin' }

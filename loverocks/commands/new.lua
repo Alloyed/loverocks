@@ -74,6 +74,20 @@ function new:run(args)
 	log:info("Using template %q", args.template)
 	local files = util.slurp(path)
 	apply_templates(files, env)
+
+	local f, err = io.open(env.project_name)
+	if f then
+		local should_overwrite = log:ask(
+			"Directory %q already exists! overwrite (Y/n)?",
+			env.project_name) ('n')
+
+		if not should_overwrite then
+			log:info("Aborting.")
+			os.exit(0)
+		end
+		f:close()
+	end
+
 	util.spit(files, env.project_name)
 	log:info("New LOVERocks project installed at %q", env.project_name .. "/")
 end

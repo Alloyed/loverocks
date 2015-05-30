@@ -33,4 +33,12 @@ function log:info(...)
 	end
 end
 
+function log:ask(...)
+	io.write(string.format(...) .. " ")
+	return function(default)
+		local s = io.read('*l') or default
+		return s:lower():sub(1, 1) == 'y' and true or false
+	end
+end
+
 return log

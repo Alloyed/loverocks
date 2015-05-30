@@ -1,6 +1,6 @@
 local argparse = require 'argparse'
-
 local commands = require 'loverocks.commands'
+local log      = require 'loverocks.log'
 
 local function main(...)
 	local parser = argparse "loverocks" {
@@ -14,6 +14,9 @@ local function main(...)
 		c:build(cmd)
 	end
 
+	parser:flag "-v" "--verbose"
+		:description "Use verbose output"
+
 	local a = {...}
 	-- hack to make sure luarocks args survive intact
 	if a[1] == "lua" then
@@ -21,6 +24,9 @@ local function main(...)
 		commands.lua:run(a)
 	else
 		local args = parser:parse(a)
+		if args.verbose then
+			log.use.fs = true
+		end
 
 		for name, c in pairs(commands) do
 			if args[name] then

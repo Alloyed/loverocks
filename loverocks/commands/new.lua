@@ -1,13 +1,20 @@
 local etlua = require 'etlua'
 local datafile = require 'datafile'
+
 local util = require 'loverocks.util'
+local versions = require 'loverocks.versions'
+local log = require 'loverocks.log'
+
 local new = {}
 
 function new:build(parser)
 	parser:description "Make a new love project"
 
 	parser:option "-t" "--template"
-	 	:description "the template to follow."
+	 	:description "The template to follow."
+		:default "love9"
+	parser:option "--love-version"
+		:description "The lua version. If unspecified we guess from running `love --version`"
 
 	parser:argument "project"
 		:args(1)
@@ -22,28 +29,17 @@ local function depstring(s)
 	return ("\"love ~> %s\""):format(s:match("%d+.%d+"))
 end
 
-default_env = {
-	project_name = "oops",
-	versions = {
-		love       = "0.9.1-1",
-		luasocket  = "2.0.2-5",
-		enet       = "1.2-1",
-		utf8       = "0.1.0-1"
-	},
-	raw_version = raw_version,
-	depstring = depstring,
-}
+local function new_env(name, v)
+	return {
+		project_name = name,
+		versions = versions.get(v),
+		raw_version = raw_version,
+		depstring = depstring,
+	}
+end
 
 function is_valid_name(s)
 	return true -- TODO
-end
-
-table.copy = table.copy or function(tbl)
-	local t = {}
-	for k, v in pairs(tbl) do
-		t[k] = v
-	end
-	return t
 end
 
 local function apply_templates(files, env)
@@ -61,26 +57,25 @@ local function apply_templates(files, env)
 end
 
 function new:run(args)
-	local env = table.copy(default_env)
-	env.project_name = args.project
-	assert(is_valid_name(env.project_name),
-		("Invalid project name: %q"):format(args.project))
+	local env = new_env(args.project, args.love_version)
+	if not is_valid_name(args.project) then
+		log:error("Invalid project name: %q", args.project)
+	end
 
-	local template = args.template or "love9"
-	local tpath = "templates/" .. template
+	local tpath = "templates/" .. args.template
 	
-	print(("Using template %q"):format(template))
 	-- for some reason datafile.path doesn't work
 	local tmpfile, path = datafile.open(tpath)
-	assert(path, "Template not found")
+	if not tmpfile then
+		log:error(path)
+	end
 	if tmpfile and tmpfile.close then tmpfile:close() tmpfile = nil end
 
-	print(path)
-
+	log:info("Using template %q", args.template)
 	local files = util.slurp(path)
 	apply_templates(files, env)
 	util.spit(files, env.project_name)
-	print("Done!")
+	log:info("New LOVERocks project installed at %q", env.project_name .. "/")
 end
 
 return new

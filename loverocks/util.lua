@@ -1,4 +1,5 @@
 local lfs = require 'lfs'
+local log = require 'loverocks.log'
 local util = {}
 
 local function slurp_file(fname)
@@ -28,14 +29,14 @@ function util.slurp(path)
 end
 
 local function spit_file(str, dest)
-	print('spit ' .. dest)
+	log:fs("spit  %s", dest)
 	local file = io.open(dest, "w")
 	file:write(str)
 	file:close()
 end
 
 local function spit_dir(tbl, dest)
-	print('mkdir ' .. dest)
+	log:fs("mkdir %s", dest)
 	lfs.mkdir(dest)
 	for f, s in pairs(tbl) do
 		if f ~= "." and f  ~= ".." then
@@ -53,8 +54,10 @@ function util.spit(o, dest)
 end
 
 function util.luarocks(...)
-	local argstr = table.concat({...}, " ")
-	return os.execute("luarocks --tree='rocks' " .. argstr)
+	local argstr = "luarocks --tree='rocks' " .. table.concat({...}, " ")
+	log:fs(argstr)
+
+	return os.execute(argstr)
 end
 
 return util

@@ -1,38 +1,51 @@
 LOVEROCKS
 =========
-LÖVERocks is a CLI wrapper around luarocks[1] that teaches your LÖVE[2]
+LÖVERocks is a CLI wrapper around [luarocks][L] that teaches your [LÖVE][O]
 projects how to download and use standard luarocks packages.
 
-1. https://luarocks.org
-2. https://love2d.org
+[L]: https://luarocks.org
+[O]: https://love2d.org
 
-INSTALLING
+Installing
 ----------
 LÖVERocks can itself be installed using luarocks. Just run
-    $ luarocks install loverocks
+
+```shell
+$ luarocks install loverocks
+```
 
 and make sure the directory you installed to is in your ``$PATH`` and
 you should be good to go. If you don't have luarocks installed already,
-here are installation instructions for Unix[1] and Windows[2].
+here are installation instructions for [Unix][U] and [Windows][W].
 
 As of 2015.5.30 It has only been tested on a Unix system, using Lua 5.1
 and luarocks 2.2.2. If you've gotten it working someplace else, tell me
 either with a github issue or by emailing <alloyed@tfwno.gf>.
 
-1. https://github.com/keplerproject/luarocks/wiki/Installation-instructions-for-Unix
-2. https://github.com/keplerproject/luarocks/wiki/Installation-instructions-for-Windows
+[U]: https://github.com/keplerproject/luarocks/wiki/Installation-instructions-for-Unix
+[W]: https://github.com/keplerproject/luarocks/wiki/Installation-instructions-for-Windows
 
 Using
 -----
 The LÖVErocks CLI tool is named `loverocks`. You can learn more about
-the options and commands it suppoorts by running:
-    $ loverocks help
+the options and commands it supports by running:
+
+```shell
+$ loverocks help
+```
 
 To create a new LÖVERocks-managed project, use:
-    $ loverocks new my-project
+
+```shell
+$ loverocks new my-project
+```
 
 If you already have a LÖVE project you'd like to manage with luarocks, do:
-    $ loverocks init my-project
+
+```shell
+$ loverocks init my-project
+```
+
 instead.
 
 This will install the necessary shims and config files into `my-project/`.
@@ -42,7 +55,11 @@ This includes:
   dependencies
 * A `conf.lua`, which is configured to add your rocks modules to the
   search path. You can always comment out
-      require 'rocks' ()
+
+  ```shell
+  require 'rocks' ()
+  ```
+
   to disable LOVERocks and only use local files, and uncomment it to bring it
   back.
 * A `.gitignore` tuned to the needs of LÖVERocks. **If you do not use Git,
@@ -50,34 +67,52 @@ This includes:
 
 Now you can start working on your project. Lets say you decide you need
 to use dkjson in your project. To install it, all you need to do is add
+
+```lua
     "dkjson ~> 2"
+```
+
 to your dependencies list in `my-project-scm-1.rockspec`, and run
-    $ loverocks install
+
+```shell
+$ loverocks install
+```
 
 Now you have the latest possible version of dkjson 2, bugfixes included.
 You can use it like any other top-level module, with
-    local json = require 'dkjson'
+
+```lua
+local json = require 'dkjson'
+```
 
 This does not complicate sharing your game, either. Since all modules
 are stored locally, and external modules are explicitly disabled, you
 can continue packaging your game the way you always have:
-    $ loverocks lua purge
-    $ loverocks install
-    $ zip -r my-project.love *
+
+```shell
+$ loverocks lua purge
+$ loverocks install
+$ zip -r my-project.love *
+```
+
 will refresh your package cache and install everything, rocks modules
 included, into `my-project.love`.
 
 Libraries
 ---------
 If you are a library writer, good news! You do not have to do anything
-special to support LÖVERocks. Just follow the Luarocks documentation[1] and
-you should be fine. Just remember, if you depend on LÖVE modules in your
-code, be sure to make that explicit. For example, if you support LÖVE
-0.8 and 0.9, use the dependency string:
+special to support LÖVERocks. Just follow the
+[Luarocks documentation][M] and you should be fine. Just remember, if
+you depend on LÖVE modules in your code, be sure to make that explicit.
+For example, if you support LÖVE 0.8 and 0.9, use the dependency string:
+
+```lua
     "love >= 0.8, < 0.10"
+```
+
 and LÖVERocks will automatically check that for you.
 
-1. https://github.com/keplerproject/luarocks/wiki/Creating-a-rock
+[M]: https://github.com/keplerproject/luarocks/wiki/Creating-a-rock
 
 Known Issues
 ------------
@@ -88,12 +123,18 @@ Known Issues
   packaging mechanism, which ATM is out of scope for LÖVERocks. If you
   are okay with this state of affairs, you can work around the
   restriction by manually including them in conf.lua:
-      local os  = love._os or love.system.getOS()
-      local ext = os == "Windows" and ".dll" or ".so"
-      package.cpath = "rocks/lib/5.1/?.".. ext ..";" .. package.cpath
+
+  ```lua
+  local os  = love._os or love.system.getOS()
+  local ext = os == "Windows" and ".dll" or ".so"
+  package.cpath = "rocks/lib/5.1/?.".. ext ..";" .. package.cpath
+  ```
 
 * Luarocks gets confused if you decide not to use its build
-  architecture. Leave a dummy `build = { type = 'builtin' }` to
+  architecture. Leave a dummy
+  ```lua
+      build = { type = 'builtin' }` to
+  ```
   workaround this.
 
 LICENSE

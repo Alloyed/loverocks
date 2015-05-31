@@ -50,13 +50,13 @@ instead.
 
 This will install the necessary shims and config files into `my-project/`.
 This includes:
-* A `rocks/` directory to store your modules
+* A `rocks/` directory to store your modules.
 * A `my-project-scm-1.rockspec` file, which you can use to declare your
-  dependencies
+  dependencies.
 * A `conf.lua`, which is configured to add your rocks modules to the
   search path. You can always comment out
 
-  ```shell
+  ```lua
   require 'rocks' ()
   ```
 
@@ -133,9 +133,9 @@ Known Issues
 * Luarocks gets confused if you decide not to use its build
   architecture. Leave a dummy
   ```lua
-      build = { type = 'builtin' }` to
+      build = { type = 'builtin' }
   ```
-  workaround this.
+  to work around this.
 
 LICENSE
 -------

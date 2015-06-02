@@ -1,18 +1,19 @@
 local util = require 'loverocks.util'
 local lfs = require 'lfs'
 
-print("hi")
-
 describe("util", function()
-	it("slurp <-> spit", function()
+	-- TODO: add error cases
+	it("slurp/spit/rm single files", function()
 		local path = "meme"
 		local data = "MEMEBOYS"
-		util.spit(data, path)
+
+		assert(util.spit(data, path))
 		assert.equal(data, util.slurp(path))
-		os.remove(path)
+		assert(util.rm(path))
 		assert.is_nil(io.open(path))
 	end)
-	it("slurp/spit directories", function()
+
+	it("slurp/spit/rm directories", function()
 		local out  = "lr"
 		local data = {
 			fileA = "",
@@ -23,7 +24,7 @@ describe("util", function()
 			}
 		}
 
-		util.spit(data, out)
+		assert(util.spit(data, out))
 		assert.same(data, util.slurp(out))
 		assert(util.rm(out))
 		assert.is_nil(io.open(out))

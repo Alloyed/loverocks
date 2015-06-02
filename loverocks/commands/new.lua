@@ -39,12 +39,12 @@ local function new_env(name, v)
 end
 
 function is_valid_name(s) -- TODO
-	return true 
+	return true
 end
 
 local function apply_templates(files, env)
 	for name, file in pairs(files) do
-		if type(file) == 'table' then 
+		if type(file) == 'table' then
 			apply_templates(file, env)
 		else
 			local new_name = name:gsub("PROJECT", env.project_name)

@@ -1,5 +1,4 @@
 local etlua = require 'etlua'
-local datafile = require 'datafile'
 
 local util = require 'loverocks.util'
 local versions = require 'loverocks.versions'
@@ -11,10 +10,10 @@ function new:build(parser)
 	parser:description "Make a new love project"
 
 	parser:option "-t" "--template"
-	 	:description "The template to follow."
+		:description "The template to follow."
 		:default "love9"
 	parser:option "--love-version"
-		:description "The lua version. If unspecified we guess from running `love --version`"
+		:description "The lua version. If unspecified we guess by running `love --version`"
 
 	parser:argument "project"
 		:args(1)
@@ -48,7 +47,11 @@ local function apply_templates(files, env)
 			apply_templates(file, env)
 		else
 			local new_name = name:gsub("PROJECT", env.project_name)
-			files[new_name] = etlua.render(file, env)
+			local d, err = etlua.render(file, env)
+			if not d then
+				error(name .. ": " .. err)
+			end
+			files[new_name] = d
 			if new_name ~= name then
 				files[name] = nil
 			end
@@ -62,14 +65,7 @@ function new:run(args)
 		log:error("Invalid project name: %q", args.project)
 	end
 
-	local tpath = "templates/" .. args.template
-	
-	-- for some reason datafile.path doesn't work
-	local tmpfile, path = datafile.open(tpath)
-	if not tmpfile then
-		log:error(path)
-	end
-	if tmpfile and tmpfile.close then tmpfile:close() tmpfile = nil end
+	local path = util.dpath("templates/" .. args.template)
 
 	log:info("Using template %q", args.template)
 	local files = util.slurp(path)

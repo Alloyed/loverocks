@@ -3,3 +3,5 @@ rocks_provided = {
 	<%- name %> = <%- string.format("%q", version) %>,
 	<% end %>
 }
+
+

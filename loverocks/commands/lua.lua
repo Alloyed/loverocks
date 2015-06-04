@@ -1,3 +1,4 @@
+local util = require 'loverocks.util'
 local lua = {}
 
 function lua:build(parser)
@@ -11,8 +12,7 @@ function lua:build(parser)
 end
 
 function lua:run(arg)
-	local s = table.concat(arg, " ")
-	os.execute("luarocks " .. s)
+	return util.luarocks(unpack(arg))
 end
 
 return lua

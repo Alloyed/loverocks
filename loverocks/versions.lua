@@ -1,3 +1,4 @@
+local util = require 'loverocks.util'
 local log = require 'loverocks.log'
 
 -- FIXME: non-love version numbers are pretty much made up

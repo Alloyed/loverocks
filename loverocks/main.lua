@@ -19,6 +19,7 @@ local function main(...)
 
 	local a = {...}
 	-- hack to make sure luarocks args survive intact
+	-- FIXME: do this later so we can parse --verbose and friends
 	if a[1] == "lua" then
 		table.remove(a, 1)
 		commands.lua:run(a)

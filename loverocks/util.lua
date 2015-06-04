@@ -114,7 +114,7 @@ end
 
 -- like io.popen, but returns a string instead of a file
 function util.stropen(cli)
-	local f = io.popen(clit, 'r')
+	local f = io.popen(cli, 'r')
 	local s = f:read('*a')
 	f:close()
 	return s
@@ -132,6 +132,11 @@ function util.strluarocks(...)
 	log:fs(argstr)
 
 	return util.stropen(argstr)
+end
+
+-- produce str with magic characters escaped, for pattern-building
+function util.escape_str(s)
+    return (s:gsub('[%-%.%+%[%]%(%)%$%^%%%?%*]','%%%1'))
 end
 
 return util

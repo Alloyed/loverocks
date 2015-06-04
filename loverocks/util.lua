@@ -120,15 +120,18 @@ function util.stropen(cli)
 	return s
 end
 
+local LROCKSTR = [[
+LUAROCKS_CONFIG='rocks/config.lua' luarocks --tree='rocks' %s
+]]
 function util.luarocks(...)
-	local argstr = "LUAROCKS_CONFIG='rocks/config.lua' luarocks --tree='rocks' " .. table.concat({...}, " ")
+	local argstr =  LROCKSTR:format(table.concat({...}, " "))
 	log:fs(argstr)
 
 	return os.execute(argstr)
 end
 
 function util.strluarocks(...)
-	local argstr = "LUAROCKS_CONFIG='rocks/config.lua' luarocks --tree='rocks' " .. table.concat({...}, " ")
+	local argstr = LROCKSTR:format(table.concat({...}, " "))
 	log:fs(argstr)
 
 	return util.stropen(argstr)

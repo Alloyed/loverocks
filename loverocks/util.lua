@@ -1,4 +1,5 @@
 local lfs = require 'lfs'
+local datafile = require 'datafile'
 local log = require 'loverocks.log'
 local util = {}
 
@@ -85,11 +86,52 @@ function util.rm(path)
 	return os.remove(path)
 end
 
+-- a replacement datafile.path()
+function util.dpath(resource)
+	-- for some reason datafile.path doesn't work
+	local tmpfile, path = datafile.open(resource)
+	local err = path
+
+	if not tmpfile then
+		return nil, err
+	end
+	tmpfile:close()
+
+	return path
+end
+
+-- get first file matching pat
+function util.get_first(path, pat)
+	local ftype = lfs.attributes(path, 'mode')
+	assert(ftype == 'directory', tostring(path) .. " is not a directory")
+	for f in lfs.dir(path) do
+		if f:match(pat) then
+			return f
+		end
+	end
+	return nil, "Not found"
+end
+
+-- like io.popen, but returns a string instead of a file
+function util.stropen(cli)
+	local f = io.popen(clit, 'r')
+	local s = f:read('*a')
+	f:close()
+	return s
+end
+
 function util.luarocks(...)
-	local argstr = "luarocks --tree='rocks' " .. table.concat({...}, " ")
+	local argstr = "LUAROCKS_CONFIG='rocks/config.lua' luarocks --tree='rocks' " .. table.concat({...}, " ")
 	log:fs(argstr)
 
 	return os.execute(argstr)
+end
+
+function util.strluarocks(...)
+	local argstr = "LUAROCKS_CONFIG='rocks/config.lua' luarocks --tree='rocks' " .. table.concat({...}, " ")
+	log:fs(argstr)
+
+	return util.stropen(argstr)
 end
 
 return util

@@ -39,11 +39,9 @@ local function get_versions_for(v)
 		if STORED then
 			v = STORED
 		elseif io.popen then
-			local f = io.popen("love --version", 'r')
-			v = f:read('*a'):match("%d+%.%d+%.%d+")
+			v = util.stropen("love --version"):match("%d+%.%d+%.%d+")
 			log:info("Found LOVE version %s", v)
 			STORED = v
-			f:close()
 		end
 	end
 	return versions[v] or versions[STABLE]

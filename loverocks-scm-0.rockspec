@@ -10,7 +10,7 @@ description = {
    license = "MIT"
 }
 dependencies = {
-   "lua >= 5.1, < 5.4",
+   "lua ~> 5.1",
    "argparse ~> 0.3",
    "etlua ~> 1.2",
    "luafilesystem ~> 1.6",
@@ -21,8 +21,8 @@ build = {
    modules = {
       ["loverocks.main"]             = "loverocks/main.lua",
       ["loverocks.util"]             = "loverocks/util.lua",
-	  ["loverocks.log"]              = "loverocks/log.lua",
-	  ["loverocks.versions"]         = "loverocks/versions.lua",
+      ["loverocks.log"]              = "loverocks/log.lua",
+      ["loverocks.versions"]         = "loverocks/versions.lua",
       ["loverocks.commands"]         = "loverocks/commands.lua",
       ["loverocks.commands.init"]    = "loverocks/commands/init.lua",
       ["loverocks.commands.new"]     = "loverocks/commands/new.lua",
@@ -31,9 +31,9 @@ build = {
       ["loverocks.commands.help"]    = "loverocks/commands/help.lua",
    },
    install = {
-	   bin = {"bin/loverocks"}
+      bin = {"bin/loverocks"}
    },
    copy_directories = {
-	   "templates",
+      "templates",
    }
 }

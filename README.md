@@ -129,11 +129,20 @@ Known Issues
   local ext = os == "Windows" and ".dll" or ".so"
   package.cpath = "rocks/lib/5.1/?.".. ext ..";" .. package.cpath
   ```
+* LÖVERocks can only function with a luarocks that runs on lua
+  5.1/luajit. We will try to find a suitable install of luarocks but if we
+  can't find one, it's suggested you provide the name via the
+  `$HOME/.config/loverocks/conf.lua` file:
 
-* Luarocks gets confused if you decide not to use its build
-  architecture. Leave a dummy
+ ```lua
+ luarocks = "/usr/bin/my-luarocks-command"
+ ```
+
+* Luarocks always expects a build configuration table, even if you don't
+  plan on building with it. Use the null build type:
+
   ```lua
-      build = { type = 'builtin' }
+      build = { type = 'none' }
   ```
   to work around this.
 

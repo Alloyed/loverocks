@@ -1,6 +1,9 @@
-local lfs = require 'lfs'
+local lfs      = require 'lfs'
 local datafile = require 'datafile'
-local log = require 'loverocks.log'
+
+local log    = require 'loverocks.log'
+local config = require 'loverocks.config'
+
 local util = {}
 
 local function slurp_file(fname)
@@ -121,17 +124,17 @@ function util.stropen(cli)
 end
 
 local LROCKSTR = [[
-LUAROCKS_CONFIG='rocks/config.lua' luarocks --tree='rocks' %s
+LUAROCKS_CONFIG='rocks/config.lua' %s --tree='rocks' %s
 ]]
 function util.luarocks(...)
-	local argstr =  LROCKSTR:format(table.concat({...}, " "))
+	local argstr =  LROCKSTR:format(config:get('luarocks'), table.concat({...}, " "))
 	log:fs(argstr)
 
 	return os.execute(argstr)
 end
 
 function util.strluarocks(...)
-	local argstr = LROCKSTR:format(table.concat({...}, " "))
+	local argstr = LROCKSTR:format(config:get('luarocks'), table.concat({...}, " "))
 	log:fs(argstr)
 
 	return util.stropen(argstr)

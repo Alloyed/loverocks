@@ -110,7 +110,7 @@ local function install_all(args)
 end
 
 function install:run(args)
-	if args.new_packages then
+	if #args.new_packages > 0 then
 		add_deps(args)
 	end
 	install_all(args)

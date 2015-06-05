@@ -2,7 +2,13 @@
 local datafile = require 'datafile'
 local config = {}
 
-local UNIX_PATH = os.getenv("HOME") .. "/.config/loverocks/"
+local UNIX_PATH = os.getenv("XDG_CONFIG_HOME")
+if UNIX_PATH then
+	UNIX_PATH = UNIX_PATH .. "/loverocks/"
+else
+	UNIX_PATH = os.getenv("HOME") .. "/.config/loverocks/"
+end
+	
 local WIN_PATH  = "FIXME"
 
 local function apply_config(self, f, path)
@@ -47,14 +53,15 @@ with the appropriate path to your luarocks command.
 local function find_luarocks(self)
 	for _, name in ipairs(command_names) do
 		local v = stropen(name .. " help"):match("Lua version: ([^%s]+)")
+		local path = UNIX_PATH
 		if v == "5.1" then
-			assert(lfs.mkdir(UNIX_PATH))
-			local f = assert(io.open(UNIX_PATH .. "conf.lua", 'w'))
+			assert(lfs.mkdir(path))
+			local f = assert(io.open(path .. "conf.lua", 'w'))
 			f:write(string.format(config_fmt, name))
 			f:close()
 
 			self.CONFIG.luarocks = name
-			self.CONFIG.loverocks_config = UNIX_PATH .. "conf.lua"
+			self.CONFIG.loverocks_config = path .. "conf.lua"
 			return
 		end
 	end

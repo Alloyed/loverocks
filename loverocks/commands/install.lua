@@ -10,15 +10,18 @@ function install:build(parser)
 		:args("*")
 		:description
 			"If included, adds new_packages to rockspec as well."
+	parser:flag "-c" "--confirm"
+		:description
+			"confirm installation without prompting. useful for scripts."
 	parser:option "-r" "--rockspec"
 		:description
 			"The path to the rockspec file."
 	parser:option "-s" "--server"
 		:description
-			"Fetch rocks/rockspecs from this server as a priority"
+			"Fetch rocks/rockspecs from this server as a priority."
 	parser:option "--only-server"
 		:description
-			"Fetch rocks/rockspecs from this server, ignoring other servers"
+			"Fetch rocks/rockspecs from this server, ignoring other servers."
 end
 
 local function fmt_table(t)

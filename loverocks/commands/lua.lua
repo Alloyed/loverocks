@@ -11,7 +11,16 @@ function lua:build(parser)
 		]])
 end
 
-function lua:run(arg)
+function lua:run(in_arg)
+	local add = false
+	local arg = {}
+	for i, v in pairs(in_arg) do
+		if v == "lua" then
+			add = true
+		elseif add then
+			table.insert(arg, v)
+		end
+	end
 	return util.luarocks(unpack(arg))
 end
 

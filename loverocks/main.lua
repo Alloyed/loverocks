@@ -28,17 +28,14 @@ local function main(...)
 		:description "Use verbose output"
 
 	local a = {...}
-	-- hack to make sure luarocks args survive intact
-	-- FIXME: do this later so we can parse --verbose and friends
-	if a[1] == "lua" then
-		table.remove(a, 1)
-		commands.lua:run(a)
-	else
-		local args = parser:parse(a)
-		if args.verbose then
-			log.use.fs = true
-		end
+	local args = parser:parse(a)
+	if args.verbose then
+		log.use.fs = true
+	end
 
+	if args.lua then
+		return commands.lua:run(a)
+	else
 		for name, c in pairs(commands) do
 			if args[name] then
 				return c:run(args)

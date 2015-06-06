@@ -144,7 +144,7 @@ Known Issues
   ```lua
       build = { type = 'none' }
   ```
-  to work around this.
+  and it should stay happy.
 
 LICENSE
 -------

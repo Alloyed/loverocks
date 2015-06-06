@@ -15,37 +15,42 @@ local function main(...)
 	local parser = argparse "loverocks" {
 		description = "A wrapper to make luarocks and love play nicely.",
 		epilog = string.format(config_msg,
-		                       config:get('luarocks'),
-		                       config:get('loverocks_config'))
+		                       config('luarocks'),
+		                       config('loverocks_config'))
 	}
 	commands.help:add_command("main", parser)
 
-	for name, c in pairs(commands) do
-		local cmd = parser:command(name)
-		commands.help:add_command(name, cmd)
-		c:build(cmd)
+	for name, cmd in pairs(commands) do
+		local cmd_parser = parser:command(name)
+		commands.help:add_command(name, cmd_parser)
+		cmd:build(cmd_parser)
 	end
 
 	parser:flag "-v" "--verbose"
-		:description "Use verbose output"
+		:description "Use verbose output."
+		:action(function()
+			log.use.fs = true
+		end)
 	parser:flag "-q" "--quiet"
-		:description "Silence info messages"
+		:description "Silence info messages."
+		:action(function()
+			log.use.info = false
+		end)
+	parser:flag "-c" "--confirm"
+		:description "Confirm without prompting. useful for scripts."
+		:action(function()
+			log.use.ask = false
+		end)
 
-	local a = {...}
-	local args = parser:parse(a)
-	if args.verbose then
-		log.use.fs = true
-	end
-	if args.quiet then
-		log.use.info = false
-	end
+	local args = {...}
+	local B = parser:parse(args)
 
-	if args.lua then
-		return commands.lua:run(a)
+	if B.lua then
+		return commands.lua:run(args) -- pass raw args instead of parsed args
 	else
-		for name, c in pairs(commands) do
-			if args[name] then
-				return c:run(args)
+		for name, cmd in pairs(commands) do
+			if B[name] then
+				return cmd:run(B)
 			end
 		end
 	end

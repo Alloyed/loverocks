@@ -10,9 +10,6 @@ function install:build(parser)
 		:args("*")
 		:description
 			"If included, adds new_packages to rockspec as well."
-	parser:flag "-c" "--confirm"
-		:description
-			"confirm installation without prompting. useful for scripts."
 	parser:option "-r" "--rockspec"
 		:description
 			"The path to the rockspec file."

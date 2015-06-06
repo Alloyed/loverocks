@@ -127,14 +127,16 @@ local LROCKSTR = [[
 LUAROCKS_CONFIG='rocks/config.lua' %s --tree='rocks' %s
 ]]
 function util.luarocks(...)
-	local argstr =  LROCKSTR:format(config:get('luarocks'), table.concat({...}, " "))
+	local argstr = table.concat({...}, " ")
+	argstr = LROCKSTR:format(config('luarocks'), argstr)
 	log:fs(argstr)
 
 	return os.execute(argstr)
 end
 
 function util.strluarocks(...)
-	local argstr = LROCKSTR:format(config:get('luarocks'), table.concat({...}, " "))
+	local argstr = table.concat({...}, " ")
+	argstr = LROCKSTR:format(config('luarocks'), argstr)
 	log:fs(argstr)
 
 	return util.stropen(argstr)

@@ -6,8 +6,8 @@ would package some common love libraries.
 
 To make a repo from the example rockspecs, do:
 ```sh
-	$ for f in *.rockspec; do luarocks pack $f; done && mkdir -p rocks && mv *.src.rock rocks/
-    $ luarocks-admin make_manifest rocks
+    $ for f in *.rockspec; do luarocks pack $f; done && mkdir -p rocks && mv *.src.rock rocks/
+    $ cd rocks && luarocks-admin make_manifest .
 ```
 then upload rocks/ to a server or use it locally.
 
@@ -54,7 +54,7 @@ OPEN QUESTIONS
 
 C modules can't be loaded from a zip file the same way lua modules can.
 Since this is how you usually package love code, we need to do something
-special for them. 
+special for them.
 
 How much detritus should loverocks leave around, really? What is safe to
 .gitignore and what isn't?

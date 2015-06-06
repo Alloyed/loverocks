@@ -3,7 +3,8 @@ local log = {}
 log.use = {
 	fs = false,
 	warning = true,
-	info = true
+	info = true,
+	ask = true
 }
 
 local function eprintf(pre, ...)
@@ -34,10 +35,16 @@ function log:info(...)
 end
 
 function log:ask(...)
-	io.write(string.format(...) .. " ")
+	local outstr = string.format(...) .. " "
+	io.write(outstr)
 	return function(default)
-		local s = io.read('*l') or default
-		return s:lower():sub(1, 1) == 'y' and true or false
+		if self.use.ask then
+			local s = io.read('*l') or default
+			return s:lower():sub(1, 1) == 'y' and true or false
+		end
+
+		io.write('y\n')
+		return true
 	end
 end
 

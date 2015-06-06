@@ -14,7 +14,9 @@ local function main(...)
 	config:load()
 	local parser = argparse "loverocks" {
 		description = "A wrapper to make luarocks and love play nicely.",
-		epilog = string.format(config_msg, config:get('luarocks'), config:get('loverocks_config'))
+		epilog = string.format(config_msg,
+		                       config:get('luarocks'),
+		                       config:get('loverocks_config'))
 	}
 	commands.help:add_command("main", parser)
 
@@ -26,11 +28,16 @@ local function main(...)
 
 	parser:flag "-v" "--verbose"
 		:description "Use verbose output"
+	parser:flag "-q" "--quiet"
+		:description "Silence info messages"
 
 	local a = {...}
 	local args = parser:parse(a)
 	if args.verbose then
 		log.use.fs = true
+	end
+	if args.quiet then
+		log.use.info = false
 	end
 
 	if args.lua then

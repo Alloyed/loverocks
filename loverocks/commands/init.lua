@@ -1,3 +1,4 @@
+local log = require 'loverocks.log'
 local init = {}
 
 function init:build(parser)
@@ -6,6 +7,8 @@ end
 
 init.aliases = {}
 
-function init:run(args) error "TODO" end
+function init:run(args)
+	log:error("NYI. For now, try making an empty project with `loverocks new` and moving your code into the result.")
+end
 
 return init

@@ -33,24 +33,35 @@ local function fmt_table(t)
 	return s .. "\n}"
 end
 
+local function to_set(o)
+	local t = {}
+	for _, k in ipairs(o) do
+		t[k] = true
+	end
+	return t
+end
+
 local function add_to_depstring(spec, new_deps)
+	local added_deps = {}
 	return spec:gsub("(dependencies%s*=%s*)(%b{})", function(pre, s)
-		local tbl = assert(loadstring("return " .. s))()
-		for _, v in ipairs(tbl) do
+		local old_deps = assert(loadstring("return " .. s))()
+		local depset = to_set(new_deps)
+		for _, v in ipairs(old_deps) do
 			for _, dep in ipairs(new_deps) do
 				if v:match("^" .. util.escape_str(dep)) then
-					local S = "%s is already present in the rockspec, aborting"
-					log:error(S, dep)
-					os.exit(1)
+					local S = "%s is already present in the rockspec, ignoring"
+					log:warning(S, dep)
+					depset[dep] = nil
 				end
 			end
 		end
 
-		for _, dep in ipairs(new_deps) do
-			table.insert(tbl, dep) -- FIXME: constrain dep's version
+		for dep, _ in pairs(depset) do
+			table.insert(old_deps, dep) -- FIXME: constrain version
+			table.insert(added_deps, dep)
 		end
-		return pre .. fmt_table(tbl)
-	end)
+		return pre .. fmt_table(old_deps)
+	end), added_deps
 end
 
 local INSTALL_MSG = [[
@@ -59,8 +70,7 @@ INSTALLING: %s
 WARNING: This command will modify your rockspec, %q. Make sure you have a
          backup in case you don't like the results.
 
-         Continue (y/N)?
-]]
+         Continue (y/N)?]]
 
 local function add_deps(args)
 	local rspec = false
@@ -71,14 +81,18 @@ local function add_deps(args)
 	end
 
 	local data = assert(util.slurp(rspec))
-	local new_data = add_to_depstring(data, args.new_packages)
+	local new_data, to_install = add_to_depstring(data, args.new_packages)
+	if #to_install == 0 then
+		log:warning("No packages to install")
+		os.exit(0)
+	end
 
 	local package_str = table.concat(args.new_packages, " ")
 
 	-- TODO: ask luarocks search if this is a valid package
 	local goahead = log:ask(
 		INSTALL_MSG,
-		table.concat(args.new_packages, " "),
+		table.concat(to_install, " "),
 		rspec) ('n')
 
 	if not goahead then
@@ -88,8 +102,8 @@ local function add_deps(args)
 
 	assert(util.spit(new_data, rspec))
 	log:info(
-		"%s added to rockspec, now installing.",
-		table.concat(args.new_packages, ", "))
+		"\n%s added to rockspec, now installing.",
+		table.concat(to_install, ", "))
 end
 
 local function install_all(args)

@@ -1,8 +1,8 @@
 package = "bump.lua"
-version = "2.0.0-1"
+version = "3.1.4-1"
 source = {
    url = "git://github.com/kikito/bump.lua",
-   tag = "v2.0.0"
+   tag = "3.1.4"
 }
 description = {
    summary = "Lua collision-detection library for axis-aligned rectangles.",

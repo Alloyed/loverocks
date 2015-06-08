@@ -49,7 +49,7 @@ local function apply_templates(files, env)
 			local new_name = name:gsub("PROJECT", env.project_name)
 			local d, err = etlua.render(file, env)
 			if not d then
-				error(name .. ": " .. err)
+				log:error(name .. ": " .. err)
 			end
 			files[new_name] = d
 			if new_name ~= name then
@@ -65,10 +65,12 @@ function new:run(args)
 		log:error("Invalid project name: %q", args.project)
 	end
 
-	local path = util.dpath("templates/" .. args.template)
+	local path, err = util.dpath("templates/" .. args.template)
+	if not path then log:error(err) end
 
 	log:info("Using template %q", args.template)
-	local files = util.slurp(path)
+	local files, err = util.slurp(path)
+	if not files then log:error(err) end
 	apply_templates(files, env)
 
 	local f, err = io.open(env.project_name)

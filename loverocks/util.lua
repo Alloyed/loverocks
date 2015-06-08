@@ -27,35 +27,39 @@ local function slurp_dir(dir)
 end
 
 function util.slurp(path)
-	local ftype = lfs.attributes(path, 'mode')
+	local ftype, err = lfs.attributes(path, 'mode')
 	if ftype == 'directory' then
 		return slurp_dir(path)
-	else
+	elseif ftype then
 		return slurp_file(path)
+	else
+		return nil, err
 	end
 end
 
 local function spit_file(str, dest)
 	log:fs("spit  %s", dest)
 	local file, err = io.open(dest, "w")
-	if not file then
-		return nil, err
-	end
+	if not file then return nil, err end
 
-	assert(file:write(str))
-	assert(file:close())
+	local ok, err = file:write()
+	if not ok then return nil, err end
+
+	local ok, err = file:close()
+	if not ok then return nil, err end
+
 	return true
 end
 
 local function spit_dir(tbl, dest)
 	log:fs("mkdir %s", dest)
-	lfs.mkdir(dest)
+	local ok, err = lfs.mkdir(dest)
+	if not ok then return nil, err end
+
 	for f, s in pairs(tbl) do
 		if f ~= "." and f  ~= ".." then
 			local ok, err = util.spit(s, dest .. "/" .. f)
-			if not ok then
-				return nil, err
-			end
+			if not ok then return nil, err end
 		end
 	end
 
@@ -73,15 +77,15 @@ end
 
 function util.rm(path)
 	log:fs("rm -r %s", path)
-	local ftype = lfs.attributes(path, 'mode')
+	local ftype, err = lfs.attributes(path, 'mode')
+	if not ftype then return nil, err end
+
 	if ftype == 'directory' then
 		for f in lfs.dir(path) do
 			if f ~= "." and f  ~= ".." then
 				local fp = path .. "/" .. f
 				local ok, err = util.rm(fp)
-				if not ok then
-					return nil, err
-				end
+				if not ok then return nil, err end
 			end
 		end
 	end

@@ -69,6 +69,7 @@ local function template_path(name)
 			return override
 		end
 	end
+	print("No override")
 
 	return util.dpath("templates/" .. name)
 end
@@ -82,7 +83,7 @@ function new:run(args)
 	local path, err = template_path(args.template)
 	if not path then log:error(err) end
 
-	log:info("Using template %q", args.template)
+	log:info("Using template %q", path)
 	local files, err = util.slurp(path)
 	if not files then log:error(err) end
 	apply_templates(files, env)
@@ -99,8 +100,8 @@ function new:run(args)
 		end
 		f:close()
 	end
-
-	util.spit(files, env.project_name)
+	print(require 'inspect' (files))
+	assert(util.spit(files, env.project_name))
 	log:info("New LOVERocks project installed at %q", env.project_name .. "/")
 end
 

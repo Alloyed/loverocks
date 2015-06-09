@@ -112,16 +112,19 @@ local function find_luarocks(self)
 end
 
 function config:load()
-	local file, path = datafile.open("loverocks/conf.lua", 'r', "config")
-	if file then
-		apply_config(self, file, path)
-		file:close()
-	else
-		find_luarocks(self)
+	if not self.CONFIG then
+		local file, path = datafile.open("loverocks/conf.lua", 'r', "config")
+		if file then
+			apply_config(self, file, path)
+			file:close()
+		else
+			find_luarocks(self)
+		end
 	end
 end
 
 function config:get(var)
+	self:load()
 	return self.CONFIG[var]
 end
 

@@ -19,7 +19,7 @@ local function slurp_dir(dir)
 
 	for f in lfs.dir(dir) do
 		if f ~= "." and f  ~= ".." then
-			t[f] = util.slurp(dir .. "/" .. f)
+			t[f] = assert(util.slurp(dir .. "/" .. f))
 		end
 	end
 
@@ -39,10 +39,11 @@ end
 
 local function spit_file(str, dest)
 	log:fs("spit  %s", dest)
+	log:fs(str)
 	local file, err = io.open(dest, "w")
 	if not file then return nil, err end
 
-	local ok, err = file:write()
+	local ok, err = file:write(str)
 	if not ok then return nil, err end
 
 	local ok, err = file:close()
@@ -54,7 +55,7 @@ end
 local function spit_dir(tbl, dest)
 	log:fs("mkdir %s", dest)
 	local ok, err = lfs.mkdir(dest)
-	if not ok then return nil, err end
+	if not ok and not err == 'File exists' then return nil, err end
 
 	for f, s in pairs(tbl) do
 		if f ~= "." and f  ~= ".." then
@@ -71,7 +72,7 @@ function util.spit(o, dest)
 	if type(o) == 'table' then
 		return spit_dir(o, dest)
 	else
-		return spit_file(o, dest)
+		return assert(spit_file(o, dest))
 	end
 end
 

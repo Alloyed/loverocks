@@ -3,6 +3,7 @@ local etlua = require 'etlua'
 local util = require 'loverocks.util'
 local versions = require 'loverocks.versions'
 local log = require 'loverocks.log'
+local config = require 'loverocks.config'
 
 local new = {}
 
@@ -69,7 +70,7 @@ local function template_path(name)
 		end
 	end
 
-	return util.dpath("templates/" .. args.template)
+	return util.dpath("templates/" .. name)
 end
 
 function new:run(args)
@@ -78,7 +79,7 @@ function new:run(args)
 		log:error("Invalid project name: %q", args.project)
 	end
 
-	local path, err = template_path("templates/" .. args.template)
+	local path, err = template_path(args.template)
 	if not path then log:error(err) end
 
 	log:info("Using template %q", args.template)

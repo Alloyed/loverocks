@@ -27,11 +27,14 @@ local function apply_config(self, f, path)
 	self.CONFIG.loverocks_config = path
 end
 
+local LUAROCKS_BIN = os.getenv("HOME") .. "/.luarocks/bin"
+
 local command_names = {
-	"luarocks-5.1", -- arch
-	"luarocks5.1",   
-	"luarocks51", 
-	"luarocks",     -- last attempt
+	LUAROCKS_BIN .. "/luarocks", -- most specific
+	"luarocks-5.1",              -- arch linux uses this
+	"luarocks5.1",
+	"luarocks51",
+	"luarocks",                  -- least specific
 }
 
 --
@@ -49,6 +52,7 @@ local config_fmt = [[
 luarocks = %q
 
 ]]
+
 local no_luarocks_fmt = [[
 We couldn't find a copy of luarocks that uses lua 5.1. If you know you have one
 installed, please tell us by creating the file ~/.config/loverocks/conf.lua and
@@ -59,13 +63,33 @@ adding:
 with the appropriate path to your luarocks command.
 ]]
 
+local bad_luarocks_fmt = [[
+bad luarocks: %s
+
+We found a copy of luarocks configured for lua 5.1, but it happens to disable
+user-configs, which is a core part of loverocks. Either recompile or bug your
+package manager about it. If you'd like to use another luarocks install
+instead, you can always create the file ~/.config/loverocks/conf.lua and add:
+
+	luarocks = "/usr/bin/my-luarocks-command"
+
+with the appropriate path to your cusom luarocks.
+]]
+
 local function find_luarocks(self)
 	self.CONFIG = {}
+	local bad_luarocks = false
+
 	for _, name in ipairs(command_names) do
-		local v = stropen(name .. " help"):match("Lua version: ([^%s]+)")
-		local path = UNIX_PATH
-		local filename = path .. "conf.lua"
-		if v == "5.1" then
+		local help = stropen(name .. " help")
+		local v = help:match("Lua version: ([^%s]+)")
+		local invalid_config = help:match("User%s*:%s*disabled in this LuaRocks installation.")
+
+		if v == "5.1" and invalid_config then
+			bad_luarocks = stropen("which " .. name)
+		elseif v == "5.1" then
+			local path = UNIX_PATH
+			local filename = path .. "conf.lua"
 			local ok, err = lfs.mkdir(path)
 			if not ok and not err == "file exists" then
 				error(err)
@@ -80,7 +104,11 @@ local function find_luarocks(self)
 		end
 	end
 
-	log:error(no_luarocks_fmt)
+	if bad_luarocks then
+		log:error(bad_luarocks_fmt, bad_luarocks)
+	else
+		log:error(no_luarocks_fmt)
+	end
 end
 
 function config:load()

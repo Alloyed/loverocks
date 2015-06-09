@@ -68,7 +68,7 @@ bad luarocks: %s
 
 We found a copy of luarocks configured for lua 5.1, but it happens to disable
 user-configs, which is a core part of loverocks. Either recompile or bug your
-package manager about it. If you'd like to use another luarocks install
+package maintainer about it. If you'd like to use another luarocks install
 instead, you can always create the file ~/.config/loverocks/conf.lua and add:
 
 	luarocks = "/usr/bin/my-luarocks-command"

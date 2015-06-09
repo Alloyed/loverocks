@@ -20,7 +20,7 @@ dependencies = {
    "argparse ~> 0.3",
    "etlua ~> 1.2",
    "luafilesystem ~> 1.6",
-   "datafile ~> 0.1"
+   "datafile >= 0.1"
 }
 build = {
    type = "builtin",

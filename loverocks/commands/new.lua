@@ -59,13 +59,26 @@ local function apply_templates(files, env)
 	end
 end
 
+local function template_path(name)
+	local override = config("loverocks_templates")
+	if override then
+		override = override .. "/" .. name
+		local f, err = io.open(override)
+		if f then
+			return override
+		end
+	end
+
+	return util.dpath("templates/" .. args.template)
+end
+
 function new:run(args)
 	local env = new_env(args.project, args.love_version)
 	if not is_valid_name(args.project) then
 		log:error("Invalid project name: %q", args.project)
 	end
 
-	local path, err = util.dpath("templates/" .. args.template)
+	local path, err = template_path("templates/" .. args.template)
 	if not path then log:error(err) end
 
 	log:info("Using template %q", args.template)

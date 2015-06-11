@@ -100,6 +100,7 @@ local function find_luarocks(self)
 
 			self.CONFIG.luarocks = name
 			self.CONFIG.loverocks_config = filename
+			log:info("Found a suitable copy of luarocks at %s", self.CONFIG.luarocks)
 			return
 		end
 	end

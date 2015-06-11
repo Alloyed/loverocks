@@ -43,21 +43,23 @@ function is_valid_name(s) -- TODO
 end
 
 local function apply_templates(files, env)
+	local done = {}
 	for name, file in pairs(files) do
 		if type(file) == 'table' then
-			apply_templates(file, env)
+			done[name] = apply_templates(file, env)
 		else
 			local new_name = name:gsub("PROJECT", env.project_name)
+
 			local d, err = etlua.render(file, env)
 			if not d then
 				log:error(name .. ": " .. err)
 			end
-			files[new_name] = d
-			if new_name ~= name then
-				files[name] = nil
-			end
+
+			done[new_name] = d
 		end
 	end
+
+	return done
 end
 
 local function template_path(name)
@@ -69,7 +71,6 @@ local function template_path(name)
 			return override
 		end
 	end
-	print("No override")
 
 	return util.dpath("templates/" .. name)
 end
@@ -86,7 +87,7 @@ function new:run(args)
 	log:info("Using template %q", path)
 	local files, err = util.slurp(path)
 	if not files then log:error(err) end
-	apply_templates(files, env)
+	files = apply_templates(files, env)
 
 	local f, err = io.open(env.project_name)
 	if f then
@@ -100,7 +101,7 @@ function new:run(args)
 		end
 		f:close()
 	end
-	print(require 'inspect' (files))
+
 	assert(util.spit(files, env.project_name))
 	log:info("New LOVERocks project installed at %q", env.project_name .. "/")
 end

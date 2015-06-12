@@ -34,6 +34,7 @@ local function new_env(name, v)
 		project_name = name,
 		versions = versions.get(v),
 		raw_version = raw_version,
+		loverocks_version = require 'loverocks.version',
 		depstring = depstring,
 	}
 end
@@ -47,12 +48,12 @@ local function apply_templates(files, env)
 	for name, file in pairs(files) do
 		if type(file) == 'table' then
 			done[name] = apply_templates(file, env)
-		else
+		elseif not name:match("%.swp$") then
 			local new_name = name:gsub("PROJECT", env.project_name)
 
 			local d, err = etlua.render(file, env)
 			if not d then
-				log:error(name .. ": " .. err)
+				log:error("%s", name .. ": " .. err)
 			end
 
 			done[new_name] = d

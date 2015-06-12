@@ -39,7 +39,7 @@ end
 
 local function spit_file(str, dest)
 	log:fs("spit  %s", dest)
-	log:fs(str)
+	log:fs("%s", str)
 	local file, err = io.open(dest, "w")
 	if not file then return nil, err end
 
@@ -134,7 +134,7 @@ LUAROCKS_CONFIG='rocks/config.lua' %s --tree='rocks' %s
 function util.luarocks(...)
 	local argstr = table.concat({...}, " ")
 	argstr = LROCKSTR:format(config('luarocks'), argstr)
-	log:fs(argstr)
+	log:fs("%s", argstr)
 
 	return os.execute(argstr)
 end
@@ -142,7 +142,7 @@ end
 function util.strluarocks(...)
 	local argstr = table.concat({...}, " ")
 	argstr = LROCKSTR:format(config('luarocks'), argstr)
-	log:fs(argstr)
+	log:fs("%s", argstr)
 
 	return util.stropen(argstr)
 end

@@ -50,6 +50,28 @@ local function stropen(cli)
 	return s
 end
 
+local function mkdir_p(path)
+	local function build_dir(path)
+		path = path:gsub("/[^/]-$", "") -- go up one
+		local f, err = io.open(path, 'r')
+		if f then
+			return true
+		end
+		return build_dir(path) and lfs.mkdir(path)
+	end
+
+	local ok, err = lfs.mkdir(path)
+	if ok or err == "File exists" then
+		return true
+	end
+
+	if err == "No such file or directory" then
+		return build_dir(path)
+	end
+
+	return nil, err
+end
+
 local config_fmt = [[
 luarocks = %q
 
@@ -93,7 +115,7 @@ local function find_luarocks(self)
 		elseif v == "5.1" then
 			local path = UNIX_PATH
 			local filename = path .. "conf.lua"
-			local ok, err = lfs.mkdir(path)
+			local ok, err = mkdir_p(path)
 			if not ok and not err == "file exists" then
 				error(err)
 			end

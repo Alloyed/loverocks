@@ -1,0 +1,15 @@
+dependencies:
+    pre:
+        - sudo apt-get update
+        - sudo apt-get install lua5.1 luarocks love
+        - sudo luarocks install luarocks
+        - eval `luarocks path --bin`
+        - sudo luarocks install luasocket
+        - sudo luarocks install luasec OPENSSL_LIBDIR=/usr/lib/x86_64-linux-gnu
+        - sudo luarocks install busted
+    post:
+        - sudo luarocks build loverocks-scm-0.rockspec --only-deps
+test:
+    override:
+        - mkdir -p $CIRCLE_TEST_REPORTS/junit
+        - busted -o junit > $CIRCLE_TEST_REPORTS/junit/tests.xml

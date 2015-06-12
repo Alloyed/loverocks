@@ -1,7 +1,7 @@
 local etlua = require 'etlua'
 
 local util = require 'loverocks.util'
-local versions = require 'loverocks.versions'
+local versions = require 'loverocks.love-versions'
 local log = require 'loverocks.log'
 local config = require 'loverocks.config'
 

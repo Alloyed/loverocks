@@ -11,9 +11,11 @@ Configuration:
 ]]
 
 local function main(...)
+	local version = "Loverocks " .. (require 'loverocks.version')
+
 	config:load()
 	local parser = argparse "loverocks" {
-		description = "A wrapper to make luarocks and love play nicely.",
+		description = version .. ", a wrapper to make luarocks and love play nicely.",
 		epilog = string.format(config_msg,
 		                       config('luarocks'),
 		                       config('loverocks_config'))
@@ -25,7 +27,12 @@ local function main(...)
 		commands.help:add_command(name, cmd_parser)
 		cmd:build(cmd_parser)
 	end
-
+	parser:flag "--version"
+		:description "Print version info."
+		:action(function()
+			print(version)
+			os.exit(0)
+		end)
 	parser:flag "-v" "--verbose"
 		:description "Use verbose output."
 		:action(function()

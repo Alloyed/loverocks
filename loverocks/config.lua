@@ -1,5 +1,6 @@
 -- load configuration
 local datafile = require 'datafile'
+local log      = require 'loverocks.log'
 local config = {}
 
 local UNIX_PATH = os.getenv("XDG_CONFIG_HOME")
@@ -30,8 +31,9 @@ end
 local LUAROCKS_BIN = os.getenv("HOME") .. "/.luarocks/bin"
 
 local command_names = {
-	LUAROCKS_BIN .. "/luarocks", -- most specific
-	"luarocks-5.1",              -- arch linux uses this
+	LUAROCKS_BIN .. "/luarocks", -- local rock
+	"/usr/local/bin/luarocks",   -- global rock
+	"luarocks-5.1",              -- arch linux installed
 	"luarocks5.1",
 	"luarocks51",
 	"luarocks",                  -- least specific
@@ -82,6 +84,7 @@ local function find_luarocks(self)
 
 	for _, name in ipairs(command_names) do
 		local help = stropen(name .. " help")
+		-- FIXME: also check for version number. 2.2.2 and up only.
 		local v = help:match("Lua version: ([^%s]+)")
 		local invalid_config = help:match("User%s*:%s*disabled in this LuaRocks installation.")
 

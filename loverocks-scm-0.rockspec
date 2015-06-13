@@ -37,6 +37,9 @@ build = {
       ["loverocks.commands.lua"]     = "loverocks/commands/lua.lua",
       ["loverocks.commands.install"] = "loverocks/commands/install.lua",
       ["loverocks.commands.help"]    = "loverocks/commands/help.lua",
+      ["loverocks.commands.list"]    = "loverocks/commands/list.lua",
+      ["loverocks.commands.purge"]   = "loverocks/commands/purge.lua",
+      ["loverocks.commands.search"]  = "loverocks/commands/search.lua",
    },
    install = {
       bin = {"bin/loverocks"}

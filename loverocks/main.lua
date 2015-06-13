@@ -20,13 +20,17 @@ local function main(...)
 		                       config('luarocks'),
 		                       config('loverocks_config'))
 	}
-	commands.help:add_command("main", parser)
+	local help = commands.modules.help
+	help:add_command("main", parser)
 
-	for name, cmd in pairs(commands) do
+	for _, name in pairs(commands.names) do
+		local cmd = commands.modules[name]
 		local cmd_parser = parser:command(name)
-		commands.help:add_command(name, cmd_parser)
+
+		help:add_command(name, cmd_parser)
 		cmd:build(cmd_parser)
 	end
+
 	parser:flag "--version"
 		:description "Print version info."
 		:action(function()
@@ -53,9 +57,9 @@ local function main(...)
 	local B = parser:parse(args)
 
 	if B.lua then
-		return commands.lua:run(args) -- pass raw args instead of parsed args
+		return commands.modules.lua:run(args) -- pass raw args instead of parsed args
 	else
-		for name, cmd in pairs(commands) do
+		for name, cmd in pairs(commands.modules) do
 			if B[name] then
 				return cmd:run(B)
 			end

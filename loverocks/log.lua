@@ -22,6 +22,13 @@ function log:error(...)
 	os.exit(1)
 end
 
+function log:assert(ok, ...)
+	if not ok then
+		log:error("%s", ...)
+	end
+	return ok, ...
+end
+
 function log:warning(...)
 	if self.use.warning then
 		eprintf("Warning: ", ...)

@@ -26,6 +26,10 @@ local function slurp_dir(dir)
 	return t
 end
 
+function util.is_dir(path)
+	return lfs.attributes(path, 'mode') == 'directory'
+end
+
 function util.slurp(path)
 	local ftype, err = lfs.attributes(path, 'mode')
 	if ftype == 'directory' then
@@ -39,7 +43,6 @@ end
 
 local function spit_file(str, dest)
 	log:fs("spit  %s", dest)
-	log:fs("%s", str)
 	local file, err = io.open(dest, "w")
 	if not file then return nil, err end
 
@@ -92,6 +95,15 @@ function util.rm(path)
 	end
 
 	return os.remove(path)
+end
+
+function util.exists(path)
+	local f, err = io.open(path, 'r')
+	if f then
+		f:close()
+		return true
+	end
+	return nil, err
 end
 
 -- a replacement datafile.path()

@@ -31,6 +31,7 @@ build = {
       ["loverocks.log"]              = "loverocks/log.lua",
       ["loverocks.love-versions"]    = "loverocks/love-versions.lua",
       ["loverocks.config"]           = "loverocks/config.lua",
+      ["loverocks.template"]         = "loverocks/template.lua",
       ["loverocks.commands"]         = "loverocks/commands.lua",
       ["loverocks.commands.init"]    = "loverocks/commands/init.lua",
       ["loverocks.commands.new"]     = "loverocks/commands/new.lua",
@@ -40,6 +41,7 @@ build = {
       ["loverocks.commands.list"]    = "loverocks/commands/list.lua",
       ["loverocks.commands.purge"]   = "loverocks/commands/purge.lua",
       ["loverocks.commands.search"]  = "loverocks/commands/search.lua",
+      ["loverocks.argparse"]         = "loverocks/argparse.lua",
    },
    install = {
       bin = {"bin/loverocks"}

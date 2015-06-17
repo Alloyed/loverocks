@@ -12,16 +12,23 @@ end
 	
 local WIN_PATH  = "FIXME"
 
-local function apply_config(self, f, path)
-	self.CONFIG = {}
+function config:open(fname, env)
 	local fn
 	if setfenv then -- lua 5.1
-		fn = assert(loadstring(f:read('*a'), "conf.lua"))
-		setfenv(fn, self.CONFIG)
+		fn, err = loadfile(fname)
+		if not fn then return nil, err end
+		setfenv(fn, env)
 	else -- lua >= 5.2
-		fn = assert(load(f:read('*a'), "conf.lua", 't', self.CONFIG))
+		fn, err = loadfile(fname, 't', env)
+		if not fn then return nil, err end
 	end
 	fn()
+	return env
+end
+
+local function apply_config(self, path)
+	self.CONFIG = {}
+	self:open(path, self.CONFIG)
 	if self.CONFIG.luarocks == nil then
 		log:error("Config file %q must have field 'luarocks'", path)
 	end
@@ -141,8 +148,8 @@ function config:load()
 	if not self.CONFIG then
 		local file, path = datafile.open("loverocks/conf.lua", 'r', "config")
 		if file then
-			apply_config(self, file, path)
 			file:close()
+			apply_config(self, path)
 		else
 			find_luarocks(self)
 		end

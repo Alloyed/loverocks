@@ -1,4 +1,4 @@
-local argparse = require 'argparse'
+local argparse = require 'loverocks.argparse'
 local commands = require 'loverocks.commands'
 local config   = require 'loverocks.config'
 local log      = require 'loverocks.log'
@@ -53,16 +53,11 @@ local function main(...)
 			log.use.ask = false
 		end)
 
-	local args = {...}
-	local B = parser:parse(args)
+	local B = parser:parse{...}
 
-	if B.lua then
-		return commands.modules.lua:run(args) -- pass raw args instead of parsed args
-	else
-		for name, cmd in pairs(commands.modules) do
-			if B[name] then
-				return cmd:run(B)
-			end
+	for name, cmd in pairs(commands.modules) do
+		if B[name] then
+			return cmd:run(B)
 		end
 	end
 end

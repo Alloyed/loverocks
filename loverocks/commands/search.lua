@@ -25,7 +25,7 @@ function search:run(args)
 	if args.server then
 		server = string.format("--only-server=%q ", args.server)
 	elseif args.love then
-		log:error("--love is broken, see https://github.com/leafo/luarocks-site/issues/59")
+		log:error("--love is broken, see https://github.com/leafo/luarocks-site/issues/59") -- FIXME
 		server = '--only-server="http://luarocks.org/m/love" '
 	end
 

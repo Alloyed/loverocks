@@ -1,4 +1,5 @@
 local log = require 'loverocks.log'
+local util = require 'loverocks.util'
 local search = {}
 
 function search:build(parser)
@@ -15,11 +16,22 @@ function search:build(parser)
 		parser:flag "--love"
 			:description "Search the LOVE manifest."
 	)
-		
 end
 
 function search:run(args)
-	log:error("NYI. For now, try making an empty project with `loverocks new` and moving your code into the result.")
+	local all = args.all and "--all " or ""
+
+	local server = ""
+	if args.server then
+		server = string.format("--only-server=%q ", args.server)
+	elseif args.love then
+		log:error("--love is broken, see https://github.com/leafo/luarocks-site/issues/59")
+		server = '--only-server="http://luarocks.org/m/love" '
+	end
+
+	local query = string.format("%q", table.concat(args.search_string, " "))
+
+	util.luarocks("search " .. server .. all .. query)
 end
 
 return search

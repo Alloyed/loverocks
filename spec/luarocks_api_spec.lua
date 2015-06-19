@@ -1,15 +1,36 @@
 local api = require 'loverocks.api'
+local util = require 'loverocks.util'
+local lfs = require 'lfs'
 
-describe("search", function()
-	local pkg = api.search("inspect", "2.0-1")[1]
-	assert.same(pkg, {
-		package = "inspect",
-		repo = "https://luarocks.org",
-		version = "2.0-1"
-	})
-end)
+describe("loverocks api", function()
+	setup(function()
+		require('loverocks.log').use.info = false
+		require('loverocks.log').use.ask  = false
+		local New = require 'loverocks.commands.new'
+		New:run {
+			project      = "my-project",
+			template     = "love9",
+			love_version = "0.9.2",
+		}
+		lfs.chdir("my-project")
+	end)
 
-describe("install/remove", function()
-	assert(api.install("inspect", "2.0-1", { quiet = true, use_local = true }))
-	assert(api.remove("inspect", "2.0-1", { quiet = true, use_local = true }))
+	teardown(function()
+		lfs.chdir("..")
+		assert(util.rm("my-project"))
+	end)
+
+	it("can search", function()
+		local pkg = api.search("inspect", "2.0-1")[1]
+		assert.same(pkg, {
+			package = "inspect",
+			repo = "https://luarocks.org",
+			version = "2.0-1"
+		})
+	end)
+
+	it("can install/remove", function()
+		assert(api.install("inspect", "2.0-1", {}))
+		assert(api.remove("inspect", "2.0-1", {}))
+	end)
 end)

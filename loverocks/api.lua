@@ -47,19 +47,28 @@ local cfg = require("luarocks.cfg")
 local trees = cfg.rocks_trees
 local is_local
 
+function api.apply_config(new)
+	-- idea: instead of copying-in, we make package.preload["luarocks.cfg"]
+	-- a mock table, and then push in and out prototypes to apply the config.
+	local function copy(t, into)
+		for k, v in pairs(t) do
+			if type(v) == 'table' then
+				if not into[k] then into[k] = {} end
+				copy(v, into[k])
+			else
+				into[k] = v
+			end
+		end
+	end
+	copy(new, cfg)
+end
+
 local function use_tree(tree)
 	cfg.root_dir = tree
 	cfg.rocks_dir = path.rocks_dir(tree)
 	cfg.deploy_bin_dir = path.deploy_bin_dir(tree)
 	cfg.deploy_lua_dir = path.deploy_lua_dir(tree)
 	cfg.deploy_lib_dir = path.deploy_lib_dir(tree)
-end
-
---- set the current tree to be global or local
--- @param make_local use the local tree (default false)
-function api.set_rocks_tree (make_local)
-	is_local = make_local
-	use_tree(trees[is_local and 1 or #trees])
 end
 
 local old_print, old_execute_string = _G.print, fs.execute_string
@@ -89,15 +98,17 @@ local function logging_print (...)
 	f:close()
 end
 
-
+local project_cfg = nil
 local function check_flags (flags)
-	flags._old_servers = cfg.rocks_servers
-	if flags.use_local then
-		if not is_local then
-			set_rocks_tree(true)
-			flags._was_global = true
-		end
+	use_tree(fs.current_dir() .. "/rocks")
+	local lcfg = require 'loverocks.config'
+	if not project_cfg then
+		project_cfg = {}
+		lcfg:open(fs.current_dir() .. "/rocks/config.lua", project_cfg)
+		api.apply_config(project_cfg)
 	end
+
+	flags._old_servers = cfg.rocks_servers
 	if flags.from then
 		table.insert(cfg.rocks_servers, 1, flags.from)
 	elseif flags.only_from then
@@ -110,9 +121,6 @@ local function check_flags (flags)
 end
 
 local function restore_flags (flags)
-	if flags.use_local and flags._was_global then
-		set_rocks_tree(false)
-	end
 	if flags.from then
 		table.remove(cfg.rocks_servers, 1)
 	elseif flags.only_from then
@@ -123,8 +131,6 @@ local function restore_flags (flags)
 		fs.execute_string = old_execute_string
 	end
 end
-
-set_rocks_tree(false)
 
 local manifests = {}
 
@@ -408,3 +414,16 @@ function api.remove(name, version, flags)
 	return ok, err
 end
 
+function api.build(name, version, flags)
+	flags = flags or {}
+	check_flags(flags)
+	local f = {}
+	if version then table.insert(f, version) end
+	if flags.only_deps then table.insert(f, "--only-deps") end
+
+	local ok, err = build.run(name, unpack(f))
+	restore_flags(flags)
+	return ok, err
+end
+
+return api

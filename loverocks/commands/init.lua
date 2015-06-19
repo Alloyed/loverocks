@@ -8,15 +8,17 @@ local util     = require 'loverocks.util'
 local init = {}
 
 function init:build(parser)
-	parser:description "Loverocks-ify or update an existing project"
-
+	parser:description "Loverocks-ify or update an existing project."
+	parser:argument "path"
+		:args("?")
+		:description "The path of the project to init.\nIf unspecified uses current working directory."
 	parser:option "-t" "--template"
 		:description "The template to follow."
 		:default "love9"
 	parser:option "--love-version"
-		:description "The lua version. If unspecified we guess by running `love --version`"
+		:description "The lua version.\nIf unspecified, we guess by running `love --version`."
 	parser:option "-p" "--project"
-		:description "the name of the project. if unspecified, uses the name of the working directory"
+		:description "the name of the project.\nIf unspecified, uses the name of the directory specified in <path>."
 end
 
 init.aliases = {}
@@ -95,12 +97,8 @@ local function is_empty(t)
 end
 
 function init:run(args)
-	local project
-	if args.project then
-		project = args.project
-	else
-		project = lfs.currentdir():match("/([^/]+)$")
-	end
+	local path    = args.path or lfs.current_dir()
+	local project = args.project or path:match("/([^/]+)$") or path
 	local env = template.new_env(project, args.love_version)
 
 	local tpath = log:assert(template.path(args.template))
@@ -109,9 +107,9 @@ function init:run(args)
 	local a = {}
 	local o = {}
 
-	if util.is_dir("rocks") then
+	if util.is_dir(path .. "/rocks") then
 		local cfg = {}
-		if util.exists("rocks/init.lua") and config:open("rocks/config.lua", cfg) then
+		if util.exists(path .. "/rocks/init.lua") and config:open(path .. "/rocks/config.lua", cfg) then
 			local old_ver = cfg.loverocks and cfg.loverocks.version
 			local new_ver = require 'loverocks.version'
 			if not old_ver or newer(new_ver, old_ver) then
@@ -120,20 +118,21 @@ function init:run(args)
 				o.rocks = true
 			end
 		else
-			log:error("rocks/ is not recognized as a valid loverocks tree. Please remove or rename, then try again.")
+			log:error("%s is not recognized as a valid loverocks tree. " ..
+			          "Please remove or rename, then try again.", path .. "/rocks")
 		end
 	else
 		a.rocks = t.rocks
 	end
 
-	if not util.get_first(".", "%.rockspec$") then
+	if not util.get_first(path, "%.rockspec$") then
 		local rockspec_path = project .. "-scm-1.rockspec"
 		a[rockspec_path] = assert(t[rockspec_path])
 	end
 
-	if util.exists("conf.lua") then
+	if util.exists(path.."/conf.lua") then
 		-- TODO check love version number, if included
-		local body = log:assert(util.slurp("conf.lua"))
+		local body = log:assert(util.slurp(path.."/conf.lua"))
 		if not has_injection(body) then
 			body = "require 'rocks' ()\n" .. body
 			a["conf.lua"] = body
@@ -143,8 +142,8 @@ function init:run(args)
 		a["conf.lua"] = t["conf.lua"]
 	end
 
-	if util.exists(".gitignore") then
-		local old = assert(util.slurp(".gitignore"))
+	if util.exists(path.."/.gitignore") then
+		local old = assert(util.slurp(path.."/.gitignore"))
 		local new, edited = merge_gitignore(old, t[".gitignore"])
 		if edited then
 			a[".gitignore"] = new
@@ -162,9 +161,8 @@ function init:run(args)
 			os.exit(0)
 		end
 	end
-	assert(util.spit(a, "."))
-	log:info("LOVErocks installed into %q. You can test this by running `loverocks install`.", project)
-
+	assert(util.spit(a, path))
+	log:info("LOVErocks installed into %q. You can test this by running `loverocks install`.", path)
 end
 
 return init

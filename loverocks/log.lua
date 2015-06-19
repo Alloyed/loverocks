@@ -1,10 +1,10 @@
 local log = {}
 
 log.use = {
-	fs = false,
-	warning = true,
-	info = true,
-	ask = true
+	fs = false,     -- print filesystem events
+	warning = true, -- print warnings
+	info = true,    -- print info text/dialogs
+	ask = true,     -- ask for confirmation
 }
 
 local function eprintf(pre, ...)
@@ -42,7 +42,11 @@ function log:info(...)
 end
 
 function log:ask(...)
+	if self.use.info == false then
+		return function(default) return true end
+	end
 	local outstr = string.format(...) .. " "
+
 	io.write(outstr)
 	return function(default)
 		if self.use.ask then

@@ -1,5 +1,7 @@
 LOVEROCKS
 =========
+[![Circle CI](https://circleci.com/gh/Alloyed/loverocks.svg?style=svg&circle-token=badf14e71fb7fbecee7120a1fda86fa642be9dd2)](https://circleci.com/gh/Alloyed/loverocks)
+
 LÖVERocks is a CLI wrapper around [luarocks][L] that teaches your [LÖVE][O]
 projects how to download and use standard luarocks packages.
 

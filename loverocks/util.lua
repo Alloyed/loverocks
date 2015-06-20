@@ -141,17 +141,21 @@ function util.stropen(cli)
 end
 
 local LROCKSTR = [[
-LUAROCKS_CONFIG='rocks/config.lua' %s --tree='rocks' %s]]
+LUAROCKS_CONFIG='rocks/config.lua' %s --tree='rocks' %s 2>&1]]
 
 function util.luarocks(...)
 	local argstr = table.concat({...}, " ")
 	argstr = LROCKSTR:format(config('luarocks'), argstr)
-	if log.use.info == false then
-		argstr = argstr .. " &>/dev/null" -- FIXME: windows
-	end
 	log:fs("%s", argstr)
 
-	return os.execute(argstr)
+	local f = io.popen(argstr)
+	for l in f:lines() do
+		if log.use.info then
+			print(l)
+		end
+	end
+
+	return 0
 end
 
 function util.strluarocks(...)

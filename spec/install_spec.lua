@@ -3,7 +3,7 @@ local lfs = require 'lfs'
 describe("loverocks install", function()
 	local Install = require 'loverocks.commands.install'
 	setup(function()
-		require('loverocks.log').use.info = true
+		require('loverocks.log').use.info = false
 		require('loverocks.log').use.ask  = false
 		local New = require 'loverocks.commands.new'
 		New:run {

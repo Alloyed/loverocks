@@ -170,7 +170,6 @@ function config:load()
 		end
 		local ok, err = pcall(require, "loverocks.os")
 		self.CONFIG.os = ok and err or "unix"
-		print(self('os'))
 	end
 end
 

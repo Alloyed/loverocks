@@ -4,9 +4,8 @@ local lfs = require 'lfs'
 
 describe("loverocks api", function()
 	setup(function()
-		require('loverocks.log').use.info = false
-		require('loverocks.log').use.ask  = false
 		local New = require 'loverocks.commands.new'
+		require 'spec.test_config'()
 		New:run {
 			project      = "my-project",
 			template     = "love9",

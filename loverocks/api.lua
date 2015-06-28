@@ -10,8 +10,6 @@
 -- downloading the remote rockspecs - bear in mind that this can be slow for
 -- large queries.
 --
--- It is also possible to install and remove packages. If you use the flag
--- `quiet`, then  normal output is suppressed and sent to a log file.
 -- @author Steve Donovan
 -- @license MIT/X11
 
@@ -21,6 +19,7 @@ local util = require("luarocks.util")
 local _search = require("luarocks.search")
 local deps = require("luarocks.deps")
 local manif = require("luarocks.manif")
+local manif_core = require("luarocks.manif_core")
 local fetch = require("luarocks.fetch")
 local _install = require("luarocks.install")
 local build = require("luarocks.build")
@@ -28,6 +27,9 @@ local fs = require("luarocks.fs")
 local path = require("luarocks.path")
 local dir = require("luarocks.dir")
 local _remove = require("luarocks.remove")
+
+local log = require 'loverocks.log'
+local lcfg = require 'loverocks.config'
 
 local append = table.insert
 
@@ -41,25 +43,24 @@ local function _latest(versions, first_repo)
 	return version, repo.repo
 end
 
+local function copy(t, into)
+	for k, v in pairs(t) do
+		if type(v) == 'table' then
+			if not into[k] then into[k] = {} end
+			copy(v, into[k])
+		else
+			into[k] = v
+		end
+	end
+end
+
 -- cool, let's initialize this baby. This is normally done by command_line.lua
 -- Since cfg is a singleton, api has to be one too. So it goes.
 local cfg = require("luarocks.cfg")
-local trees = cfg.rocks_trees
-local is_local
 
 function api.apply_config(new)
 	-- idea: instead of copying-in, we make package.preload["luarocks.cfg"]
 	-- a mock table, and then push in and out prototypes to apply the config.
-	local function copy(t, into)
-		for k, v in pairs(t) do
-			if type(v) == 'table' then
-				if not into[k] then into[k] = {} end
-				copy(v, into[k])
-			else
-				into[k] = v
-			end
-		end
-	end
 	copy(new, cfg)
 end
 
@@ -71,7 +72,7 @@ local function use_tree(tree)
 	cfg.deploy_lib_dir = path.deploy_lib_dir(tree)
 end
 
-local old_print, old_execute_string = _G.print, fs.execute_string
+local old_printout, old_printerr, old_execute_string = util.printout, util.printerr, fs.execute_string
 local path_sep = package.config:sub(1, 1)
 local log_dir = path_sep=='\\' and os.getenv('TEMP') or '/tmp'
 local log_name = log_dir..path_sep..'luarocks-api-log.txt'
@@ -87,49 +88,47 @@ local function fs_quiet_execute_string(cmd)
 	end
 end
 
-local function logging_print (...)
-	local res, args, n = {}, {...}, select('#', ...)
-	for i = 1, n do
-		res[i] = tostring(args[i])
-	end
-	res = table.concat(res, '\t')
-	local f = io.open(log_name, 'a')
-	f:write(res, '\n')
-	f:close()
+function q_printout(...)
+	log:info("L: %s", table.concat({...}, "\t"))
+end
+
+function q_printerr(...)
+	log:_warning("L: %s", table.concat({...}, "\t"))
 end
 
 local project_cfg = nil
+local cwd = nil
 local function check_flags (flags)
-	use_tree(fs.current_dir() .. "/rocks")
-	local lcfg = require 'loverocks.config'
+	cwd = fs.current_dir()
+	use_tree(cwd .. "/rocks")
 	if not project_cfg then
 		project_cfg = {}
-		lcfg:open(fs.current_dir() .. "/rocks/config.lua", project_cfg)
+		lcfg:open(cwd .. "/rocks/config.lua", project_cfg)
 		api.apply_config(project_cfg)
 	end
 
+	manif_core.manifest_cache = {} -- clear cache
 	flags._old_servers = cfg.rocks_servers
 	if flags.from then
 		table.insert(cfg.rocks_servers, 1, flags.from)
 	elseif flags.only_from then
 		cfg.rocks_servers = { flags.only_from }
 	end
-	if flags.quiet then
-		_G.print = logging_print
-		fs.execute_string = fs_quiet_execute_string
-	end
+	util.printout = q_printout
+	util.printerr = q_printerr
+	fs.execute_string = fs_quiet_execute_string
 end
 
 local function restore_flags (flags)
+	assert(lfs.chdir(cwd))
 	if flags.from then
 		table.remove(cfg.rocks_servers, 1)
 	elseif flags.only_from then
 		cfg.rocks = flags._old_servers
 	end
-	if flags.quiet then
-		_G.print = old_print
-		fs.execute_string = old_execute_string
-	end
+	util.printout = old_printout
+	util.printerr = old_printerr
+	fs.execute_string = old_execute_string
 end
 
 local manifests = {}
@@ -162,7 +161,6 @@ end
 -- @field from include this URL in @{search}
 -- @field only_from only use this URL in @{search}
 -- @field all get all version info with @{search}
--- @field quiet suppress output to stdout, write it all to a log file.
 -- Can use @{get_log_file} to find the name of the log.
 -- @table flags
 
@@ -189,20 +187,16 @@ end
 function api.list(pattern, version, flags)
 	local results = {}
 	flags = flags or {}
-	if flags.ropckspec == nil then flags.rockspec = true end
+	if flags.rockspec == nil then flags.rockspec = true end
 	if flags.manifest == nil then flags.manifest = true end
 	pattern = pattern or ''
 	local query = _search.make_query(pattern, version)
 	query.exact_name = flags.exact == true
 
-	-- older versions of 2.0 have different semantics for path.install_dir;
-	-- you had to pass the full path of the tree, not its root
-	local old_vs = deps.compare_versions("2.0.2", cfg.program_version)
-
 	local tree_map = {}
 	for _, tree in ipairs(cfg.rocks_trees) do
 		local rocks_dir = path.rocks_dir(tree)
-		tree_map[rocks_dir] = old_vs and rocks_dir or tree
+		tree_map[rocks_dir] = tree
 		_search.manifest_search(results, rocks_dir, query)
 	end
 
@@ -414,6 +408,12 @@ function api.remove(name, version, flags)
 	return ok, err
 end
 
+--- Build a rock.
+-- @param name
+-- @param version
+-- @param flags @{flags}
+-- @return true if successful, nil if not
+-- @return error message if not
 function api.build(name, version, flags)
 	flags = flags or {}
 	check_flags(flags)

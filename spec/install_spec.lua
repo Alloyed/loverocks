@@ -2,9 +2,8 @@ local util = require 'loverocks.util'
 local lfs = require 'lfs'
 describe("loverocks install", function()
 	local Install = require 'loverocks.commands.install'
+	require 'spec.test_config'()
 	setup(function()
-		require('loverocks.log').use.info = false
-		require('loverocks.log').use.ask  = false
 		local New = require 'loverocks.commands.new'
 		New:run {
 			project      = "my-project",

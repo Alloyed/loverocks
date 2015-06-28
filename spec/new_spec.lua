@@ -4,8 +4,8 @@ local New = require 'loverocks.commands.new'
 local Init = require 'loverocks.commands.init'
 
 describe("loverocks new", function()
+	require 'spec.test_config'()
 	setup(function()
-		require('loverocks.log').use.info = false
 		New:run {
 			project      = "my-project",
 			template     = "love9",

@@ -7,6 +7,21 @@ log.use = {
 	ask = true,     -- ask for confirmation
 }
 
+function log:quiet()
+	self.use.fs = false
+	self.use.error = false
+	self.use.warning = false
+	self.use.info = false
+	self.use.ask = false
+end
+
+function log:verbose()
+	self.use.fs = true
+	self.use.error = true
+	self.use.warning = true
+	self.use.info = true
+end
+
 local function eprintf(pre, ...)
 	return io.stderr:write(pre .. string.format(...) .. "\n")
 end
@@ -18,7 +33,9 @@ function log:fs(...)
 end
 
 function log:error(...)
-	eprintf("ERROR: ", ...)
+	if self.use.error then
+		eprintf("ERROR: ", ...)
+	end
 	os.exit(1)
 end
 
@@ -32,6 +49,12 @@ end
 function log:warning(...)
 	if self.use.warning then
 		eprintf("Warning: ", ...)
+	end
+end
+
+function log:_warning(...)
+	if self.use.warning then
+		eprintf("",...)
 	end
 end
 

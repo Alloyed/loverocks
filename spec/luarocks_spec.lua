@@ -2,7 +2,7 @@ local util = require 'loverocks.util'
 local lfs = require 'lfs'
 describe("`loverocks lua`", function()
 	setup(function()
-		require('loverocks.log').use.info = false
+		require 'spec.test_config'()
 		local New = require 'loverocks.commands.new'
 		New:run {
 			project      = "my-project",

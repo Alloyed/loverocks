@@ -40,12 +40,12 @@ local function main(...)
 	parser:flag "-v" "--verbose"
 		:description "Use verbose output."
 		:action(function()
-			log.use.fs = true
+			log:verbose()
 		end)
 	parser:flag "-q" "--quiet"
-		:description "Silence info messages."
+		:description "Suppress output. also enables -c"
 		:action(function()
-			log.use.info = false
+			log:quiet()
 		end)
 	parser:flag "-c" "--confirm"
 		:description "Confirm without prompting. useful for scripts."

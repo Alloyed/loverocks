@@ -35,14 +35,17 @@ local versions = {
 	}
 }
 
+local STORED -- FIXME: should this be stored in a config file somewhere?
 local function get_versions_for(v)
 	if not v then
 		if STORED then
 			v = STORED
 		elseif io.popen then
 			v = util.stropen("love --version"):match("%d+%.%d+%.%d+")
-			log:info("Found LOVE version %s", v)
-			STORED = v
+			if v then
+				log:info("Found LOVE version %s", v)
+				STORED = v
+			end
 		end
 	end
 	return versions[v] or versions[STABLE]

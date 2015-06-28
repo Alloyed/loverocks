@@ -16,7 +16,7 @@ so your entire LÖVE project is self-contained.
 }
 dependencies = {
    "lua ~> 5.1",
-   "luarocks >= 2.2.2",
+   -- "luarocks >= 2.2.2", Doesn't work on windows
    "argparse ~> 0.3",
    "etlua ~> 1.2",
    "luafilesystem ~> 1.6",
@@ -48,5 +48,17 @@ build = {
    },
    copy_directories = {
       "templates",
+   },
+   platforms = {
+	   unix = {
+		   modules = {
+			   ["loverocks.os"] = "loverocks/os_unix.lua"
+		   }
+	   },
+	   windows = {
+		   modules = {
+			   ["loverocks.os"] = "loverocks/os_win.lua"
+		   }
+	   }
    }
 }

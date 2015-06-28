@@ -109,7 +109,7 @@ end
 -- a replacement datafile.path()
 function util.dpath(resource)
 	-- for some reason datafile.path doesn't work
-	local tmpfile, path = datafile.open(resource)
+	local tmpfile, path = datafile.open(resource, 'r')
 	local err = path
 
 	if not tmpfile then

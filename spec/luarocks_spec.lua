@@ -1,5 +1,7 @@
 local util = require 'loverocks.util'
 local lfs = require 'lfs'
+local lua = require 'loverocks.commands.lua'
+
 describe("`loverocks lua`", function()
 	setup(function()
 		require 'spec.test_config'()
@@ -18,7 +20,7 @@ describe("`loverocks lua`", function()
 	end)
 
 	it("finds the appropriate config file", function()
-		local s = assert(util.strluarocks("help"))
+		local s = assert(lua.strluarocks("help"))
 		assert(s:match("Lua version: 5.1"), "version not 5.1")
 		assert(s:match("User%s+:%s+rocks/config.lua%s+%(ok%)"), "config not found")
 	end)

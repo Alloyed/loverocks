@@ -1,5 +1,8 @@
-local util = require 'loverocks.util'
 local lfs = require 'lfs'
+
+local util = require 'loverocks.util'
+local lua  = require 'loverocks.commands.lua'
+
 describe("loverocks install", function()
 	local Install = require 'loverocks.commands.install'
 	require 'spec.test_config'()
@@ -21,7 +24,7 @@ describe("loverocks install", function()
 	-- FIXME: make a local mirror so this test doesn't require internet access
 	it("Can install normal rocks", function()
 		finally(function()
-			util.luarocks("purge")
+			lua.luarocks {"purge"}
 		end)
 		Install:run {
 			new_packages = {"inspect"}

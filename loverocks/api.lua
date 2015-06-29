@@ -392,6 +392,8 @@ end
 function api.install(name, version, flags)
 	flags = flags or {}
 	check_flags(flags)
+
+	log:fs("luarocks install %s %s", name, version)
 	local ok, err = _install.run(name, version)
 	restore_flags(flags)
 	return ok, err
@@ -403,6 +405,8 @@ end
 function api.remove(name, version, flags)
 	flags = flags or {}
 	check_flags(flags)
+
+	log:fs("luarocks remove %s %s", name, version)
 	local ok, err = _remove.run(name, version)
 	restore_flags(flags)
 	return ok, err
@@ -421,6 +425,7 @@ function api.build(name, version, flags)
 	if version then table.insert(f, version) end
 	if flags.only_deps then table.insert(f, "--only-deps") end
 
+	log:fs("luarocks build %s %s", name, table.concat(f, " "))
 	local ok, err = build.run(name, unpack(f))
 	restore_flags(flags)
 	return ok, err

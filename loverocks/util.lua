@@ -140,32 +140,6 @@ function util.stropen(cli)
 	return s
 end
 
-local LROCKSTR = [[
-LUAROCKS_CONFIG='rocks/config.lua' %s --tree='rocks' %s 2>&1]]
-
-function util.luarocks(...)
-	local argstr = table.concat({...}, " ")
-	argstr = LROCKSTR:format(config('luarocks'), argstr)
-	log:fs("%s", argstr)
-
-	local f = io.popen(argstr)
-	for l in f:lines() do
-		if log.use.info then
-			print(l)
-		end
-	end
-
-	return 0
-end
-
-function util.strluarocks(...)
-	local argstr = table.concat({...}, " ")
-	argstr = LROCKSTR:format(config('luarocks'), argstr)
-	log:fs("%s", argstr)
-
-	return util.stropen(argstr)
-end
-
 -- produce str with magic characters escaped, for pattern-building
 function util.escape_str(s)
     return (s:gsub('[%-%.%+%[%]%(%)%$%^%%%?%*]','%%%1'))

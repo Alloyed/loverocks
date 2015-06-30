@@ -1,8 +1,8 @@
 -- load configuration
 local datafile = require 'datafile'
 local log      = require 'loverocks.log'
+local util     = require 'loverocks.util'
 local config = {}
-
 
 local home = os.getenv("HOME")
 local xdg_config = os.getenv("XDG_CONFIG_HOME")
@@ -62,39 +62,6 @@ if home then
 	table.insert(command_names, 1, home .. "/.luarocks/bin/luarocks") -- local rock. not possible on windows
 end
 
---
--- This definition is identical to the one in util.lua
--- However, since config.lua is intended to sit lower on the dependency chain 
--- it can't use any util functions, so instead we just copy-pasted it here :p
-local function stropen(cli)
-	local f = io.popen(cli, 'r')
-	local s = f:read('*a')
-	f:close()
-	return s
-end
-
-local function mkdir_p(path)
-	local function build_dir(path)
-		path = path:gsub("/[^/]-$", "") -- go up one
-		local f, err = io.open(path, 'r')
-		if f then
-			return true
-		end
-		return build_dir(path) and lfs.mkdir(path)
-	end
-
-	local ok, err = lfs.mkdir(path)
-	if ok or err == "File exists" then
-		return true
-	end
-
-	if err == "No such file or directory" then
-		return build_dir(path)
-	end
-
-	return nil, err
-end
-
 local config_fmt = [[
 luarocks = %q
 
@@ -128,16 +95,16 @@ local function find_luarocks(self)
 	local bad_luarocks = false
 
 	for _, name in ipairs(command_names) do
-		local help = stropen(name .. " help")
+		local help = util.stropen(name .. " help")
 		-- FIXME: also check for version number. 2.2.2 and up only.
 		local v = help:match("Lua version: ([^%s]+)")
 		local invalid_config = help:match("User%s*:%s*disabled in this LuaRocks installation.")
 
 		if v == "5.1" and invalid_config then
-			bad_luarocks = stropen("which " .. name)
+			bad_luarocks = util.stropen("which " .. name)
 		elseif v == "5.1" then
 			local filename = PATH .. "/conf.lua"
-			local ok, err = mkdir_p(PATH)
+			local ok, err = util.mkdir_p(PATH)
 			if not ok and not err == "file exists" then
 				error(err)
 			end

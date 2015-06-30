@@ -2,7 +2,6 @@ local lfs      = require 'lfs'
 local datafile = require 'datafile'
 
 local log    = require 'loverocks.log'
-local config = require 'loverocks.config'
 
 local util = {}
 
@@ -79,6 +78,16 @@ function util.spit(o, dest)
 	end
 end
 
+function util.clean_path(path)
+	if path:match("^%~/") then
+		path = path:gsub("^%~/", os.getenv("HOME") .. "/")
+	end
+	if not path:match("^/") and not path:match("%./") then
+		path = lfs.currentdir()  .. "/" .. path
+	end
+	return path
+end
+
 function util.rm(path)
 	log:fs("rm -r %s", path)
 	local ftype, err = lfs.attributes(path, 'mode')
@@ -143,6 +152,32 @@ end
 -- produce str with magic characters escaped, for pattern-building
 function util.escape_str(s)
     return (s:gsub('[%-%.%+%[%]%(%)%$%^%%%?%*]','%%%1'))
+end
+
+function util.mkdir_p(directory)
+    directory = util.clean_path(directory)
+    local path = nil
+    if directory:sub(2, 2) == ":" then
+	path = directory:sub(1, 2)
+	directory = directory:sub(4)
+    else
+	if directory:match("^/") then
+	    path = ""
+	end
+    end
+    for d in directory:gmatch("([^".."/".."]+)".."/".."*") do
+	path = path and path .. "/" .. d or d
+	local mode = lfs.attributes(path, "mode")
+	if not mode then
+	    local ok, err = lfs.mkdir(path)
+	    if not ok then
+		return false, err
+	    end
+	elseif mode ~= "directory" then
+	    return false, path.." is not a directory"
+	end
+    end
+    return true
 end
 
 return util

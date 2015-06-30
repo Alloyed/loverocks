@@ -29,5 +29,22 @@ describe("util", function()
 		assert(util.rm(out))
 		assert.is_nil(io.open(out))
 	end)
+
+	it("can clean paths", function()
+		local HOME = os.getenv("HOME")
+		assert.equal(util.clean_path("~/hi"), HOME .. "/hi")
+		assert.equal(util.clean_path("/hi"), "/hi")
+		assert.equal(util.clean_path("hi"), lfs.currentdir() .. "/hi")
+	end)
+
+	it("can mkdir directories", function()
+		assert(util.mkdir_p("/tmp/hello_friend/okay/sure"))
+		assert(util.is_dir("/tmp/hello_friend/okay/sure"))
+		assert(util.rm("/tmp/hello_friend"))
+
+		assert(util.mkdir_p("hello_friend/okay/sure"))
+		assert(util.is_dir("hello_friend/okay/sure"))
+		assert(util.rm("hello_friend"))
+	end)
 end)
 

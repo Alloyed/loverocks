@@ -3,6 +3,7 @@ local lfs = require 'lfs'
 local util = require 'loverocks.util'
 local lua  = require 'loverocks.commands.lua'
 
+local cwd = lfs.currentdir()
 describe("loverocks install", function()
 	local Install = require 'loverocks.commands.install'
 	require 'spec.test_config'()
@@ -17,7 +18,7 @@ describe("loverocks install", function()
 	end)
 
 	teardown(function()
-		lfs.chdir("..")
+		lfs.chdir(cwd)
 		assert(util.rm("my-project"))
 	end)
 

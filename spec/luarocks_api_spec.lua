@@ -2,6 +2,7 @@ local api = require 'loverocks.api'
 local util = require 'loverocks.util'
 local lfs = require 'lfs'
 
+local cwd = lfs.currentdir()
 describe("loverocks api", function()
 	setup(function()
 		local New = require 'loverocks.commands.new'
@@ -15,17 +16,14 @@ describe("loverocks api", function()
 	end)
 
 	teardown(function()
-		lfs.chdir("..")
+		lfs.chdir(cwd)
 		assert(util.rm("my-project"))
 	end)
 
 	it("can search", function()
 		local pkg = api.search("inspect", "2.0-1")[1]
-		assert.same(pkg, {
-			package = "inspect",
-			repo = "https://luarocks.org",
-			version = "2.0-1"
-		})
+		assert.equal("inspect", pkg.package)
+		assert.equal("2.0-1", pkg.version)
 	end)
 
 	it("can install/remove", function()

@@ -1,20 +1,24 @@
---- Injects luarocks modules installed at ./rocks_modules into your love game.
+--- Injects luarocks modules installed at ./rocks into your love game.
 --  See http://github.com/Alloyed/loverocks for details
 --  (c) Kyle McLamb, 2015 <alloyed@tfwno.gf>, MIT License.
---  TODO: Configurable prefixes, binary modules
+--  TODO: Configurable prefixes
 
 local function inject()
 	local luarocks_paths = {
 		"rocks/share/lua/5.1/?.lua",
 		"rocks/share/lua/5.1/?/init.lua",
 	}
+	local luarocks_cpaths = {
+		"rocks/lib/lua/5.1/?"
+	}
 	if love.filesystem.getRequirePath then -- 0.10
-		local all_paths = {unpack(luarocks_paths)}
-		table.insert(all_paths, love.filesystem.getRequirePath())
-		local path = table.concat(all_paths, ';')
+		error('Update to match 0.9')
+		local paths = {love.filesystem.getRequirePath(), unpack(luarocks_paths)}
+		local path = table.concat(paths, ';')
 		love.filesystem.setRequirePath(path)
-		package.path = "" -- Don't let outside files seep in
-	else
+
+		package.path = ""
+	else -- 0.9, maybe lower
 		local function loader(modname)
 			local modpath = modname:gsub('%.', '/')
 			for _, elem in ipairs(luarocks_paths) do
@@ -23,9 +27,29 @@ local function inject()
 					return love.filesystem.load(elem)
 				end
 			end
-			return "\n no module '" .. modname .. "'  in LOVERocks path."
+			return "\n\tno module '" .. modname .. "' in LOVERocks path."
+		end
+
+		local function c_loader(mod_name)
+			local ext = love.system.getOS() == 'windows' and ".dll" or ".so"
+			local file = mod_name:gsub("%.", "/") .. ext
+			local fn   = mod_name:gsub("%.", "_")
+
+			for _, elem in ipairs(luarocks_cpaths) do
+				elem = elem:gsub('%?', file)
+				local real_dir = love.filesystem.getRealDirectory(elem)
+				if real_dir then
+					return package.loadlib(real_dir .. "/" .. elem, "luaopen_" .. fn)
+				end
+				return"\n\tno library '" .. file .. "' in LOVERocks path."
+			end
+
 		end
 		table.insert(package.loaders, loader)
+		table.insert(package.loaders, c_loader)
+
+		package.path = ""
+		package.cpath = ""
 	end
 end
 

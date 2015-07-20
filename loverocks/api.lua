@@ -72,21 +72,10 @@ local function use_tree(tree)
 	cfg.deploy_lib_dir = path.deploy_lib_dir(tree)
 end
 
-local old_printout, old_printerr, old_execute_string = util.printout, util.printerr, fs.execute_string
+local old_printout, old_printerr = util.printout, util.printerr
 local path_sep = package.config:sub(1, 1)
 local log_dir = path_sep=='\\' and os.getenv('TEMP') or '/tmp'
 local log_name = log_dir..path_sep..'luarocks-api-log.txt'
-
--- monkey-patching LR's execute!
--- useful to suppress the chattiness of 7z on windows
-local function fs_quiet_execute_string(cmd)
-	cmd = cmd ..' >> '..log_name..' 2>&1'
-	if os.execute(cmd) == 0 then
-		return true
-	else
-		return false
-	end
-end
 
 function q_printout(...)
 	log:info("L: %s", table.concat({...}, "\t"))
@@ -116,7 +105,6 @@ local function check_flags (flags)
 	end
 	util.printout = q_printout
 	util.printerr = q_printerr
-	fs.execute_string = fs_quiet_execute_string
 end
 
 local function restore_flags (flags)
@@ -128,7 +116,6 @@ local function restore_flags (flags)
 	end
 	util.printout = old_printout
 	util.printerr = old_printerr
-	fs.execute_string = old_execute_string
 end
 
 local manifests = {}

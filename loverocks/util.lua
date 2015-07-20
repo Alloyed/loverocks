@@ -78,9 +78,13 @@ function util.spit(o, dest)
 	end
 end
 
+function util.get_home()
+    return (os.getenv("HOME") or os.getenv("USERPROFILE"))
+end
+
 function util.clean_path(path)
 	if path:match("^%~/") then
-		path = path:gsub("^%~/", os.getenv("HOME") .. "/")
+		path = path:gsub("^%~/", util.get_home() .. "/")
 	end
 	if not path:match("^/") and not path:match("%./") then
 		path = lfs.currentdir()  .. "/" .. path

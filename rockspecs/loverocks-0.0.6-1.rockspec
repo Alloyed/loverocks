@@ -1,5 +1,5 @@
 package = "loverocks"
-version = "0.0.6-1.rockspec"
+version = "0.0.6-1"
 source = {
    url = "git://github.com/Alloyed/loverocks",
    tag = "v0.0.6"

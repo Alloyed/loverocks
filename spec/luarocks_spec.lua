@@ -25,4 +25,10 @@ describe("`loverocks lua`", function()
 		assert(s:match("Lua version: 5.1"), "version not 5.1")
 		assert(s:match("User%s+:%s+rocks/config.lua%s+%(ok%)"), "config not found")
 	end)
+
+	it("can be accessed via CLI", function()
+		assert.equal(0, lua:run {
+			arguments = { "--version" }
+		})
+	end)
 end)

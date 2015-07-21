@@ -15,15 +15,23 @@ Use `loverocks lua help` to find out more.]]
 end
 
 function lua:run(arg)
-	return util.luarocks(arg.arguments)
+	return lua.luarocks(arg.arguments)
 end
+
+local WIN_LROCKSTR = [[
+set LUAROCKS_CONFIG="rocks/config.lua"
+%s --tree "rocks" %s]]
 
 local LROCKSTR = [[
 LUAROCKS_CONFIG='rocks/config.lua' %s --tree='rocks' %s]]
 
 function lua.luarocks(a)
 	local argstr = table.concat(a, " ")
-	argstr = LROCKSTR:format(config('luarocks'), argstr)
+	if require('loverocks.os') == "windows" then
+		argstr = WIN_LROCKSTR:format(config('luarocks'), argstr)
+	else
+		argstr = LROCKSTR:format(config('luarocks'), argstr)
+	end
 	log:fs("%s", argstr)
 
 	local f = io.popen(argstr)

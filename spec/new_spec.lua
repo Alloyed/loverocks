@@ -30,6 +30,7 @@ describe("loverocks new", function()
 
 	it("gives deterministic results", function()
 		util.spit((util.slurp("my-project")), "my-projectB")
+		finally(function() assert(util.rm("my-projectB")) end)
 		assert(util.rm("my-project"))
 
 		New:run {
@@ -39,7 +40,6 @@ describe("loverocks new", function()
 		}
 
 		assert.same(util.slurp("my-project"), util.slurp("my-projectB"))
-		assert(util.rm("my-projectB"))
 	end)
 end)
 
@@ -52,10 +52,8 @@ describe("loverocks init", function()
 			template     = "love9",
 			love_version = "0.9.2",
 		}
-		--lfs.chdir("my-project")
 	end)
 	after_each(function()
-		--lfs.chdir("..")
 		assert(util.rm("my-project"))
 	end)
 

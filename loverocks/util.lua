@@ -56,8 +56,10 @@ end
 
 local function spit_dir(tbl, dest)
 	log:fs("mkdir %s", dest)
-	local ok, err = lfs.mkdir(dest)
-	if not ok and not err == 'File exists' then return nil, err end
+	if not util.is_dir(dest) then
+		local ok, err = lfs.mkdir(dest)
+		if not ok then return nil, err end
+	end
 
 	for f, s in pairs(tbl) do
 		if f ~= "." and f  ~= ".." then
@@ -155,33 +157,33 @@ end
 
 -- produce str with magic characters escaped, for pattern-building
 function util.escape_str(s)
-    return (s:gsub('[%-%.%+%[%]%(%)%$%^%%%?%*]','%%%1'))
+	return (s:gsub('[%-%.%+%[%]%(%)%$%^%%%?%*]','%%%1'))
 end
 
 function util.mkdir_p(directory)
-    directory = util.clean_path(directory)
-    local path = nil
-    if directory:sub(2, 2) == ":" then
-	path = directory:sub(1, 2)
-	directory = directory:sub(4)
-    else
-	if directory:match("^/") then
-	    path = ""
+	directory = util.clean_path(directory)
+	local path = nil
+	if directory:sub(2, 2) == ":" then
+		path = directory:sub(1, 2)
+		directory = directory:sub(4)
+	else
+		if directory:match("^/") then
+			path = ""
+		end
 	end
-    end
-    for d in directory:gmatch("([^".."/".."]+)".."/".."*") do
-	path = path and path .. "/" .. d or d
-	local mode = lfs.attributes(path, "mode")
-	if not mode then
-	    local ok, err = lfs.mkdir(path)
-	    if not ok then
-		return false, err
-	    end
-	elseif mode ~= "directory" then
-	    return false, path.." is not a directory"
-	end
-    end
-    return true
+	for d in directory:gmatch("([^".."/".."]+)".."/".."*") do
+		path = path and path .. "/" .. d or d
+		local mode = lfs.attributes(path, "mode")
+		if not mode then
+			local ok, err = lfs.mkdir(path)
+			if not ok then
+				return false, err
+			end
+			elseif mode ~= "directory" then
+				return false, path.." is not a directory"
+			end
+		end
+		return true
 end
 
 return util

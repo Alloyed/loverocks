@@ -22,13 +22,13 @@ describe("loverocks install", function()
 		assert(util.rm("my-project"))
 	end)
 
-	-- FIXME: make a local mirror so this test doesn't require internet access
 	it("Can install normal rocks", function()
 		finally(function()
 			lua.luarocks {"purge"}
 		end)
 		Install:run {
-			new_packages = {"inspect"}
+			new_packages = {"inspect"},
+			only_server = cwd .. "/test-repo"
 		}
 		assert(loadfile("rocks/share/lua/5.1/inspect.lua"))
 	end)

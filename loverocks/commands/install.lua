@@ -114,17 +114,8 @@ local function install_all(args)
 	else
 		rspec = assert(util.get_first(".", "%.rockspec$"))
 	end
-
-	local s = ("build --only-deps %s"):format(rspec)
-	if args.server then
-		s = ("%s --server=%q"):format(s, args.server)
-	end
-	if args.only_server then
-		s = ("%s --only-server=%q"):format(s, args.only_server)
-	end
 	
 	assert(api.build(rspec, nil, { quiet = true, only_deps = true, from = args.server, only_from = args.only_server }))
-	-- util.luarocks(s)
 end
 
 function install:run(args)

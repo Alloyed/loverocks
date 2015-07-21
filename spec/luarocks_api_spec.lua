@@ -7,6 +7,7 @@ describe("loverocks api", function()
 	setup(function()
 		local New = require 'loverocks.commands.new'
 		require 'spec.test_config'()
+		assert(util.is_dir("test-repo"))
 		New:run {
 			project      = "my-project",
 			template     = "love9",
@@ -21,13 +22,13 @@ describe("loverocks api", function()
 	end)
 
 	it("can search", function()
-		local pkg = api.search("inspect", "2.0-1")[1]
+		local pkg = api.search("inspect", "2.0-1", {only_from=cwd .. "/test-repo"})[1]
 		assert.equal("inspect", pkg.package)
 		assert.equal("2.0-1", pkg.version)
 	end)
 
 	it("can install/remove", function()
-		assert(api.install("inspect", "2.0-1", {}))
-		assert(api.remove("inspect", "2.0-1", {}))
+		assert(api.install("inspect", "2.0-1", {only_from=cwd .. "/test-repo"}))
+		assert(api.remove("inspect", "2.0-1", {only_from=cwd .. "/test-repo"}))
 	end)
 end)

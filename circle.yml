@@ -9,6 +9,11 @@ dependencies:
         - sudo luarocks install busted
     post:
         - sudo luarocks build loverocks-scm-0.rockspec --only-deps
+
+database:
+    override:
+        - wget http://alloyed.me/loverocks/loverocks-test-repo.zip
+        - unzip loverocks-test-repo.zip
 test:
     override:
         - mkdir -p $CIRCLE_TEST_REPORTS/junit

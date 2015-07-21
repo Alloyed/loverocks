@@ -20,9 +20,10 @@ and make sure the directory you installed to is in your ``$PATH`` and
 you should be good to go. If you don't have luarocks installed already,
 here are installation instructions for [Unix][U] and [Windows][W].
 
-As of 2015.5.30 It has only been tested on a Unix system, using Lua 5.1
-and luarocks 2.2.2. If you've gotten it working someplace else, tell me
-either with a github issue or by emailing <alloyed@tfwno.gf>.
+Linux is the primary development platform for loverocks. Windows seems
+to work, although the test suite still mostly fails, and I've heard that
+Mac OS seems to work as well. Any issue reports or patches /w/r/t
+porting would be greatly appreciated.
 
 [U]: https://github.com/keplerproject/luarocks/wiki/Installation-instructions-for-Unix
 [W]: https://github.com/keplerproject/luarocks/wiki/Installation-instructions-for-Windows
@@ -119,18 +120,11 @@ and LÖVERocks will automatically check that for you.
 Known Issues
 ------------
 
-* **LÖVERocks completely ignores C modules!** LÖVERocks is built on a
-  mantra of disabling anything you can't ship as-is. Since C modules
-  can't be loaded from a .love file, that means they need their own
-  packaging mechanism, which ATM is out of scope for LÖVERocks. If you
-  are okay with this state of affairs, you can work around the
-  restriction by manually including them in conf.lua:
+* Even though LÖVERocks can install native libraries, like for example
+  luafilesystem, there isn't a recommended way (yet) to package them
+  with your application. They are installed at `rocks/lib/lua/5.1/` if
+  you'd like to get your hands dirty.
 
-  ```lua
-  local os  = love._os or love.system.getOS()
-  local ext = os == "Windows" and ".dll" or ".so"
-  package.cpath = "rocks/lib/5.1/?.".. ext ..";" .. package.cpath
-  ```
 * LÖVERocks can only function with a luarocks that runs on lua
   5.1/luajit. We will try to find a suitable install of luarocks but if we
   can't find one, it's suggested you provide the name via the
@@ -147,6 +141,26 @@ Known Issues
       build = { type = 'none' }
   ```
   and it should stay happy.
+
+Testing
+-------
+LÖVERocks uses busted to test. Install it using
+
+```shell
+$ luarocks install busted
+```
+
+In addition, a mock luarocks repository is necessary to keep the tests
+from touching the network. use
+
+```shell
+$ ./example-rockspecs/make-test-repo.sh
+```
+
+to generate it. If the script is broken for you (sorry!) or you're on
+Windows, a [zipped repository][R] is also available.
+
+[R]: http://alloyed.me/loverocks/loverocks-test-repo.zip
 
 LICENSE
 -------

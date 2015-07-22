@@ -28,6 +28,7 @@ LUAROCKS_CONFIG='rocks/config.lua' %s --tree='rocks' %s]]
 function lua.luarocks(a)
 	local argstr = table.concat(a, " ")
 	if require('loverocks.os') == "windows" then
+		error("This command is not yet supported on windows, sorry~")
 		argstr = WIN_LROCKSTR:format(config('luarocks'), argstr)
 	else
 		argstr = LROCKSTR:format(config('luarocks'), argstr)

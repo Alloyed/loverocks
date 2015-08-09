@@ -14,7 +14,7 @@ local function loader(modname)
 	local modpath = modname:gsub('%.', '/')
 	for _, elem in ipairs(luarocks_paths) do
 		elem = elem:gsub('%?', modpath)
-		if love.filesystem.exists(elem) then
+		if love.filesystem.isFile(elem) then
 			return love.filesystem.load(elem)
 		end
 	end

@@ -6,14 +6,22 @@ local install = {}
 
 function install:build(parser)
 	parser:description
-		"Installs all packages listed as dependencies."
-	parser:argument "new_packages"
-		:args("*")
+		"Installs a package manually."
+	parser:argument "packages"
+		:args("+")
 		:description
-			"If included, adds new_packages to rockspec as well."
+			"The packages to install."
+	-- FIXME: merge -a and -r
+	parser:flag  "-a" "--add-to-rockspec"
+		:description
+			"Add packages to rockspec during install."
 	parser:option "-r" "--rockspec"
 		:description
 			"The path to the rockspec file."
+	parse:flag "--only-deps"
+		:description(
+			"Only install the packages dependencies. "..
+			"Analogous to apt-get build-dep.")
 	parser:option "-s" "--server"
 		:description
 			"Fetch rocks/rockspecs from this server as a priority."
@@ -107,22 +115,17 @@ local function add_deps(args)
 		table.concat(to_install, ", "))
 end
 
-local function install_all(args)
-	local rspec
-	if args.rockspec then
-		rspec = ("%q"):format(args.rockspec)
-	else
-		rspec = assert(util.get_first(".", "%.rockspec$"))
-	end
-	
-	assert(api.build(rspec, nil, { quiet = true, only_deps = true, from = args.server, only_from = args.only_server }))
-end
-
 function install:run(args)
-	if #args.new_packages > 0 then
+	for _, pkg in ipairs(args.packages) do
+		api.install(pkg, nil, {
+			quiet      = false,
+			from      = args.server,
+			only_from = args.only_server,
+		})
+	end
+	if args.add_to_rockspec then
 		add_deps(args)
 	end
-	install_all(args)
 end
 
 return install

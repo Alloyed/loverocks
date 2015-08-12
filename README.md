@@ -78,7 +78,7 @@ to use dkjson in your project. To install it, all you need to do is add
 to your dependencies list in `my-project-scm-1.rockspec`, and run
 
 ```shell
-$ loverocks install
+$ loverocks deps
 ```
 
 Now you have the latest possible version of dkjson 2, bugfixes included.
@@ -93,8 +93,8 @@ are stored locally, and external modules are explicitly disabled, you
 can continue packaging your game the way you always have:
 
 ```shell
-$ loverocks lua purge
-$ loverocks install
+$ loverocks purge
+$ loverocks deps
 $ zip -r my-project.love *
 ```
 

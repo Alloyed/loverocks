@@ -27,7 +27,7 @@ describe("loverocks install", function()
 			lua.luarocks {"purge"}
 		end)
 		Install:run {
-			new_packages = {"inspect"},
+			packages = {"inspect"},
 			only_server = cwd .. "/test-repo"
 		}
 		assert(loadfile("rocks/share/lua/5.1/inspect.lua"))

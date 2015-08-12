@@ -1,7 +1,6 @@
 --- Injects luarocks modules installed at ./rocks into your love game.
 --  See http://github.com/Alloyed/loverocks for details
 --  (c) Kyle McLamb, 2015 <alloyed@tfwno.gf>, MIT License.
---  TODO: Configurable prefixes
 
 local luarocks_paths = {
 	"rocks/share/lua/5.1/?.lua",
@@ -29,12 +28,21 @@ local function c_loader(mod_name)
 
 	for _, elem in ipairs(luarocks_cpaths) do
 		elem = elem:gsub('%?', file)
+
 		local real_dir = love.filesystem.getRealDirectory(elem)
 		if real_dir then
-			local path = real_dir .. "/" .. elem
+			-- this duplicates binaries needlessly, eg. if a dll is in the same
+			-- directory as the exe, it'll get copied to the save dir anyways.
+			-- Since I can't find way to tell a real file from a zipped file,
+			-- this'll have to do.
+			if real_dir ~= love.filesystem.getSaveDirectory() then
+				love.filesystem.write(elem, love.filesystem.read(elem))
+			end
+
+			local path = save_dir .. "/" .. elem
 			return package.loadlib(path, "loveopen_" .. fn) or
 			       package.loadlib(path, "luaopen_" .. fn)
-		end
+	   end
 		return"\n\tno library '" .. file .. "' in LOVERocks path."
 	end
 end

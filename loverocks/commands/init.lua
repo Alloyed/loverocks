@@ -97,7 +97,10 @@ local function is_empty(t)
 end
 
 function init:run(args)
-	local path    = args.path or lfs.current_dir()
+	local path = args.path
+	if not path or path == "." then
+		path = lfs.current_dir()
+	end
 	local project = args.project or path:match("/([^/]+)$") or path
 	local env = template.new_env(project, args.love_version)
 
@@ -109,7 +112,7 @@ function init:run(args)
 
 	if util.is_dir(path .. "/rocks") then
 		local cfg = {}
-		if util.exists(path .. "/rocks/init.lua") and config:open(path .. "/rocks/config.lua", cfg) then
+		if util.exists(path .. "/rocks/init.lua") and config.open(path .. "/rocks/config.lua", cfg) then
 			local old_ver = cfg.loverocks and cfg.loverocks.version
 			local new_ver = require 'loverocks.version'
 			if not old_ver or newer(new_ver, old_ver) then

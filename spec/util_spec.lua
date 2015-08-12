@@ -21,11 +21,42 @@ describe("util", function()
 			dirA = {
 				fileC = "DCBA",
 				fileB = "wwww",
+				dirB = {
+					fileD = "ADS",
+					fileE = "ASD",
+				}
+			}
+		}
+		assert(util.spit(data, out))
+		assert.same(data, util.slurp(out))
+		assert(util.rm(out))
+		assert.falsy(util.is_dir(out))
+	end)
+
+	it("can list directories #atm", function()
+		local out  = "lr"
+		local data = {
+			fileA = "",
+			fileB = "ABCD",
+			dirA = {
+				fileC = "DCBA",
+				fileB = "wwww",
+				dirB = {
+					fileD = "ADS",
+					fileE = "ASD",
+				}
 			}
 		}
 
 		assert(util.spit(data, out))
-		assert.same(data, util.slurp(out))
+		assert.same({
+			"lr/fileB",
+			"lr/dirA/fileB",
+			"lr/dirA/fileC",
+			"lr/dirA/dirB/fileE",
+			"lr/dirA/dirB/fileD",
+			"lr/fileA"
+		}, util.files(out))
 		assert(util.rm(out))
 		assert.falsy(util.is_dir(out))
 	end)

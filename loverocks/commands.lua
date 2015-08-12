@@ -9,6 +9,7 @@ local cnames = {
 	"purge",
 	"lua",
 	"help",
+	"pack",
 }
 
 local commands = {}

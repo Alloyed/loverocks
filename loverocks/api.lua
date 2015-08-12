@@ -74,8 +74,6 @@ end
 
 local old_printout, old_printerr = util.printout, util.printerr
 local path_sep = package.config:sub(1, 1)
-local log_dir = path_sep=='\\' and os.getenv('TEMP') or '/tmp'
-local log_name = log_dir..path_sep..'luarocks-api-log.txt'
 
 function q_printout(...)
 	log:info("L: %s", table.concat({...}, "\t"))
@@ -92,7 +90,7 @@ local function check_flags (flags)
 	use_tree(cwd .. "/rocks")
 	if not project_cfg then
 		project_cfg = {}
-		lcfg:open(cwd .. "/rocks/config.lua", project_cfg)
+		lcfg.open(cwd .. "/rocks/config.lua", project_cfg)
 		api.apply_config(project_cfg)
 	end
 

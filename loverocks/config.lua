@@ -20,7 +20,7 @@ else
 	log:error("No appropriate config file path found.")
 end
 
-function config:open(fname, env)
+function config.open(fname, env)
 	local fn
 	if setfenv then -- lua 5.1
 		fn, err = loadfile(fname)
@@ -36,7 +36,7 @@ end
 
 local function apply_config(self, path)
 	self.CONFIG = {}
-	self:open(path, self.CONFIG)
+	self.open(path, self.CONFIG)
 	if self.CONFIG.luarocks == nil then
 		log:error("Config file %q must have field 'luarocks'", path)
 	end

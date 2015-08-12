@@ -80,6 +80,38 @@ function util.spit(o, dest)
 	end
 end
 
+local function ls_dir(dir)
+	local t = {}
+	for f in lfs.dir(dir) do
+		if f ~= "." and f  ~= ".." then
+			local r = util.files(dir .. "/" .. f)
+			if type(r) == 'table' then
+				for _, f in ipairs(r) do
+					table.insert(t, f)
+				end
+			else
+				table.insert(t, r)
+			end
+		end
+	end
+	return t
+end
+
+local function ls_file(path)
+	return path
+end
+
+function util.files(path)
+	local ftype, err = lfs.attributes(path, 'mode')
+	if ftype == 'directory' then
+		return ls_dir(path)
+	elseif ftype then
+		return ls_file(path)
+	else
+		return nil, err
+	end
+end
+
 function util.get_home()
     return (os.getenv("HOME") or os.getenv("USERPROFILE"))
 end

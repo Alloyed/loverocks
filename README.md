@@ -154,13 +154,20 @@ In addition, a mock luarocks repository is necessary to keep the tests
 from touching the network. use
 
 ```shell
-$ ./example-rockspecs/make-test-repo.sh
+$ git clone https://github.com/alloyed/loverocks-repo
+$ ./loverocks-repo/make-test-repo.sh
 ```
 
 to generate it. If the script is broken for you (sorry!) or you're on
 Windows, a [zipped repository][R] is also available.
 
 [R]: http://alloyed.me/loverocks/loverocks-test-repo.zip
+
+To use it:
+```shell
+$ wget http://alloyed.me/loverocks/loverocks-test-repo.zip
+$ unzip loverocks-test-repo.zip
+```
 
 LICENSE
 -------

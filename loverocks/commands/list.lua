@@ -1,5 +1,6 @@
 local log = require 'loverocks.log'
 local util = require 'loverocks.util'
+local api  = require 'loverocks.api'
 local list = {}
 
 function list:build(parser)
@@ -12,7 +13,9 @@ function list:build(parser)
 end
 
 function list:run(args)
-	util.luarocks("list")
+	local flags = {}
+	if args.outdated then flags.outdated = true end
+	api.list(table.concat(args.filter, " "), nil, flags)
 end
 
 return list

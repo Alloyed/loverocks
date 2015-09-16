@@ -48,15 +48,23 @@ describe("util", function()
 			}
 		}
 
+		local function set(a)
+			local t = {}
+			for _, n in ipairs(a) do
+				t[n] = true
+			end
+			return t
+		end
+
 		assert(util.spit(data, out))
-		assert.same({
+		assert.same(set {
 			"lr/fileB",
 			"lr/dirA/fileB",
 			"lr/dirA/fileC",
 			"lr/dirA/dirB/fileE",
 			"lr/dirA/dirB/fileD",
 			"lr/fileA"
-		}, util.files(out))
+		}, set(util.files(out)))
 		assert(util.rm(out))
 		assert.falsy(util.is_dir(out))
 	end)

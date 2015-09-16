@@ -1,5 +1,6 @@
 local util = require 'loverocks.util'
 local log = require 'loverocks.log'
+local api = require 'loverocks.api'
 local purge = {}
 
 function purge:build(parser)
@@ -7,7 +8,7 @@ function purge:build(parser)
 end
 
 function purge:run(args)
-	util.luarocks("purge")
+	log:assert(api.purge())
 end
 
 return purge

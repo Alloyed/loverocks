@@ -18,7 +18,7 @@ function install:build(parser)
 	parser:option "-r" "--rockspec"
 		:description
 			"The path to the rockspec file."
-	parse:flag "--only-deps"
+	parser:flag "--only-deps"
 		:description(
 			"Only install the packages dependencies. "..
 			"Analogous to apt-get build-dep.")
@@ -117,11 +117,15 @@ end
 
 function install:run(args)
 	for _, pkg in ipairs(args.packages) do
-		api.install(pkg, nil, {
+		log:info("Installing %s", pkg)
+		local ok, err = api.install(pkg, nil, {
 			quiet      = false,
 			from      = args.server,
 			only_from = args.only_server,
 		})
+		if not ok then
+			log:error(err)
+		end
 	end
 	if args.add_to_rockspec then
 		add_deps(args)

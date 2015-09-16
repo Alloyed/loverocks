@@ -378,7 +378,7 @@ function api.install(name, version, flags)
 	flags = flags or {}
 	check_flags(flags)
 
-	log:fs("luarocks install %s %s", name, version)
+	log:fs("luarocks install %s %s", name or "", version or "")
 	local ok, err = _install.run(name, version)
 	restore_flags(flags)
 	return ok, err

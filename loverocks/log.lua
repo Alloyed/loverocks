@@ -3,6 +3,7 @@ local log = {}
 log.use = {
 	fs = false,     -- print filesystem events
 	warning = true, -- print warnings
+	error = true,   -- print errors
 	info = true,    -- print info text/dialogs
 	ask = true,     -- ask for confirmation
 }

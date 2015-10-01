@@ -1,7 +1,6 @@
 local log = require 'loverocks.log'
 local versions = require 'loverocks.love-versions'
 local etlua = require 'etlua'
-local config = require 'loverocks.config'
 local util = require 'loverocks.util'
 
 local template = {}
@@ -45,16 +44,7 @@ function template.apply(files, env)
 end
 
 function template.path(name)
-	local override = config("loverocks_templates")
-	if override then
-		override = override .. "/" .. name
-		local f, err = io.open(override)
-		if f then
-			return override
-		end
-	end
-
-	if config('os') == "unix" then
+	if require 'loverocks.os' == "unix" then
 		return util.dpath("templates/" .. name)
 	else
 		-- hack to avoid datafile's inability to resolve directories on windows

@@ -1,5 +1,4 @@
 local log = require 'loverocks.log'
-local config = require 'loverocks.config'
 local template = require 'loverocks.template'
 local util = require 'loverocks.util'
 

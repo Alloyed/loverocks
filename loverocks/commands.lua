@@ -8,7 +8,6 @@ local cnames = {
 	"list",
 	"search",
 	"purge",
-	"lua",
 	"help",
 	"pack",
 }

@@ -8,7 +8,6 @@ description = {
 	license = "*** please specify a license ***"
 }
 dependencies = {
-	"lua ~> 5.1",
-	<%- depstring(versions.love) %>
+	"lua ~> 5.1"
 }
 build = { type = "none" }

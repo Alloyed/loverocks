@@ -35,7 +35,6 @@ build = {
       ["loverocks.commands"]         = "loverocks/commands.lua",
       ["loverocks.commands.init"]    = "loverocks/commands/init.lua",
       ["loverocks.commands.new"]     = "loverocks/commands/new.lua",
-      ["loverocks.commands.lua"]     = "loverocks/commands/lua.lua",
       ["loverocks.commands.install"] = "loverocks/commands/install.lua",
       ["loverocks.commands.deps"]    = "loverocks/commands/deps.lua",
       ["loverocks.commands.help"]    = "loverocks/commands/help.lua",

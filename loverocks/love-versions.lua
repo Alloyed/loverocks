@@ -51,4 +51,30 @@ local function get_versions_for(v)
 	return versions[v] or versions[STABLE]
 end
 
-return setmetatable({get = get_versions_for}, {__call = get_versions_for})
+local function parse_conf(body)
+	local s = body:match([[version%s*=%s*(%b"")]]) or
+	          body:match([[version%s*=%s*(%b'')]])
+	if not s then
+		return nil, "could not find LOVE version in conf.lua"
+	end
+	return s:sub(2, -2)
+end
+
+local function add_version_info(fname, cfg)
+	local version = STABLE
+	local f = io.open(fname, 'r')
+	if f then
+		local fbody = f:read('*a')
+		version = log:assert(parse_conf(fbody))
+	end
+
+	log:verbose("Providing LOVE v%s", version)
+	cfg.rocks_provided = versions[version]
+	assert(cfg.rocks_provided)
+	return true
+end
+
+return setmetatable({
+	get = get_versions_for,
+	add_version_info = add_version_info,
+}, {__call = get_versions_for})

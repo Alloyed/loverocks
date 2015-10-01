@@ -32,6 +32,7 @@ local list = require("luarocks.list")
 
 local log = require 'loverocks.log'
 local lcfg = require 'loverocks.config'
+local versions = require 'loverocks.love-versions'
 
 local function version_iter (versions)
 	return util.sortedpairs(versions, deps.compare_versions)
@@ -92,6 +93,7 @@ local function check_flags (flags)
 	if not project_cfg then
 		project_cfg = {}
 		lcfg.open(cwd .. "/rocks/config.lua", project_cfg)
+		versions.add_version_info(cwd .. "/conf.lua", project_cfg)
 		api.apply_config(project_cfg)
 	end
 

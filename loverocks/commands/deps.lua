@@ -24,10 +24,10 @@ local function deps_all(args)
 	if args.rockspec then
 		rspec = ("%q"):format(args.rockspec)
 	else
-		rspec = assert(util.get_first(".", "%.rockspec$"))
+		rspec = log:assert(util.get_first(".", "%.rockspec$"))
 	end
 	
-	assert(api.build(rspec, nil, {
+	log:assert(api.build(rspec, nil, {
 		quiet = false,
 		only_deps = true,
 		from = args.server,

@@ -1,7 +1,7 @@
 local lfs = require 'lfs'
 
 local util = require 'loverocks.util'
-local lua  = require 'loverocks.commands.lua'
+local purge  = require 'loverocks.commands.purge'
 
 local cwd = lfs.currentdir()
 describe("loverocks install", function()
@@ -24,12 +24,12 @@ describe("loverocks install", function()
 
 	it("Can install normal rocks", function()
 		finally(function()
-			lua.luarocks {"purge"}
+			purge:run()
 		end)
 		Install:run {
 			packages = {"inspect"},
 			only_server = cwd .. "/test-repo"
 		}
-		assert(loadfile("rocks/share/lua/5.1/inspect.lua"))
+		assert.equal(type(loadfile("rocks/share/lua/5.1/inspect.lua")()), 'table')
 	end)
 end)

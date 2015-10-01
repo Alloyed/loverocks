@@ -1,24 +1,12 @@
 local argparse = require 'loverocks.argparse'
 local commands = require 'loverocks.commands'
-local config   = require 'loverocks.config'
 local log      = require 'loverocks.log'
-
-local config_msg = [[
-Configuration:
-
-   luarocks: %s
-   loverocks config: %s
-]]
 
 local function main(...)
 	local version = "Loverocks " .. (require 'loverocks.version')
 
-	config:load()
 	local parser = argparse "loverocks" {
 		description = version .. ", a wrapper to make luarocks and love play nicely.",
-		epilog = string.format(config_msg,
-		                       config('luarocks'),
-		                       config('loverocks_config'))
 	}
 	local help = commands.modules.help
 	help:add_command("main", parser)

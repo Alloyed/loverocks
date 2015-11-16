@@ -125,15 +125,6 @@ Known Issues
   with your application. They are installed at `rocks/lib/lua/5.1/` if
   you'd like to get your hands dirty.
 
-* LÖVERocks can only function with a luarocks that runs on lua
-  5.1/luajit. We will try to find a suitable install of luarocks but if we
-  can't find one, it's suggested you provide the name via the
-  `$HOME/.config/loverocks/conf.lua` file:
-
- ```lua
- luarocks = "/usr/bin/my-luarocks-command"
- ```
-
 * Luarocks always expects a build configuration table, even if you don't
   plan on building with it. Use the null build type:
 

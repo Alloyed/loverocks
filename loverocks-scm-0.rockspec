@@ -42,6 +42,8 @@ build = {
       ["loverocks.commands.purge"]   = "loverocks/commands/purge.lua",
       ["loverocks.commands.search"]  = "loverocks/commands/search.lua",
       ["loverocks.commands.pack"]    = "loverocks/commands/pack.lua",
+      ["loverocks.commands.modules"] = "loverocks/commands/modules.lua",
+      ["loverocks.module_data"]      = "loverocks/module_data.lua",
       ["loverocks.argparse"]         = "loverocks/argparse.lua",
       ["loverocks.api"]              = "loverocks/api.lua",
    },

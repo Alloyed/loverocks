@@ -99,7 +99,7 @@ end
 function init:run(args)
 	local path = args.path
 	if not path or path == "." then
-		path = lfs.current_dir()
+		path = lfs.currentdir()
 	end
 	local project = args.project or path:match("/([^/]+)$") or path
 	local env = template.new_env(project, args.love_version)

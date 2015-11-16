@@ -10,6 +10,7 @@ local cnames = {
 	"purge",
 	"help",
 	"pack",
+	"modules",
 }
 
 local commands = {}

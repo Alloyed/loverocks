@@ -22,6 +22,7 @@ local function loader(modname)
 end
 
 local function c_loader(mod_name)
+	if not love.system then return "\n\tCannot load native modules, love.system not initialized." end
 	local ext = love.system.getOS() == 'windows' and ".dll" or ".so"
 	local file = mod_name:gsub("%.", "/") .. ext
 	local fn   = mod_name:gsub("%.", "_")

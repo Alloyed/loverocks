@@ -87,12 +87,11 @@ end
 
 local project_cfg = nil
 local cwd = nil
-local function check_flags (flags)
+local function check_flags(flags)
 	cwd = fs.current_dir()
 	use_tree(cwd .. "/rocks")
 	if not project_cfg then
 		project_cfg = {}
-		lcfg.open(cwd .. "/rocks/config.lua", project_cfg)
 		versions.add_version_info(cwd .. "/conf.lua", project_cfg)
 		api.apply_config(project_cfg)
 	end
@@ -214,6 +213,31 @@ function api.build(name, version, flags)
 	log:fs("luarocks build %s %s", name, table.concat(f, " "))
 	local ok, err = build.run(name, unpack(f))
 	restore_flags(flags)
+	return ok, err
+end
+
+
+--- Attempt to fulfill dependencies table
+-- @param deps A list of dependency strings
+function api.deps(name, depstrings, flags)
+	assert(type(name) == 'string')
+	local _deps = require 'luarocks.deps'
+	flags = flags or {}
+	check_flags(flags)
+
+	local parsed_deps = {}
+	for _, s in ipairs(depstrings) do
+		table.insert(parsed_deps, _deps.parse_dep(s))
+	end
+
+	local ok, err = _deps.fulfill_dependencies({
+		name = name,
+		version = "",
+		dependencies = parsed_deps
+	}, "one")
+
+	restore_flags(flags)
+
 	return ok, err
 end
 

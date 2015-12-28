@@ -43,7 +43,7 @@ local function c_loader(mod_name)
 			local path = save_dir .. "/" .. elem
 			return package.loadlib(path, "loveopen_" .. fn) or
 			       package.loadlib(path, "luaopen_" .. fn)
-	   end
+		end
 		return"\n\tno library '" .. file .. "' in LOVERocks path."
 	end
 end

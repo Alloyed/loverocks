@@ -9,17 +9,12 @@ local function raw_version(s)
 	return string.format("%q", s:gsub("-1$", ""))
 end
 
-local function depstring(s)
-	return ("\"love ~> %s\""):format(s:match("%d+.%d+"))
-end
-
 function template.new_env(name, v)
 	return {
 		project_name = name,
 		versions = versions.get(v),
 		raw_version = raw_version,
 		loverocks_version = require 'loverocks.version',
-		depstring = depstring,
 	}
 end
 

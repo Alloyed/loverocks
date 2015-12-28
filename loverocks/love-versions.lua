@@ -1,5 +1,6 @@
 local util = require 'loverocks.util'
 local log = require 'loverocks.log'
+local loadconf = require 'loadconf'
 
 -- FIXME: non-love version numbers are pretty much made up
 -- FIXME: Add the luajit rocks-provided modules too
@@ -62,11 +63,9 @@ end
 
 local function add_version_info(fname, cfg)
 	local version = STABLE
-	local f = io.open(fname, 'r')
-	if f then
-		local fbody = f:read('*a')
-		version = log:assert(parse_conf(fbody))
-	end
+	local conf = log:assert(loadconf.parse_file(fname))
+	log:assert(type(conf.version) == 'string', "t.version not found")
+	version = conf.version
 
 	log:verbose("Providing LOVE v%s", version)
 	cfg.rocks_provided = versions[version]

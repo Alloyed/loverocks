@@ -1,4 +1,5 @@
 local log = require 'loverocks.log'
+local luarocks = require 'luarocks.deps'
 local api = require 'loverocks.api'
 local loadconf = require 'loadconf'
 
@@ -21,10 +22,23 @@ function deps:run(args)
 		log:error("please add a dependency table to your conf.lua FIXME: better error")
 	end
 
-	log:assert(api.deps(conf.identity or "LOVE_GAME", conf.dependencies, {
-		from = args.server,
-		only_from = args.only_server
-	}))
+	local name = conf.identity or "LOVE_GAME"
+	assert(type(name) == 'string')
+	local parsed_deps = {}
+	for _, s in ipairs(conf.dependencies) do
+		table.insert(parsed_deps, luarocks.parse_dep(s))
+	end
+	local flags = { from = args.server, only_from = args.only_server }
+
+	api.check_flags(flags)
+
+	log:assert(luarocks.fulfill_dependencies({
+		name = name,
+		version = "",
+		dependencies = parsed_deps
+	}, "one"))
+
+	api.restore_flags(flags)
 
 	print("Dependencies installed succesfully!")
 end

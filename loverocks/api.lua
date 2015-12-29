@@ -26,6 +26,7 @@ local _remove = require("luarocks.remove")
 local purge = require("luarocks.purge")
 local list = require("luarocks.list")
 
+local T = require 'schema'
 local log = require 'loverocks.log'
 local versions = require 'loverocks.love-versions'
 
@@ -45,12 +46,16 @@ end
 local cfg = require("luarocks.cfg")
 
 function api.apply_config(new)
+	T(new, 'table')
+
 	-- idea: instead of copying-in, we make package.preload["luarocks.cfg"]
 	-- a mock table, and then push in and out prototypes to apply the config.
 	copy(new, cfg)
 end
 
 local function use_tree(tree)
+	T(tree, 'string')
+
 	cfg.root_dir = tree
 	cfg.rocks_dir = path.rocks_dir(tree)
 	cfg.rocks_trees = { "rocks" }
@@ -73,6 +78,8 @@ end
 local project_cfg = nil
 local cwd = nil
 local function check_flags(flags)
+	T(flags, 'table')
+
 	cwd = fs.current_dir()
 	use_tree(cwd .. "/rocks")
 	if not project_cfg then
@@ -94,7 +101,8 @@ end
 
 api.check_flags = check_flags
 
-local function restore_flags (flags)
+local function restore_flags(flags)
+	T(flags, 'table')
 	assert(lfs.chdir(cwd))
 	if flags.from then
 		table.remove(cfg.rocks_servers, 1)

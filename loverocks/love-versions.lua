@@ -53,6 +53,9 @@ local function get_versions_for(v)
 end
 
 local function add_version_info(fname, cfg)
+	T(fname, 'string')
+	T(cfg, 'table')
+
 	local conf = log:assert(loadconf.parse_file(fname))
 	log:assert(type(conf.version) == 'string', "t.version not found")
 	local version = conf.version

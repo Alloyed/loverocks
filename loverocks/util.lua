@@ -1,5 +1,6 @@
 local lfs      = require 'lfs'
 local datafile = require 'datafile'
+local T        = require 'schema'
 
 local log    = require 'loverocks.log'
 
@@ -26,10 +27,14 @@ local function slurp_dir(dir)
 end
 
 function util.is_dir(path)
+	T(path, 'string')
+
 	return lfs.attributes(path, 'mode') == 'directory'
 end
 
 function util.slurp(path)
+	T(path, 'string')
+
 	local ftype, err = lfs.attributes(path, 'mode')
 	if ftype == 'directory' then
 		return slurp_dir(path)
@@ -74,6 +79,9 @@ end
 
 -- Keep getting the argument order mixed up
 function util.spit(o, dest)
+	T(o, T.sum('table', 'string'))
+	T(dest, 'string')
+
 	if type(o) == 'table' then
 		return spit_dir(o, dest)
 	else
@@ -103,6 +111,8 @@ local function ls_file(path)
 end
 
 function util.files(path)
+	T(path, 'string')
+
 	local ftype, err = lfs.attributes(path, 'mode')
 	if ftype == 'directory' then
 		return ls_dir(path)
@@ -118,6 +128,8 @@ function util.get_home()
 end
 
 function util.clean_path(path)
+	T(path, 'string')
+
 	if path:match("^%~/") then
 		path = path:gsub("^%~/", util.get_home() .. "/")
 	end
@@ -128,6 +140,8 @@ function util.clean_path(path)
 end
 
 function util.rm(path)
+	T(path, 'string')
+
 	local ftype, ok, err
 	log:fs("rm -r %s", path)
 	ftype, err = lfs.attributes(path, 'mode')
@@ -147,6 +161,8 @@ function util.rm(path)
 end
 
 function util.exists(path)
+	T(path, 'string')
+
 	local f, err = io.open(path, 'r')
 	if f then
 		f:close()
@@ -157,6 +173,8 @@ end
 
 -- a replacement datafile.path()
 function util.dpath(resource)
+	T(resource, 'string')
+
 	-- for some reason datafile.path doesn't work
 	local tmpfile, path = datafile.open(resource, 'r')
 	local err = path
@@ -171,6 +189,9 @@ end
 
 -- get first file matching pat
 function util.get_first(path, pat)
+	T(path, 'string')
+	T(pat, 'string')
+
 	local ftype = lfs.attributes(path, 'mode')
 	assert(ftype == 'directory', tostring(path) .. " is not a directory")
 	for f in lfs.dir(path) do
@@ -183,6 +204,8 @@ end
 
 -- like io.popen, but returns a string instead of a file
 function util.stropen(cli)
+	T(cli, 'string')
+
 	local f = io.popen(cli, 'r')
 	local s = f:read('*a')
 	f:close()
@@ -195,6 +218,8 @@ function util.escape_str(s)
 end
 
 function util.mkdir_p(directory)
+	T(directory, 'string')
+
 	directory = util.clean_path(directory)
 	local path = nil
 	if directory:sub(2, 2) == ":" then
@@ -213,11 +238,11 @@ function util.mkdir_p(directory)
 			if not ok then
 				return false, err
 			end
-			elseif mode ~= "directory" then
-				return false, path.." is not a directory"
-			end
+		elseif mode ~= "directory" then
+			return false, path.." is not a directory"
 		end
-		return true
+	end
+	return true
 end
 
 return util

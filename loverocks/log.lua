@@ -42,7 +42,7 @@ end
 
 function log:assert(ok, ...)
 	if not ok then
-		log:error("%s", ...)
+		self:error("%s", ...)
 	end
 	return ok, ...
 end
@@ -67,7 +67,7 @@ end
 
 function log:ask(...)
 	if self.use.info == false then
-		return function(default) return true end
+		return function() return true end
 	end
 	local outstr = string.format(...) .. " "
 

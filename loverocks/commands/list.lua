@@ -1,5 +1,3 @@
-local log = require 'loverocks.log'
-local util = require 'loverocks.util'
 local api  = require 'loverocks.api'
 local list = {}
 

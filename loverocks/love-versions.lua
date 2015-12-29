@@ -52,22 +52,11 @@ local function get_versions_for(v)
 	return versions[v] or versions[STABLE]
 end
 
-local function parse_conf(body)
-	local s = body:match([[version%s*=%s*(%b"")]]) or
-	          body:match([[version%s*=%s*(%b'')]])
-	if not s then
-		return nil, "could not find LOVE version in conf.lua"
-	end
-	return s:sub(2, -2)
-end
-
 local function add_version_info(fname, cfg)
-	local version = STABLE
 	local conf = log:assert(loadconf.parse_file(fname))
 	log:assert(type(conf.version) == 'string', "t.version not found")
-	version = conf.version
+	local version = conf.version
 
-	log:verbose("Providing LOVE v%s", version)
 	cfg.rocks_provided = versions[version]
 	assert(cfg.rocks_provided)
 	return true

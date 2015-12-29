@@ -18,7 +18,7 @@ function new:build(parser)
 		:description "the name of the project"
 end
 
-function is_valid_name(s) -- TODO
+local function is_valid_name(s) -- TODO
 	return true
 end
 

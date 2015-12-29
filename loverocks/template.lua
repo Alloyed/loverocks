@@ -47,7 +47,6 @@ function template.path(name)
 		if path then return path:gsub("%/%.gitignore", "") end
 		return nil, err
 	end
-
 end
 
 return template

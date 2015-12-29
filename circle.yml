@@ -17,4 +17,4 @@ database:
 test:
     override:
         - mkdir -p $CIRCLE_TEST_REPORTS/junit
-        - busted -o junit > $CIRCLE_TEST_REPORTS/junit/tests.xml
+        - LR_QUIET=1 busted -o junit > $CIRCLE_TEST_REPORTS/junit/tests.xml

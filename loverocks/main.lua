@@ -16,7 +16,7 @@ local function main(...)
 		local cmd_parser = parser:command(name)
 
 		help:add_command(name, cmd_parser)
-		cmd:build(cmd_parser)
+		cmd.build(cmd_parser)
 	end
 
 	parser:flag "--version"
@@ -45,7 +45,7 @@ local function main(...)
 
 	for name, cmd in pairs(commands.modules) do
 		if B[name] then
-			return cmd:run(B)
+			return cmd.run(B)
 		end
 	end
 end

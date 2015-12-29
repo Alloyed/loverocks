@@ -41,14 +41,15 @@ function util.slurp(path)
 end
 
 local function spit_file(str, dest)
+	local file, ok, err
 	log:fs("spit  %s", dest)
-	local file, err = io.open(dest, "w")
+	file, err = io.open(dest, "w")
 	if not file then return nil, err end
 
-	local ok, err = file:write(str)
+	ok, err = file:write(str)
 	if not ok then return nil, err end
 
-	local ok, err = file:close()
+	ok, err = file:close()
 	if not ok then return nil, err end
 
 	return true
@@ -82,15 +83,15 @@ end
 
 local function ls_dir(dir)
 	local t = {}
-	for f in lfs.dir(dir) do
-		if f ~= "." and f  ~= ".." then
-			local r = util.files(dir .. "/" .. f)
-			if type(r) == 'table' then
-				for _, f in ipairs(r) do
-					table.insert(t, f)
+	for entry in lfs.dir(dir) do
+		if entry ~= "." and entry  ~= ".." then
+			local file_or_dir = util.files(dir .. "/" .. entry)
+			if type(file_or_dir) == 'table' then
+				for _, file in ipairs(file_or_dir) do
+					table.insert(t, file)
 				end
 			else
-				table.insert(t, r)
+				table.insert(t, file_or_dir)
 			end
 		end
 	end
@@ -127,15 +128,16 @@ function util.clean_path(path)
 end
 
 function util.rm(path)
+	local ftype, ok, err
 	log:fs("rm -r %s", path)
-	local ftype, err = lfs.attributes(path, 'mode')
+	ftype, err = lfs.attributes(path, 'mode')
 	if not ftype then return nil, err end
 
 	if ftype == 'directory' then
 		for f in lfs.dir(path) do
 			if f ~= "." and f  ~= ".." then
 				local fp = path .. "/" .. f
-				local ok, err = util.rm(fp)
+				ok, err = util.rm(fp)
 				if not ok then return nil, err end
 			end
 		end

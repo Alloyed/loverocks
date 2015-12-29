@@ -1,8 +1,6 @@
-local util = require 'loverocks.util'
 local log = require 'loverocks.log'
 local api = require 'loverocks.api'
 local loadconf = require 'loadconf'
-local _deps = require 'luarocks.deps'
 
 local deps = {}
 
@@ -17,10 +15,7 @@ function deps:build(parser)
 			"Fetch rocks/rockspecs from this server, ignoring other servers."
 end
 
-
-local function deps_all(args)
-	local rspec
-
+function deps:run(args)
 	local conf = log:assert(loadconf.parse_file("./conf.lua"))
 	if not conf.dependencies then
 		log:error("please add a dependency table to your conf.lua FIXME: better error")
@@ -32,10 +27,6 @@ local function deps_all(args)
 	}))
 
 	print("Dependencies installed succesfully!")
-end
-
-function deps:run(args)
-	deps_all(args)
 end
 
 return deps

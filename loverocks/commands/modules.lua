@@ -1,6 +1,5 @@
+local lfs = require 'lfs'
 local util = require 'loverocks.util'
-local log = require 'loverocks.log'
-local api = require 'loverocks.api'
 
 local modules = {}
 

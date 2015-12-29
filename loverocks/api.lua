@@ -15,23 +15,19 @@
 
 local api = {}
 
+local lfs = require 'lfs'
 local util = require("luarocks.util")
-local _search = require("luarocks.search")
 local deps = require("luarocks.deps")
-local manif = require("luarocks.manif")
 local manif_core = require("luarocks.manif_core")
-local fetch = require("luarocks.fetch")
 local _install = require("luarocks.install")
 local build = require("luarocks.build")
 local fs = require("luarocks.fs")
 local path = require("luarocks.path")
-local dir = require("luarocks.dir")
 local _remove = require("luarocks.remove")
 local purge = require("luarocks.purge")
 local list = require("luarocks.list")
 
 local log = require 'loverocks.log'
-local lcfg = require 'loverocks.config'
 local versions = require 'loverocks.love-versions'
 
 local function version_iter (versions)

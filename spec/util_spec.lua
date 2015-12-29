@@ -33,7 +33,7 @@ describe("util", function()
 		assert.falsy(util.is_dir(out))
 	end)
 
-	it("can list directories #atm", function()
+	it("can list directories", function()
 		local out  = "lr"
 		local data = {
 			fileA = "",
@@ -57,6 +57,11 @@ describe("util", function()
 		end
 
 		assert(util.spit(data, out))
+		assert.equal("lr/fileB", util.files("lr/fileB"))
+		assert.same(set {
+			"lr/dirA/dirB/fileE",
+			"lr/dirA/dirB/fileD",
+		}, set(util.files("lr/dirA/dirB")))
 		assert.same(set {
 			"lr/fileB",
 			"lr/dirA/fileB",

@@ -2,7 +2,6 @@ local mod = ...
 
 local cnames = {
 	"new",
-	"init",
 	"install",
 	"deps",
 	"list",

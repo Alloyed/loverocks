@@ -1,12 +1,15 @@
+-- make sure this gets loaded first
+local api      = require 'loverocks.api'
+
 local argparse = require 'loverocks.argparse'
 local commands = require 'loverocks.commands'
 local log      = require 'loverocks.log'
 
 local function main(...)
-	local version = "Loverocks " .. (require 'loverocks.version')
+	local fullname = "Loverocks " .. (require 'loverocks.version')
 
 	local parser = argparse "loverocks" {
-		description = version .. ", a wrapper to make luarocks and love play nicely.",
+		description = fullname .. ", a wrapper to make luarocks and love play nicely.",
 	}
 	local help = commands.modules.help
 	help:add_command("main", parser)
@@ -22,7 +25,7 @@ local function main(...)
 	parser:flag "--version"
 		:description "Print version info."
 		:action(function()
-			print(version)
+			print(fullname)
 			os.exit(0)
 		end)
 	parser:flag "-v" "--verbose"

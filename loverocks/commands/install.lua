@@ -1,4 +1,3 @@
-local lr_install = require 'luarocks.install'
 local util = require 'loverocks.util'
 local log  = require 'loverocks.log'
 local api  = require 'loverocks.api'
@@ -126,10 +125,12 @@ function install:run(args)
 	for _, pkg in ipairs(args.packages) do
 		local version = "" -- FIXME: specify versions
 		log:info("Installing %q", pkg)
-		api.check_flags(flags)
 		log:fs("luarocks install %s %s", pkg, version)
-		log:assert(lr_install.run(pkg))
-		api.restore_flags(flags)
+
+		log:assert(api.in_luarocks(flags, function()
+			local lr_install = require 'luarocks.install'
+			return lr_install.run(pkg)
+		end))
 	end
 
 	--if args.add_to_rockspec then

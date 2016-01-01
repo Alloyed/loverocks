@@ -1,6 +1,6 @@
-local lr_purge = require 'luarocks.purge'
 local api = require 'loverocks.api'
 local log = require 'loverocks.log'
+
 local purge = {}
 
 function purge:build(parser)
@@ -9,9 +9,13 @@ end
 
 function purge:run(args)
 	local flags = {}
-	api.check_flags(flags)
-	log:assert(lr_purge.run("--tree=rocks"))
-	api.restory_flags(flags)
+
+	log:fs("luarocks purge --tree=rocks")
+	log:assert(api.in_luarocks(flags, function()
+		local lr_purge = require 'luarocks.purge'
+
+		return lr_purge.run("--tree=rocks")
+	end))
 end
 
 return purge

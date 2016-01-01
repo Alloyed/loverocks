@@ -1,30 +1,10 @@
 ----------------------
--- A well defined API for using luarocks.
--- This allows you to query the existing packages (@{show} and @{list}) and
--- packages on a remote repository (@{search}). Like the luarocks command-line
--- tool, you can specify the flags `from` and `only_from` for this function.
---
--- Local information is a table: @{local_info_table}.  Usually you get less
--- information for remote queries (basically, package, version and repo) but
--- setting the  flag `details` for @{search} will fill in more fields by
--- downloading the remote rockspecs - bear in mind that this can be slow for
--- large queries.
---
 -- @author Steve Donovan
 -- @license MIT/X11
 
 local api = {}
 
 local lfs = require 'lfs'
-local util = require("luarocks.util")
-local deps = require("luarocks.deps")
-local manif_core = require("luarocks.manif_core")
-local build = require("luarocks.build")
-local fs = require("luarocks.fs")
-local path = require("luarocks.path")
-local _remove = require("luarocks.remove")
-local purge = require("luarocks.purge")
-local list = require("luarocks.list")
 
 local T = require 'schema'
 local log = require 'loverocks.log'
@@ -41,29 +21,22 @@ local function copy(t, into)
 	end
 end
 
--- cool, let's initialize this baby. This is normally done by command_line.lua
--- Since cfg is a singleton, api has to be one too. So it goes.
-local cfg = require("luarocks.cfg")
+local function use_tree(root, tree_name)
+	T(root,      'string')
+	T(tree_name, 'string')
 
-function api.apply_config(new)
-	T(new, 'table')
+	local cfg = require 'luarocks.cfg'
+	local path = require("luarocks.path")
 
-	-- idea: instead of copying-in, we make package.preload["luarocks.cfg"]
-	-- a mock table, and then push in and out prototypes to apply the config.
-	copy(new, cfg)
+	cfg.root_dir = root
+	cfg.rocks_dir = path.rocks_dir(root)
+	cfg.rocks_trees = { tree_name }
+	cfg.deploy_bin_dir = path.deploy_bin_dir(root)
+	cfg.deploy_lua_dir = path.deploy_lua_dir(root)
+	cfg.deploy_lib_dir = path.deploy_lib_dir(root)
 end
 
-local function use_tree(tree)
-	T(tree, 'string')
-
-	cfg.root_dir = tree
-	cfg.rocks_dir = path.rocks_dir(tree)
-	cfg.rocks_trees = { "rocks" }
-	cfg.deploy_bin_dir = path.deploy_bin_dir(tree)
-	cfg.deploy_lua_dir = path.deploy_lua_dir(tree)
-	cfg.deploy_lib_dir = path.deploy_lib_dir(tree)
-end
-
+local util = require 'luarocks.util'
 local old_printout, old_printerr = util.printout, util.printerr
 local path_sep = package.config:sub(1, 1)
 
@@ -80,12 +53,19 @@ local cwd = nil
 local function check_flags(flags)
 	T(flags, 'table')
 
+	local cfg = require("luarocks.cfg")
+	local util = require("luarocks.util")
+	local manif_core = require("luarocks.manif_core")
+
+	local fs = require("luarocks.fs")
+	local path = require("luarocks.path")
+
 	cwd = fs.current_dir()
-	use_tree(cwd .. "/rocks")
+	use_tree(cwd .. "/rocks", "rocks")
 	if not project_cfg then
 		project_cfg = {}
 		versions.add_version_info(cwd .. "/conf.lua", project_cfg)
-		api.apply_config(project_cfg)
+		copy(project_cfg, cfg)
 	end
 
 	manif_core.manifest_cache = {} -- clear cache
@@ -101,18 +81,37 @@ end
 
 api.check_flags = check_flags
 
-local function restore_flags(flags)
-	T(flags, 'table')
-	assert(lfs.chdir(cwd))
-	if flags.from then
-		table.remove(cfg.rocks_servers, 1)
-	elseif flags.only_from then
-		cfg.rocks = flags._old_servers
-	end
-	util.printout = old_printout
-	util.printerr = old_printerr
+local function make_env(flags)
+	local env = setmetatable({}, {__index = _G})
+	env._G = env
+	env.package = setmetatable({}, {__index = package})
+	env.check_flags = check_flags
+	env.flags = flags
+	env.T = T -- TODO: remove
+
+	env.package.loaded = {
+		string = string,
+		debug = debug,
+		package = env.package,
+		_G = env,
+		io = io,
+		os = os,
+		table = table,
+		math = math,
+		coroutine = coroutine,
+	}
+	return env
 end
 
-api.restore_flags = restore_flags
+function api.in_luarocks(flags, f)
+	local env = make_env(flags)
+	local function lr()
+		check_flags(flags)
+		return f()
+	end
+	setfenv(lr, env)
+
+	return lr()
+end
 
 return api

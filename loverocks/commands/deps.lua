@@ -1,5 +1,4 @@
 local log = require 'loverocks.log'
-local luarocks = require 'luarocks.deps'
 local api = require 'loverocks.api'
 local loadconf = require 'loadconf'
 
@@ -24,21 +23,23 @@ function deps:run(args)
 
 	local name = conf.identity or "LOVE_GAME"
 	assert(type(name) == 'string')
-	local parsed_deps = {}
-	for _, s in ipairs(conf.dependencies) do
-		table.insert(parsed_deps, luarocks.parse_dep(s))
-	end
-	local flags = { from = args.server, only_from = args.only_server }
 
-	api.check_flags(flags)
+	log:fs("luarocks install <> --only-deps")
+	log:assert(api.in_luarocks(flags, function()
+		local lr_deps = require 'luarocks.deps'
 
-	log:assert(luarocks.fulfill_dependencies({
-		name = name,
-		version = "",
-		dependencies = parsed_deps
-	}, "one"))
+		local parsed_deps = {}
+		for _, s in ipairs(conf.dependencies) do
+			table.insert(parsed_deps, lr_deps.parse_dep(s))
+		end
+		local flags = { from = args.server, only_from = args.only_server }
 
-	api.restore_flags(flags)
+		return lr_deps.fulfill_dependencies({
+			name = name,
+			version = "",
+			dependencies = parsed_deps
+		}, "one")
+	end))
 
 	print("Dependencies installed succesfully!")
 end

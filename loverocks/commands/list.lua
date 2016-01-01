@@ -1,6 +1,7 @@
-local lr_list = require 'luarocks.list'
-local log = require 'loverocks.log'
 local api  = require 'loverocks.api'
+local log = require 'loverocks.log'
+
+
 local list = {}
 
 function list:build(parser)
@@ -15,7 +16,6 @@ end
 function list:run(args)
 	local flags = {}
 	if args.outdated then flags.outdated = true end
-	api.check_flags(flags)
 
 	local f = {table.concat(args.filter, " ")}
 	if flags.outdated then
@@ -26,8 +26,11 @@ function list:run(args)
 	end
 
 	log:fs("luarocks list %s", table.concat(f, " "))
-	log:assert(lr_list.run(unpack(f)))
-	api.restore_flags(flags)
+	log:assert(api.in_luarocks(flags, function()
+		local lr_list = require 'luarocks.list'
+
+		return lr_list.run(unpack(f))
+	end))
 end
 
 return list

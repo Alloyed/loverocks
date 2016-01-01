@@ -1,6 +1,7 @@
 local util = require 'loverocks.util'
 local log = require 'loverocks.log'
 local loadconf = require 'loadconf'
+local T = require 'schema'
 
 -- FIXME: non-love version numbers are pretty much made up
 -- FIXME: Add the luajit rocks-provided modules too

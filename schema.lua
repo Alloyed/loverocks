@@ -46,7 +46,7 @@ local function compound_check(o, c)
    return true
 end
 
---- returns a sum type predicate. An object will typecheck if it also
+--- Returns a sum type predicate. An object will typecheck if it also
 --  typechecks against at least one of the inputs
 function schema.sum(...)
    local types = {...}
@@ -62,13 +62,13 @@ function schema.sum(...)
    end
 end
 
---- optional type. shortcut for s or nil
-function schema.o(s)
+--- Returns an optional type predicate. Shortcut for s or nil
+function schema.maybe(s)
    return schema.sum('nil', s)
 end
 
 --- Returns an enum predicate. An object will typecheck if it is 
---  the same as(rawequal()) at least one of the inputs
+--  the same as at least one of the inputs, ie. rawequal()
 function schema.enum(...)
    local set = {}
    for i=1, select('#', ...) do
@@ -154,4 +154,13 @@ function schema.assert(o, s)
    end
 end
 
-return setmetatable(schema, {__call = function(_, ...) return schema.assert(...) end})
+-- repeated so that error depth doesn't need to change
+local function mt_call(_, o, s)
+   local ok, err = schema.check(o, s)
+
+   if not ok then
+      error(err, 2)
+   end
+end
+
+return setmetatable(schema, {__call = mt_call})

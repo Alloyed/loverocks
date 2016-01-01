@@ -4,7 +4,7 @@ local api  = require 'loverocks.api'
 
 local install = {}
 
-function install:build(parser)
+function install.build(parser)
 	parser:description
 		"Installs a package manually."
 	parser:argument "packages"
@@ -115,7 +115,7 @@ local function add_deps(args)
 		table.concat(to_install, ", "))
 end
 
-function install:run(args)
+function install.run(args)
 	local flags = {
 		quiet = false,
 		from = args.server,

@@ -4,7 +4,7 @@ local util = require 'loverocks.util'
 
 local new = {}
 
-function new:build(parser)
+function new.build(parser)
 	parser:description "Make a new love project"
 
 	parser:option "-t" "--template"
@@ -22,7 +22,7 @@ local function is_valid_name(s) -- TODO
 	return true
 end
 
-function new:run(args)
+function new.run(args)
 	local env = template.new_env(args.project, args.love_version)
 	if not is_valid_name(args.project) then
 		log:error("Invalid project name: %q", args.project)

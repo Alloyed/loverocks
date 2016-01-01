@@ -1,6 +1,6 @@
 local Path = {}
 
-function Path:build(parser)
+function Path.build(parser)
 	parser:description(
 		"Generates a script to set LUA_PATH to match the current project's path. " ..
 		"This can be used to test scripts and path outside of LOVE.")
@@ -21,7 +21,7 @@ local function add_cdir(t, d)
 	table.insert(t, d .. '/?.so')
 end
 
-function Path:run()
+function Path.run()
 	local path  = {}
 	local cpath = {}
 

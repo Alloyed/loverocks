@@ -3,11 +3,11 @@ local log = require 'loverocks.log'
 
 local purge = {}
 
-function purge:build(parser)
+function purge.build(parser)
 	parser:description "Remove all dependencies/internal loverocks state."
 end
 
-function purge:run(args)
+function purge.run(args)
 	local flags = {}
 
 	log:fs("luarocks purge --tree=rocks")

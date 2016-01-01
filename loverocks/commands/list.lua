@@ -4,7 +4,7 @@ local log = require 'loverocks.log'
 
 local list = {}
 
-function list:build(parser)
+function list.build(parser)
 	parser:description "List installed dependencies."
 	parser:argument "filter"
 		:args("*")
@@ -13,7 +13,7 @@ function list:build(parser)
 		:description "Only return dependencies that have newer versions available."
 end
 
-function list:run(args)
+function list.run(args)
 	local flags = {}
 	if args.outdated then flags.outdated = true end
 

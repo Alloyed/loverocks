@@ -3,7 +3,7 @@ local util = require 'loverocks.util'
 
 local modules = {}
 
-function modules:build(parser)
+function modules.build(parser)
 	parser:description(
 		"Enumerates lua modules available in a project. " ..
 		"In the case of no options, all modules are enumerated.\n" ..
@@ -58,7 +58,7 @@ function modules.list_modules(fn, prefix, inner)
 	end
 end
 
-function modules:run(args)
+function modules.run(args)
 	local provided = require 'loverocks.module_data'
 	if not args.love and not args['local'] and not args.rocks then
 		args.love     = true

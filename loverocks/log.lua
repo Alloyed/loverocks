@@ -35,7 +35,7 @@ end
 
 function log:error(...)
 	if self.use.error then
-		eprintf("ERROR: ", ...)
+		eprintf("Error: ", ...)
 	end
 	os.exit(1)
 end

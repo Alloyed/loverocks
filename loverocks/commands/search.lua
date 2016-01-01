@@ -2,7 +2,7 @@ local log = require 'loverocks.log'
 local util = require 'loverocks.util'
 local search = {}
 
-function search:build(parser)
+function search.build(parser)
 	parser:description "Query the Luarocks servers."
 	parser:argument "search_string"
 		:args("*")
@@ -18,7 +18,7 @@ function search:build(parser)
 	)
 end
 
-function search:run(args)
+function search.run(args)
 	local all = args.all and "--all " or ""
 
 	local server = ""

@@ -91,7 +91,7 @@ function schema.match(input)
          return true
       end
 
-      return nil, string.format("object did not match against %q", matchstring)
+      return nil, string.format("object did not match against %q", input)
    end
 end
 

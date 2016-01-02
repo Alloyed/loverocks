@@ -1,5 +1,4 @@
 local log = require 'loverocks.log'
-local versions = require 'loverocks.love-versions'
 local etlua = require 'etlua'
 local util = require 'loverocks.util'
 
@@ -9,10 +8,10 @@ local function raw_version(s)
 	return string.format("%q", s:gsub("-1$", ""))
 end
 
-function template.new_env(name, v)
+function template.new_env(vs, name)
 	return {
 		project_name = name,
-		versions = versions.get(v),
+		versions = vs,
 		raw_version = raw_version,
 		loverocks_version = require 'loverocks.version',
 	}
@@ -24,7 +23,10 @@ function template.apply(files, env)
 		if type(file) == 'table' then
 			done[name] = template.apply(file, env)
 		elseif not name:match("%.swp$") then
-			local new_name = name:gsub("PROJECT", env.project_name)
+			local new_name = name
+			if new_name:match("PROJECT") then
+				new_name = new_name:gsub("PROJECT", env.project_name)
+			end
 
 			local d, err = etlua.render(file, env)
 			if not d then

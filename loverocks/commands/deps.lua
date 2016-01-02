@@ -24,6 +24,8 @@ function deps.run(args)
 	local name = conf.identity or "LOVE_GAME"
 	assert(type(name) == 'string')
 
+	local flags = { from = args.server, only_from = args.only_server }
+
 	log:fs("luarocks install <> --only-deps")
 	log:assert(api.in_luarocks(flags, function()
 		local lr_deps = require 'luarocks.deps'
@@ -32,7 +34,6 @@ function deps.run(args)
 		for _, s in ipairs(conf.dependencies) do
 			table.insert(parsed_deps, lr_deps.parse_dep(s))
 		end
-		local flags = { from = args.server, only_from = args.only_server }
 
 		return lr_deps.fulfill_dependencies({
 			name = name,

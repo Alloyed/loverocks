@@ -45,6 +45,7 @@ build = {
       ["loverocks.module_data"]      = "loverocks/module_data.lua",
       ["loverocks.argparse"]         = "loverocks/argparse.lua",
       ["loverocks.api"]              = "loverocks/api.lua",
+      ["loverocks.schema"]           = "loverocks/schema.lua",
    },
    install = {
       bin = {"bin/loverocks"}

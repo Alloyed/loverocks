@@ -1,5 +1,5 @@
 describe("schema", function()
-	local T = require 'schema'
+	local T = require 'loverocks.schema'
 	it("checks primitive types", function()
 		assert.truthy(T.check('foo', 'string'))
 		assert.falsy (T.check('foo', 'number'))

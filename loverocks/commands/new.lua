@@ -1,6 +1,7 @@
 local log = require 'loverocks.log'
 local template = require 'loverocks.template'
 local util = require 'loverocks.util'
+local love_versions = require 'loverocks.love-versions'
 
 local new = {}
 
@@ -24,7 +25,8 @@ local function is_valid_name(s) -- TODO
 end
 
 function new.run(args)
-	local env = template.new_env(args.project, args.love_version)
+	local versions = love_versions.get(args.love_version)
+	local env = template.new_env(versions, args.project)
 	if not is_valid_name(args.project) then
 		log:error("Invalid project name: %q", args.project)
 	end

@@ -1,7 +1,7 @@
 local util = require 'loverocks.util'
 local log = require 'loverocks.log'
 local loadconf = require 'loadconf'
-local T = require 'schema'
+local T = require 'loverocks.schema'
 
 -- FIXME: non-love version numbers are pretty much made up
 -- FIXME: Add the luajit rocks-provided modules too
@@ -63,7 +63,7 @@ local function add_version_info(fname, cfg)
 
 	cfg.rocks_provided = versions[version]
 	assert(cfg.rocks_provided)
-	return true
+	return versions[version]
 end
 
 return setmetatable({

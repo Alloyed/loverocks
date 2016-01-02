@@ -6,8 +6,10 @@ local api = {}
 
 local lfs = require 'lfs'
 
-local T = require 'schema'
+local T = require 'loverocks.schema'
 local log = require 'loverocks.log'
+local template = require 'loverocks.template'
+local util = require 'loverocks.util'
 local versions = require 'loverocks.love-versions'
 
 local function copy(t, into)
@@ -36,8 +38,8 @@ local function use_tree(root, tree_name)
 	cfg.deploy_lib_dir = path.deploy_lib_dir(root)
 end
 
-local util = require 'luarocks.util'
-local old_printout, old_printerr = util.printout, util.printerr
+local Lutil = require 'luarocks.util'
+local old_printout, old_printerr = Lutil.printout, Lutil.printerr
 local path_sep = package.config:sub(1, 1)
 
 function q_printout(...)
@@ -46,6 +48,20 @@ end
 
 function q_printerr(...)
 	log:_warning("L: %s", table.concat({...}, "\t"))
+end
+
+local function init_rocks(versions)
+	if not util.is_dir('rocks') then
+		local env = template.new_env(versions)
+		local path = log:assert(template.path('love9/rocks'))
+		local files = assert(util.slurp(path))
+		files = template.apply(files, env)
+		assert(util.spit(files, 'rocks'))
+
+		return true
+	end
+
+	return false
 end
 
 local project_cfg = nil
@@ -64,7 +80,8 @@ local function check_flags(flags)
 	use_tree(cwd .. "/rocks", "rocks")
 	if not project_cfg then
 		project_cfg = {}
-		versions.add_version_info(cwd .. "/conf.lua", project_cfg)
+		local versions = versions.add_version_info(cwd .. "/conf.lua", project_cfg)
+		init_rocks(versions)
 		copy(project_cfg, cfg)
 	end
 

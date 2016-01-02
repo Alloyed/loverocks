@@ -1,6 +1,6 @@
 local lfs      = require 'lfs'
 local datafile = require 'datafile'
-local T        = require 'schema'
+local T        = require 'loverocks.schema'
 
 local log    = require 'loverocks.log'
 

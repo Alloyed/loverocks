@@ -48,12 +48,14 @@ local function c_loader(mod_name)
 	end
 end
 
-local function inject()
+local function inject(external_deps)
 	table.insert(package.loaders, loader)
 	table.insert(package.loaders, c_loader)
 
-	package.path = ""
-	package.cpath = ""
+	if not external_deps then
+		package.path = ""
+		package.cpath = ""
+	end
 end
 
 return setmetatable({

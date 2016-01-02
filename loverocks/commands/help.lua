@@ -3,8 +3,8 @@ local log = require 'loverocks.log'
 local help = {}
 help.commands = {}
 
-function help.add_command(name, command)
-	help.commands[name] = command
+function help.add_command(name, parser)
+	help.commands[name] = parser
 end
 
 function help.build(parser)
@@ -15,14 +15,12 @@ function help.build(parser)
 end
 
 function help.run(args)
-	local command = args.command
-
-	if command then
-		local cmd = help.commands[command]
-		if not cmd then
-			log:error("no such command %s", command)
+	if args.command then
+		local parser = help.commands[args.command]
+		if not parser then
+			log:error("no such command %s", args.command)
 		end
-		print(cmd:get_help())
+		print(parser:get_help())
 	else
 		print(help.commands.main:get_help())
 	end

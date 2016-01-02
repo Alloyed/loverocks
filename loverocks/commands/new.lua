@@ -10,6 +10,7 @@ function new.build(parser)
 	parser:option "-t" "--template"
 		:description "The template to follow."
 		:default "love9"
+
 	parser:option "--love-version"
 		:description "The lua version. If unspecified we guess by running `love --version`"
 

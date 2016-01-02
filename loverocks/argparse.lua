@@ -994,8 +994,9 @@ function Parser:_parse(args, errhandler)
 end
 
 function Parser:error(msg)
-   io.stderr:write(("%s\n\nError: %s\n"):format(self:get_usage(), msg))
-   os.exit(1)
+   local log = require 'loverocks.log'
+   log:_warning(self:get_usage().."\n")
+   log:error("%s", msg)
 end
 
 function Parser:parse(args)

@@ -1,4 +1,3 @@
-local util = require 'loverocks.util'
 local log  = require 'loverocks.log'
 local api  = require 'loverocks.api'
 
@@ -21,18 +20,6 @@ function install.build(parser)
 	parser:option "--only-server"
 		:description
 			"Fetch rocks/rockspecs from this server, ignoring other servers."
-end
-
-local function fmt_table(t)
-	local s = "{"
-	local sep = "\n   " -- FIXME: configurable indents
-
-	for _, v in ipairs(t) do
-		s = s .. sep .. string.format("%q", v)
-		sep = ",\n   "
-	end
-
-	return s .. "\n}"
 end
 
 function install.run(args)

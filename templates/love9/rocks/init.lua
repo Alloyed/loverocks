@@ -2,12 +2,15 @@
 --  See http://github.com/Alloyed/loverocks for details
 --  (c) Kyle McLamb, 2015 <alloyed@tfwno.gf>, MIT License.
 
+local ROCKSDIR = "rocks"
+
 local luarocks_paths = {
-	"rocks/share/lua/5.1/?.lua",
-	"rocks/share/lua/5.1/?/init.lua",
+	ROCKSDIR .. "/share/lua/5.1/?.lua",
+	ROCKSDIR .. "/share/lua/5.1/?/init.lua",
 }
+
 local luarocks_cpaths = {
-	"rocks/lib/lua/5.1/?"
+	ROCKSDIR .. "/lib/lua/5.1/?"
 }
 
 local function loader(modname)

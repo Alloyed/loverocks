@@ -39,7 +39,7 @@ function search.run(args)
 	log:fs("luarocks search %s", table.concat(a, " "))
 	log:assert(api.in_luarocks(flags, function()
 		local lr_search = require 'luarocks.search'
-		lr_search.run(unpack(a))
+		return lr_search.run(unpack(a))
 	end))
 end
 

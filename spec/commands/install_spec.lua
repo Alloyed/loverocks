@@ -60,6 +60,6 @@ describe("loverocks install", function()
 			packages = {"inspect"},
 			only_server = cwd .. "/test-repo"
 		}
-		assert.equal(type(loadfile("rocks/share/lua/5.1/inspect.lua")()), 'table')
+		assert.equal(type(loadfile(ROCKSDIR .. "/share/lua/5.1/inspect.lua")()), 'table')
 	end)
 end)

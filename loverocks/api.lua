@@ -51,12 +51,12 @@ function q_printerr(...)
 end
 
 local function init_rocks(versions)
-	if not util.is_dir('rocks') then
+	if not util.is_dir(ROCKSDIR) then
 		local env = template.new_env(versions)
 		local path = log:assert(template.path('love9/rocks'))
 		local files = assert(util.slurp(path))
 		files = template.apply(files, env)
-		assert(util.spit(files, 'rocks'))
+		assert(util.spit(files, ROCKSDIR))
 
 		return true
 	end
@@ -77,7 +77,7 @@ local function check_flags(flags)
 	local path = require("luarocks.path")
 
 	cwd = fs.current_dir()
-	use_tree(cwd .. "/rocks", "rocks")
+	use_tree(cwd .. "/" .. ROCKSDIR , ROCKSDIR)
 	if not project_cfg then
 		project_cfg = {}
 		local versions = versions.add_version_info(cwd .. "/conf.lua", project_cfg)

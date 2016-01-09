@@ -1,5 +1,4 @@
--- make sure this gets loaded first
-local api      = require 'loverocks.api'
+_G.ROCKSDIR = "rocks"
 
 local argparse = require 'loverocks.argparse'
 local commands = require 'loverocks.commands'

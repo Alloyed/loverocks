@@ -49,7 +49,7 @@ function modules.list_modules(fn, prefix, inner)
 			end
 		else
 			if f:match("%.lua$") or f:match("%.dll$") or f:match("%.so$") then
-				local mod, err = modules.file_to_module(p(inner, f))
+				local mod = modules.file_to_module(p(inner, f))
 				if mod then
 					fn(mod)
 				end
@@ -77,12 +77,12 @@ function modules.run(args)
 	end
 
 	if args.rocks then
-		if util.exists "rocks/share/lua/5.1" then
-			modules.list_modules(print, "rocks/share/lua/5.1")
+		if util.exists(ROCKSDIR .. "/share/lua/5.1") then
+			modules.list_modules(print, ROCKSDIR .. "/share/lua/5.1")
 		end
 
-		if util.exists "rocks/lib/lua/5.1" then
-			modules.list_modules(print, "rocks/lib/lua/5.1")
+		if util.exists(ROCKSDIR .. "/lib/lua/5.1") then
+			modules.list_modules(print, ROCKSDIR .. "/lib/lua/5.1")
 		end
 	end
 end

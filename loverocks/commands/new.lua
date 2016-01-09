@@ -37,7 +37,7 @@ function new.run(args)
 	local files = assert(util.slurp(path))
 	files = template.apply(files, env)
 
-	local f, err = io.open(env.project_name)
+	local f = io.open(env.project_name)
 	if f then
 		local should_overwrite = log:ask(
 			"Directory %q already exists! overwrite (Y/n)?",

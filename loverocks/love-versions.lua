@@ -1,6 +1,5 @@
 local util = require 'loverocks.util'
 local log = require 'loverocks.log'
-local loadconf = require 'loadconf'
 local T = require 'loverocks.schema'
 
 -- FIXME: non-love version numbers are pretty much made up
@@ -37,36 +36,10 @@ local versions = {
 	}
 }
 
-local STORED -- FIXME: should this be stored in a config file somewhere?
 local function get_versions_for(v)
-	if not v then
-		if STORED then
-			v = STORED
-		elseif io.popen then
-			v = util.stropen("love --version"):match("%d+%.%d+%.%d+")
-			if v then
-				log:info("Found LOVE version %s", v)
-				STORED = v
-			end
-		end
-	end
 	return versions[v] or versions[STABLE]
-end
-
-local function add_version_info(fname, cfg)
-	T(fname, 'string')
-	T(cfg, 'table')
-
-	local conf = log:assert(loadconf.parse_file(fname))
-	log:assert(type(conf.version) == 'string', "t.version not found")
-	local version = conf.version
-
-	cfg.rocks_provided = versions[version]
-	assert(cfg.rocks_provided)
-	return versions[version]
 end
 
 return setmetatable({
 	get = get_versions_for,
-	add_version_info = add_version_info,
 }, {__call = get_versions_for})

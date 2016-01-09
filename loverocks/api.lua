@@ -1,4 +1,8 @@
 ----------------------
+-- A butchering of
+-- https://git.io/vuFYa
+-- used to call luarocks functions within a contained sandbox.
+-- FIXME: this is a total mess
 -- @author Steve Donovan
 -- @license MIT/X11
 
@@ -87,22 +91,22 @@ in which case it's safe to delete the old directory.
 Please rename or remove and try again.]], rocks_tree)
 end
 
-local function reinstall_tree(rocks_tree, versions)
-	local env = template.new_env(versions)
+local function reinstall_tree(rocks_tree, provided)
+	local env = template.new_env(provided)
 	local path = log:assert(template.path('love9/rocks'))
 	local files = assert(util.slurp(path))
 	files = template.apply(files, env)
 	assert(util.spit(files, rocks_tree))
 end
 
-local function init_rocks(rocks_tree, versions)
+local function init_rocks(rocks_tree, provided)
 	if not util.is_dir(rocks_tree) then
 		log:info("Rocks tree %q not found, reinstalling.", rocks_tree)
-		reinstall_tree(rocks_tree, versions)
+		reinstall_tree(rocks_tree, provided)
 		return true
 	elseif old_init_file(rocks_tree) then
 		log:info("Rocks tree %q is outdated, upgrading.", rocks_tree)
-		reinstall_tree(rocks_tree, versions)
+		reinstall_tree(rocks_tree, provided)
 		return true
 	end
 
@@ -129,8 +133,9 @@ local function check_flags(flags)
 	use_tree(cwd .. "/" .. rocks_tree, rocks_tree)
 	if not project_cfg then
 		project_cfg = {}
-		local versions = versions.add_version_info(cwd .. "/conf.lua", project_cfg)
-		init_rocks(rocks_tree, versions)
+		local provided = versions.get(flags.version)
+		project_cfg.rocks_provided = provided
+		init_rocks(rocks_tree, provided)
 		copy(project_cfg, cfg)
 	end
 

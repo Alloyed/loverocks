@@ -28,6 +28,7 @@ function install.run(args)
 
 	local flags = {
 		tree = conf and conf.rocks_tree,
+		version = conf and conf.version,
 		quiet = false,
 		from = args.server,
 		only_from = args.only_server

@@ -1,17 +1,18 @@
 local log = {}
 
 log.use = {
-	fs = false,              -- print filesystem events
-	warning = true,          -- print warnings
-	error = true,            -- print errors
-	error_tracebacks = true, -- print tracebacks on expected errors
-	info = true,             -- print info text/dialogs
-	ask = true,              -- ask for confirmation
+	fs = false,         -- print filesystem events
+	warning = true,     -- print warnings
+	error = true,       -- print errors
+	tracebacks = false, -- print tracebacks on expected errors
+	info = true,        -- print info text/dialogs
+	ask = true,         -- ask for confirmation
 }
 
 function log:quiet()
 	self.use.fs = false
 	self.use.error = false
+	self.use.tracebacks = false
 	self.use.warning = false
 	self.use.info = false
 	self.use.ask = false
@@ -20,7 +21,7 @@ end
 function log:verbose()
 	self.use.fs = true
 	self.use.error = true
-	self.use.error_tracebacks = true
+	self.use.tracebacks = true
 	self.use.warning = true
 	self.use.info = true
 end
@@ -43,7 +44,7 @@ function log:error(...)
 		eprintf("Error: ", ...)
 	end
 
-	if self.use.error_tracebacks then
+	if self.use.tracebacks then
 		eprintf("", "%s", debug.traceback())
 	end
 	os.exit(1)

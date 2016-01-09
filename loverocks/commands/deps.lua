@@ -26,6 +26,7 @@ function deps.run(args)
 
 	local flags = {
 		tree = conf.rocks_tree,
+		version = conf.version,
 		from = args.server,
 		only_from = args.only_server
 	}

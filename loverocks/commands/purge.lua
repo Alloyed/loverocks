@@ -12,6 +12,7 @@ function purge.run()
 	local conf = loadconf.parse_file("./conf.lua")
 	local flags = {
 		tree = conf and conf.rocks_tree,
+		version = conf and conf.version,
 	}
 
 	log:fs("luarocks purge --tree=rocks")

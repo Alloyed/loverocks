@@ -1,4 +1,4 @@
---- Injects luarocks modules installed at ./rocks into your love game.
+--- Injects a loverocks-compatible module loader into your game.
 --  See http://github.com/Alloyed/loverocks for details
 --  (c) Kyle McLamb, 2015 <alloyed@tfwno.gf>, MIT License.
 --  NOTE: This file can be overwritten without warning! Don't make changes
@@ -19,7 +19,7 @@ local loverocks_cpaths = {
 --- Loads loverocks modules.
 local function loader(modname)
 	local modpath = modname:gsub('%.', '/')
-	for _, elem in ipairs(luarocks_paths) do
+	for _, elem in ipairs(loverocks_paths) do
 		elem = elem:gsub('%?', modpath)
 		if love.filesystem.isFile(elem) then
 			return love.filesystem.load(elem)
@@ -33,12 +33,15 @@ end
 --  inside the .love file itself. In each case though, the module must follow
 --  the loverocks folder structure.
 local function c_loader(mod_name)
-	if not love.system then return "\n\tCannot load native modules, love.system not initialized." end
-	local ext = love.system.getOS() == 'windows' and ".dll" or ".so"
+	if not love.system then
+		return "\n\tCannot load native modules, love.system not initialized."
+	end
+
+	local ext  = love.system.getOS() == 'windows' and ".dll" or ".so"
 	local file = mod_name:gsub("%.", "/") .. ext
 	local fn   = mod_name:gsub("%.", "_")
 
-	for _, elem in ipairs(luarocks_cpaths) do
+	for _, elem in ipairs(loverocks_cpaths) do
 		elem = elem:gsub('%?', file)
 
 		local real_dir = love.filesystem.getRealDirectory(elem)
@@ -100,8 +103,8 @@ end
 
 return setmetatable({
 	inject = inject,
-	path = luarocks_paths,
-	cpath = luarocks_cpaths,
+	path = loverocks_paths,
+	cpath = loverocks_cpaths,
 	loader = loader,
 	cloader = c_loader
 }, {__call = inject})

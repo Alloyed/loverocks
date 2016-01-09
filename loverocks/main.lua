@@ -1,4 +1,4 @@
-local argparse = require 'loverocks.argparse'
+local argparse = require 'argparse'
 local commands = require 'loverocks.commands'
 local log      = require 'loverocks.log'
 

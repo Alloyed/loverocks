@@ -23,7 +23,7 @@ describe("loverocks install", function()
 	end)
 
 	it("parses command line arguments correctly", function()
-		local argparse = require 'loverocks.argparse'
+		local argparse = require 'argparse'
 		local parser = argparse()
 		Install.build(parser)
 

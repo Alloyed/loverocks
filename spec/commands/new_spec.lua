@@ -42,10 +42,15 @@ describe("loverocks new", function()
 end)
 
 describe("loverocks new parser", function()
-	local argparse = require 'loverocks.argparse'
+	local argparse = require 'argparse'
 	local parser
 	setup(function()
 		parser = argparse()
+		function parser:error(msg)
+			local log = require 'loverocks.log'
+			log:_warning(self:get_usage().."\n")
+			log:error("%s", msg)
+		end
 		New.build(parser)
 	end)
 

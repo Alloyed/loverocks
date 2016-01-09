@@ -37,6 +37,8 @@ modules.luajit["2.1"] = {
 "jit.opt",
 "jit.profile",
 "jit.util",
+"table.clear",
+"table.new",
 }
 
 modules.love = {}
@@ -70,8 +72,6 @@ modules.love["0.9.2"] = { -- {{{
 "socket.smtp",
 "socket.tp",
 "socket.url",
-"table.clear",
-"table.new",
 "utf8",
 } -- }}}
 
@@ -96,6 +96,7 @@ modules.love["0.10.0"] = { -- {{{
 "love.thread",
 "love.timer",
 "love.touch",
+"love.video",
 "love.window",
 "ltn12",
 "mime",
@@ -107,8 +108,6 @@ modules.love["0.10.0"] = { -- {{{
 "socket.smtp",
 "socket.tp",
 "socket.url",
-"table.clear",
-"table.new",
 "utf8",
 } -- }}}
 

@@ -1,14 +1,13 @@
-_G.ROCKSDIR = "rocks"
-
 local argparse = require 'loverocks.argparse'
 local commands = require 'loverocks.commands'
 local log      = require 'loverocks.log'
 
 local function main(...)
 	local fullname = "Loverocks " .. (require 'loverocks.version')
+	local desc = "%s, a wrapper to make luarocks and love play nicely."
 
 	local parser = argparse "loverocks" {
-		description = fullname .. ", a wrapper to make luarocks and love play nicely.",
+		description = string.format(desc, fullname),
 	}
 	local help = commands.modules.help
 	help.add_command("main", parser)

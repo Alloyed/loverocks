@@ -1,6 +1,5 @@
 local log = require 'loverocks.log'
 local api  = require 'loverocks.api'
-local util = require 'loverocks.util'
 local search = {}
 
 function search.build(parser)

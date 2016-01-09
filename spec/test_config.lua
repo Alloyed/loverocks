@@ -17,6 +17,4 @@ return setmetatable({},{__call = function()
 	_G.os = setmetatable({
 		exit = function(i) error(string.format("os.exit(%d)", i or 1)) end
 	}, {__index = _os})
-
-	_G.ROCKSDIR = "ROCKS"
 end})

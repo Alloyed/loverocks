@@ -32,6 +32,12 @@ function util.is_dir(path)
 	return lfs.attributes(path, 'mode') == 'directory'
 end
 
+function util.is_file(path)
+	T(path, 'string')
+
+	return lfs.attributes(path, 'mode') == 'file'
+end
+
 function util.slurp(path)
 	T(path, 'string')
 

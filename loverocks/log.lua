@@ -1,11 +1,12 @@
 local log = {}
 
 log.use = {
-	fs = false,     -- print filesystem events
-	warning = true, -- print warnings
-	error = true,   -- print errors
-	info = true,    -- print info text/dialogs
-	ask = true,     -- ask for confirmation
+	fs = false,              -- print filesystem events
+	warning = true,          -- print warnings
+	error = true,            -- print errors
+	error_tracebacks = true, -- print tracebacks on expected errors
+	info = true,             -- print info text/dialogs
+	ask = true,              -- ask for confirmation
 }
 
 function log:quiet()
@@ -19,12 +20,16 @@ end
 function log:verbose()
 	self.use.fs = true
 	self.use.error = true
+	self.use.error_tracebacks = true
 	self.use.warning = true
 	self.use.info = true
 end
 
 local function eprintf(pre, ...)
-	return io.stderr:write(pre .. string.format(...) .. "\n")
+	local indent = pre:gsub(".", " ")
+	local body = string.format(...)
+	body = body:gsub("\n", "\n" .. indent)
+	return io.stderr:write(pre .. body .. "\n")
 end
 
 function log:fs(...)
@@ -36,6 +41,10 @@ end
 function log:error(...)
 	if self.use.error then
 		eprintf("Error: ", ...)
+	end
+
+	if self.use.error_tracebacks then
+		eprintf("", "%s", debug.traceback())
 	end
 	os.exit(1)
 end

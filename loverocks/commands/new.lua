@@ -20,16 +20,9 @@ function new.build(parser)
 		:description "the name of the project"
 end
 
-local function is_valid_name(s) -- TODO
-	return true
-end
-
 function new.run(args)
 	local versions = love_versions.get(args.love_version)
 	local env = template.new_env(versions, args.project)
-	if not is_valid_name(args.project) then
-		log:error("Invalid project name: %q", args.project)
-	end
 
 	local path = log:assert(template.path(args.template))
 

@@ -1,18 +1,22 @@
 --- Injects luarocks modules installed at ./rocks into your love game.
 --  See http://github.com/Alloyed/loverocks for details
 --  (c) Kyle McLamb, 2015 <alloyed@tfwno.gf>, MIT License.
+--  NOTE: This file can be overwritten without warning! Don't make changes
+--  here, but in the loverocks template itself.
+--  |version: <%- loverocks_version %>|
 
-local ROCKSDIR = "rocks"
+local rocks_tree = (...)
 
-local luarocks_paths = {
-	ROCKSDIR .. "/share/lua/5.1/?.lua",
-	ROCKSDIR .. "/share/lua/5.1/?/init.lua",
+local loverocks_paths = {
+	rocks_tree .. "/share/lua/5.1/?.lua",
+	rocks_tree .. "/share/lua/5.1/?/init.lua",
 }
 
-local luarocks_cpaths = {
-	ROCKSDIR .. "/lib/lua/5.1/?"
+local loverocks_cpaths = {
+	rocks_tree .. "/lib/lua/5.1/?"
 }
 
+--- Loads loverocks modules.
 local function loader(modname)
 	local modpath = modname:gsub('%.', '/')
 	for _, elem in ipairs(luarocks_paths) do
@@ -24,6 +28,10 @@ local function loader(modname)
 	return "\n\tno module '" .. modname .. "' in LOVERocks path."
 end
 
+--- Loads native lockrocks libraries. These modules can either be stored in a
+--  folder in the current working directory, in the user's save folder, or
+--  inside the .love file itself. In each case though, the module must follow
+--  the loverocks folder structure.
 local function c_loader(mod_name)
 	if not love.system then return "\n\tCannot load native modules, love.system not initialized." end
 	local ext = love.system.getOS() == 'windows' and ".dll" or ".so"
@@ -51,9 +59,38 @@ local function c_loader(mod_name)
 	end
 end
 
-local function inject(external_deps)
-	table.insert(package.loaders, loader)
-	table.insert(package.loaders, c_loader)
+--- Installs the LOVERocks package loader if it's not already installed.
+--  @param use_external_deps Set to true if you would like to continue
+--                           using system-level dependencies in your project.
+local function inject(use_external_deps)
+	local installed = false
+	local c_installed = false
+
+	-- Done in reverse because the modules are most likely
+	-- to be installed at the end
+	for i=#package.loaders, 1, -1 do
+		local i_loader = package.loaders[i]
+
+		if i_loader == loader then
+			installed = true
+			if c_installed then
+				break
+			end
+		elseif i_loader == c_loader then
+			c_installed = true
+			if installed then
+				break
+			end
+		end
+	end
+
+	if not installed then
+		table.insert(package.loaders, loader)
+	end
+
+	if not c_installed then
+		table.insert(package.loaders, c_loader)
+	end
 
 	if not external_deps then
 		package.path = ""
@@ -66,5 +103,5 @@ return setmetatable({
 	path = luarocks_paths,
 	cpath = luarocks_cpaths,
 	loader = loader,
-	c_loader = c_loader
+	cloader = c_loader
 }, {__call = inject})

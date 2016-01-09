@@ -1,5 +1,6 @@
-local log  = require 'loverocks.log'
-local api  = require 'loverocks.api'
+local loadconf = require 'loadconf'
+local log      = require 'loverocks.log'
+local api      = require 'loverocks.api'
 
 local install = {}
 
@@ -23,7 +24,10 @@ function install.build(parser)
 end
 
 function install.run(args)
+	local conf = log:assert(loadconf.parse_file("./conf.lua"))
+
 	local flags = {
+		tree = conf and conf.rocks_tree,
 		quiet = false,
 		from = args.server,
 		only_from = args.only_server

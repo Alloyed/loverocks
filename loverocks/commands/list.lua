@@ -1,5 +1,6 @@
+local loadconf = require 'loadconf'
 local api  = require 'loverocks.api'
-local log = require 'loverocks.log'
+local log  = require 'loverocks.log'
 
 
 local list = {}
@@ -14,7 +15,11 @@ function list.build(parser)
 end
 
 function list.run(args)
-	local flags = {}
+	local conf = loadconf.parse_file("./conf.lua")
+	local flags = {
+		tree = conf and conf.rocks_tree,
+	}
+
 	if args.outdated then flags.outdated = true end
 
 	local f = {table.concat(args.filter, " ")}

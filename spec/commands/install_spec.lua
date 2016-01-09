@@ -1,6 +1,6 @@
-local lfs = require 'lfs'
+local lfs    = require 'lfs'
 
-local util = require 'loverocks.util'
+local util   = require 'loverocks.util'
 local purge  = require 'loverocks.commands.purge'
 
 local cwd = lfs.currentdir()
@@ -60,6 +60,22 @@ describe("loverocks install", function()
 			packages = {"inspect"},
 			only_server = cwd .. "/test-repo"
 		}
-		assert.equal(type(loadfile(ROCKSDIR .. "/share/lua/5.1/inspect.lua")()), 'table')
+		assert.equal(type(loadfile("rocks/share/lua/5.1/inspect.lua")()), 'table')
+	end)
+
+	it("can install to custom rocks trees", function()
+		finally(function()
+			purge.run()
+		end)
+
+		util.spit([[ function love.conf(t) 
+			t.rocks_tree = "foobar"
+		end ]], "conf.lua")
+
+		Install.run {
+			packages = {"inspect"},
+			only_server = cwd .. "/test-repo"
+		}
+		assert.equal(type(loadfile("foobar/share/lua/5.1/inspect.lua")()), 'table')
 	end)
 end)

@@ -1,3 +1,5 @@
+local loadconf = require 'loadconf'
+
 local Path = {}
 
 function Path.build(parser)
@@ -26,14 +28,19 @@ local function add_cdir(t, d)
 end
 
 function Path.run()
+	local rocks_tree = "rocks"
+	local conf = loadconf.parse_file("./conf.lua")
+	if conf and conf.rocks_tree then
+		rocks_tree = conf.rocks_tree
+	end
 	local path  = {}
 	local cpath = {}
 
 	add_dir(path, '.')
-	add_dir(path, './' .. ROCKSDIR ..'/share/lua/5.1')
+	add_dir(path, './' .. rocks_tree ..'/share/lua/5.1')
 
 	add_cdir(cpath, '.')
-	add_cdir(cpath, './' .. ROCKSDIR ..'/lib/lua/5.1')
+	add_cdir(cpath, './' .. rocks_tree ..'/lib/lua/5.1')
 
 	local path_str  = table.concat(path, ';')
 	local cpath_str = table.concat(cpath, ';')

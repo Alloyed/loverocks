@@ -1,3 +1,4 @@
+local loadconf = require 'loadconf'
 local lfs = require 'lfs'
 local util = require 'loverocks.util'
 
@@ -22,7 +23,10 @@ end
 function modules.file_to_module(path)
 	local sep = "/"
 
-	local no_ext = path:gsub(".init%.lua$",""):gsub("%.lua$",""):gsub("%.dll$", ""):gsub("%.so$","")
+	local no_ext = path
+		:gsub(".init%.lua$",""):gsub("%.lua$","")
+		:gsub("%.dll$", ""):gsub("%.so$","")
+
 	if no_ext:match("%.") then
 		return nil, "path has invalid character"
 	end
@@ -77,12 +81,18 @@ function modules.run(args)
 	end
 
 	if args.rocks then
-		if util.exists(ROCKSDIR .. "/share/lua/5.1") then
-			modules.list_modules(print, ROCKSDIR .. "/share/lua/5.1")
+		local conf = loadconf.parse_file("./conf.lua")
+		local rocks_tree = "rocks"
+		if conf and conf.rocks_tree then
+			rocks_tree = conf.rocks_tree
 		end
 
-		if util.exists(ROCKSDIR .. "/lib/lua/5.1") then
-			modules.list_modules(print, ROCKSDIR .. "/lib/lua/5.1")
+		if util.exists(rocks_tree .. "/share/lua/5.1") then
+			modules.list_modules(print, rocks_tree .. "/share/lua/5.1")
+		end
+
+		if util.exists(rocks_tree .. "/lib/lua/5.1") then
+			modules.list_modules(print, rocks_tree .. "/lib/lua/5.1")
 		end
 	end
 end

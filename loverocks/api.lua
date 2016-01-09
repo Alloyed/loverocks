@@ -50,14 +50,59 @@ function q_printerr(...)
 	log:_warning("L: %s", table.concat({...}, "\t"))
 end
 
-local function init_rocks(versions)
-	if not util.is_dir(ROCKSDIR) then
-		local env = template.new_env(versions)
-		local path = log:assert(template.path('love9/rocks'))
-		local files = assert(util.slurp(path))
-		files = template.apply(files, env)
-		assert(util.spit(files, ROCKSDIR))
+local function version_gt(a, b)
+	T(a, 'string')
+	T(b, 'string')
+	-- Don't worry about it. 100 versions are enough for anybody :^)
+	local a_maj, a_min, a_patch, a_rock = a:match("^(%d+)%.(%d+)%.(%d+)-(%d+)")
+	local an = a_maj * 1e8 + a_min * 1e4 + a_patch * 1e2 + a_rock
 
+	local b_maj, b_min, b_patch, b_rock = b:match("^(%d+)%.(%d+)%.(%d+)-(%d+)")
+	local bn = b_maj * 1e8 + b_min * 1e4 + b_patch * 1e2 + b_rock
+
+	return an > bn
+end
+
+local function old_init_file(rocks_tree)
+	local fname = rocks_tree .. "/init.lua"
+
+	if util.is_file(fname) then
+		local body = log:assert(util.slurp(fname))
+		for field in body:gmatch("%b||") do
+			field = field:sub(2, -2)
+			old_ver = field:match("^version: (%d+%.%d+%.%d+-%d+)") 
+			if old_ver then
+				if version_gt(require'loverocks.version', old_ver) then
+					return true -- our version is newer, update
+				else
+					return false -- our version is same or lower, don't update
+				end
+			end
+		end
+	end
+	log:error([[
+Couldn't recognize rocks tree %q.
+This can happen when upgrading from an older version of LOVERocks,
+in which case it's safe to delete the old directory.
+Please rename or remove and try again.]], rocks_tree)
+end
+
+local function reinstall_tree(rocks_tree, versions)
+	local env = template.new_env(versions)
+	local path = log:assert(template.path('love9/rocks'))
+	local files = assert(util.slurp(path))
+	files = template.apply(files, env)
+	assert(util.spit(files, rocks_tree))
+end
+
+local function init_rocks(rocks_tree, versions)
+	if not util.is_dir(rocks_tree) then
+		log:info("Rocks tree %q not found, reinstalling.", rocks_tree)
+		reinstall_tree(rocks_tree, versions)
+		return true
+	elseif old_init_file(rocks_tree) then
+		log:info("Rocks tree %q is outdated, upgrading.", rocks_tree)
+		reinstall_tree(rocks_tree, versions)
 		return true
 	end
 
@@ -69,6 +114,9 @@ local cwd = nil
 local function check_flags(flags)
 	T(flags, 'table')
 
+	local rocks_tree = flags.tree or "rocks"
+	T(rocks_tree, 'string')
+
 	local cfg = require("luarocks.cfg")
 	local util = require("luarocks.util")
 	local manif_core = require("luarocks.manif_core")
@@ -76,12 +124,13 @@ local function check_flags(flags)
 	local fs = require("luarocks.fs")
 	local path = require("luarocks.path")
 
+
 	cwd = fs.current_dir()
-	use_tree(cwd .. "/" .. ROCKSDIR , ROCKSDIR)
+	use_tree(cwd .. "/" .. rocks_tree, rocks_tree)
 	if not project_cfg then
 		project_cfg = {}
 		local versions = versions.add_version_info(cwd .. "/conf.lua", project_cfg)
-		init_rocks(versions)
+		init_rocks(rocks_tree, versions)
 		copy(project_cfg, cfg)
 	end
 

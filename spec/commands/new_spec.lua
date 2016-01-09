@@ -21,7 +21,7 @@ describe("loverocks new", function()
 	end)
 
 	it("installs valid lua", function()
-		-- FIXME: write a proper linter.
+		-- TODO: write a proper linter.
 		assert(loadfile("my-project/conf.lua"))
 		assert(loadfile("my-project/rocks/init.lua"))
 	end)

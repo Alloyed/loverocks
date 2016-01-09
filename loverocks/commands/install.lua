@@ -35,7 +35,7 @@ function install.run(args)
 	}
 
 	for _, pkg in ipairs(args.packages) do
-		local version = "" -- FIXME: specify versions
+		local version = "" -- TODO: specify versions
 		log:info("Installing %q", pkg)
 		log:fs("luarocks install %s %s", pkg, version)
 

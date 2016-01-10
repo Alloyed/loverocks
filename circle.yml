@@ -1,14 +1,13 @@
 dependencies:
+    cache_directories:
+        - "~/.luarocks"
     pre:
         - sudo apt-get update
-        - sudo apt-get install lua5.1 luarocks love
+        - sudo apt-get install lua5.1 luarocks
         - sudo luarocks install luarocks
-        - eval `luarocks path --bin`
-        - sudo luarocks install luasocket
-        - sudo luarocks install luasec OPENSSL_LIBDIR=/usr/lib/x86_64-linux-gnu
-        - sudo luarocks install busted
+        - luarocks install spec/test-scm-0.rockspec --only-deps --local OPENSSL_LIBDIR=/usr/lib/x86_64-linux-gnu
     post:
-        - sudo luarocks build loverocks-scm-0.rockspec --only-deps
+        - luarocks make loverocks-scm-0.rockspec --only-deps --local 
 
 database:
     override:
@@ -17,4 +16,5 @@ database:
 test:
     override:
         - mkdir -p $CIRCLE_TEST_REPORTS/junit
-        - LR_QUIET=1 busted -o junit > $CIRCLE_TEST_REPORTS/junit/tests.xml
+        - luarocks make loverocks-scm-0.rockspec --local 
+        - LR_QUIET=1 $HOME/.luarocks/bin/busted -o junit > $CIRCLE_TEST_REPORTS/junit/tests.xml

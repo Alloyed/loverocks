@@ -61,7 +61,7 @@ This includes:
 
 If you already have a LÖVE project you'd like to manage with luarocks, just 
 add these lines to your conf.lua instead:
-```
+```lua
 if love.filesystem then
     require 'rocks' ()
 end

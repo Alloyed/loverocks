@@ -78,4 +78,21 @@ describe("loverocks install", function()
 		}
 		assert.equal(type(loadfile("foobar/share/lua/5.1/inspect.lua")()), 'table')
 	end)
+
+	it("can use custom rocks servers", function()
+		finally(function()
+			purge.run()
+		end)
+
+		util.spit(string.format([[ function love.conf(t) 
+			t.rocks_servers = {%q}
+		end ]], cwd.."/test-repo"), "conf.lua")
+
+		-- FIXME: use a package not available from luarocks.org
+		Install.run {
+			packages = {"inspect"},
+		}
+		assert.equal(type(loadfile("rocks/share/lua/5.1/inspect.lua")()), 'table')
+		
+	end)
 end)

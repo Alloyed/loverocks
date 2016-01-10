@@ -16,12 +16,11 @@ end
 
 function list.run(args)
 	local conf = loadconf.parse_file("./conf.lua")
-	local flags = {
-		tree = conf and conf.rocks_tree,
-		version = conf and conf.version
-	}
 
-	if args.outdated then flags.outdated = true end
+	local flags = api.make_flags(conf)
+	if args.outdated then
+		flags.outdated = true
+	end
 
 	local f = {table.concat(args.filter, " ")}
 	if flags.outdated then

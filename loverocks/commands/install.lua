@@ -26,13 +26,13 @@ end
 function install.run(args)
 	local conf = log:assert(loadconf.parse_file("./conf.lua"))
 
-	local flags = {
-		tree = conf and conf.rocks_tree,
-		version = conf and conf.version,
-		quiet = false,
-		from = args.server,
-		only_from = args.only_server
-	}
+	local flags = api.make_flags(conf)
+	if args.server then
+		table.insert(flags.from, 1, args.server)
+	end
+	if args.only_server then
+		flags.only_from = args.only_server
+	end
 
 	for _, pkg in ipairs(args.packages) do
 		local version = "" -- TODO: specify versions

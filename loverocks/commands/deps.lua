@@ -24,12 +24,13 @@ function deps.run(args)
 	local name = conf.identity or "LOVE_GAME"
 	assert(type(name) == 'string')
 
-	local flags = {
-		tree = conf.rocks_tree,
-		version = conf.version,
-		from = args.server,
-		only_from = args.only_server
-	}
+	local flags = api.make_flags(conf)
+	if args.server then
+		table.insert(flags.from, 1, args.server)
+	end
+	if args.only_server then
+		flags.only_from = args.only_server
+	end
 
 	log:fs("luarocks install <> --only-deps")
 	log:assert(api.in_luarocks(flags, function()

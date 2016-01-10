@@ -10,16 +10,13 @@ end
 
 function purge.run()
 	local conf = loadconf.parse_file("./conf.lua")
-	local flags = {
-		tree = conf and conf.rocks_tree,
-		version = conf and conf.version,
-	}
+	local flags = api.make_flags(conf)
 
-	log:fs("luarocks purge --tree=rocks")
+	log:fs("luarocks purge --tree=" .. (flags.tree or "rocks"))
 	log:assert(api.in_luarocks(flags, function()
 		local lr_purge = require 'luarocks.purge'
 
-		return lr_purge.run("--tree=rocks")
+		return lr_purge.run("--tree=" .. (flags.tree or "rocks"))
 	end))
 end
 

@@ -46,6 +46,21 @@ local function compound_check(o, c)
    return true
 end
 
+--- Returns an homogenous array predicate. An object will typecheck if all of
+--  its array indices match the input type
+function schema.all(t)
+   return function(o)
+      for i, v in ipairs(t) do
+         local ok, err = schema.check(o, t)
+         if not ok then
+            return ok, string.format("array index [%s]: %s", tostring(i), tostring(err))
+         end
+      end
+
+      return true
+   end
+end
+
 --- Returns a sum type predicate. An object will typecheck if it also
 --  typechecks against at least one of the inputs
 function schema.sum(...)

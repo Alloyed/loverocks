@@ -128,7 +128,6 @@ local function check_flags(flags)
 	local fs = require("luarocks.fs")
 	local path = require("luarocks.path")
 
-
 	cwd = fs.current_dir()
 	use_tree(cwd .. "/" .. rocks_tree, rocks_tree)
 	if not project_cfg then
@@ -141,10 +140,14 @@ local function check_flags(flags)
 
 	manif_core.manifest_cache = {} -- clear cache
 	flags._old_servers = cfg.rocks_servers
-	if flags.from then
-		table.insert(cfg.rocks_servers, 1, flags.from)
-	elseif flags.only_from then
+	if flags.only_from then
+		T(flags.only_from, 'string')
 		cfg.rocks_servers = { flags.only_from }
+	elseif flags.from then
+		T(flags.from, T.all('string'))
+		for i=#flags.from, 1, -1 do
+			table.insert(cfg.rocks_servers, 1, flags.from[i])
+		end
 	end
 	util.printout = q_printout
 	util.printerr = q_printerr
@@ -183,6 +186,20 @@ function api.in_luarocks(flags, f)
 	setfenv(lr, env)
 
 	return lr()
+end
+
+-- 
+function api.make_flags(conf)
+	local t = {
+		tree    = conf.rocks_tree,
+		version = conf.version,
+		from    = {}
+	}
+
+	if conf.rocks_servers then
+		T(conf.rocks_servers, T.all('string'))
+		t.from = conf.rocks_servers
+	end
 end
 
 return api

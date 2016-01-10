@@ -15,6 +15,13 @@ function love.conf(t)
    -- Change this to change which folder loverocks installs its modules to.
    t.rocks_tree = "my-rocks-folder"
 
+   -- Use this to specify alternate project-specific rocks servers, so you
+   -- don't need to specify them on the command line all the time.
+   -- The server priorities go:
+   -- CLI -> conf.lua servers -> luarocks servers
+   -- earlier servers take precedence.
+   t.rocks_servers = { "http://alloyed.me/shared/rocks" }
+
    -- The format of t.dependencies is the same as the dependencies field in a
    -- rockspec. additional documentation here:
    --   https://git.io/vuF6U

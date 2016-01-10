@@ -11,7 +11,7 @@ describe("loverocks install", function()
 		local New = require 'loverocks.commands.new'
 		New.run {
 			project      = "my-project",
-			template     = "love9",
+			template     = "love",
 			love_version = "0.9.2",
 		}
 		lfs.chdir("my-project")
@@ -93,6 +93,5 @@ describe("loverocks install", function()
 			packages = {"inspect"},
 		}
 		assert.equal(type(loadfile("rocks/share/lua/5.1/inspect.lua")()), 'table')
-		
 	end)
 end)

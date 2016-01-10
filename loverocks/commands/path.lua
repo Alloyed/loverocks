@@ -1,3 +1,5 @@
+local util = require 'loverocks.util'
+local log = require 'loverocks.log'
 local loadconf = require 'loadconf'
 
 local Path = {}
@@ -33,6 +35,11 @@ function Path.run()
 	if conf and conf.rocks_tree then
 		rocks_tree = conf.rocks_tree
 	end
+
+	if not util.is_dir(rocks_tree) then
+		log:error("rocks tree %q not found", rocks_tree)
+	end
+
 	local path  = {}
 	local cpath = {}
 

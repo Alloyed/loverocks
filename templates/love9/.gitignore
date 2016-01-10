@@ -1,4 +1,0 @@
-*.rock
-/rocks/*
-!/rocks/init.lua
-!/rocks/config.lua

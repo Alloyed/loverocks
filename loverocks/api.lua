@@ -93,7 +93,7 @@ end
 
 local function reinstall_tree(rocks_tree, provided)
 	local env = template.new_env(provided)
-	local path = log:assert(template.path('love9/rocks'))
+	local path = log:assert(template.path('love/rocks'))
 	local files = assert(util.slurp(path))
 	files = template.apply(files, env)
 	assert(util.spit(files, rocks_tree))
@@ -190,6 +190,7 @@ end
 
 -- 
 function api.make_flags(conf)
+	conf = conf or {}
 	local t = {
 		tree    = conf.rocks_tree,
 		version = conf.version,

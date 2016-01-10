@@ -7,7 +7,7 @@ describe("loverocks new", function()
 	setup(function()
 		New.run {
 			project      = "my-project",
-			template     = "love9",
+			template     = "love",
 			love_version = "0.9.2",
 		}
 	end)
@@ -33,7 +33,7 @@ describe("loverocks new", function()
 
 		New.run {
 			project      = "my-project",
-			template     = "love9",
+			template     = "love",
 			love_version = "0.9.2",
 		}
 
@@ -65,15 +65,15 @@ describe("loverocks new parser", function()
 
 	it("passes in project files", function()
 		assert.same(
-			{project = 'my_project', template = 'love9'},
+			{project = 'my_project', template = 'love'},
 			parser:parse{'my_project'})
 
 		assert.same(
-			{project = 'your_project', template = 'love9'},
+			{project = 'your_project', template = 'love'},
 			parser:parse{'your_project'})
 
 		assert.same(
-			{project = 'my complex name', template = 'love9'},
+			{project = 'my complex name', template = 'love'},
 			parser:parse{'my complex name'})
 	end)
 
@@ -93,11 +93,11 @@ describe("loverocks new parser", function()
 
 	it("can manually choose a love version", function()
 		assert.same(
-			{project = 'my_project', template = 'love9', love_version = "0.10.0"},
+			{project = 'my_project', template = 'love', love_version = "0.10.0"},
 			parser:parse{"my_project", "--love-version", "0.10.0"})
 
 		assert.same(
-			{project = 'my_project', template = 'love9', love_version = "0.8.0"},
+			{project = 'my_project', template = 'love', love_version = "0.8.0"},
 			parser:parse{"my_project", "--love-version", "0.8.0"})
 	end)
 end)

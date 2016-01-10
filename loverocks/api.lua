@@ -200,6 +200,8 @@ function api.make_flags(conf)
 		T(conf.rocks_servers, T.all('string'))
 		t.from = conf.rocks_servers
 	end
+
+	return t
 end
 
 return api

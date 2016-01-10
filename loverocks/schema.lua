@@ -50,8 +50,12 @@ end
 --  its array indices match the input type
 function schema.all(t)
    return function(o)
-      for i, v in ipairs(t) do
-         local ok, err = schema.check(o, t)
+      local ok, err
+      ok, err = primitive_check(o, 'table')
+      if not ok then return ok, err end
+
+      for i, v in ipairs(o) do
+         ok, err = schema.check(v, t)
          if not ok then
             return ok, string.format("array index [%s]: %s", tostring(i), tostring(err))
          end

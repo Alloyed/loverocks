@@ -3,6 +3,7 @@ local mod = ...
 local cnames = {
 	"new",
 	"install",
+	"remove",
 	"deps",
 	"list",
 	"search",

@@ -74,7 +74,7 @@ end
 
 and loverocks will automatically install your rocks folder for you.
 If you'd like to customize your install more than that an
-[extended example][example-conf] is also available.
+[extended example][E] is also available.
 
 Now you can start working on your project. Lets say you decide you need
 to use dkjson in your project. To install it, all you need to do is add
@@ -112,7 +112,7 @@ $ zip -r my-project.love *
 will refresh your package cache and install everything, rocks modules
 included, into `my-project.love`.
 
-[example-conf][example-conf.lua]
+[E]: [https://github.com/Alloyed/loverocks/blob/master/example-conf.lua]
 
 Libraries
 ---------

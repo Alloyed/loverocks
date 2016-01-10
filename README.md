@@ -112,7 +112,7 @@ $ zip -r my-project.love *
 will refresh your package cache and install everything, rocks modules
 included, into `my-project.love`.
 
-[E]: [https://github.com/Alloyed/loverocks/blob/master/example-conf.lua]
+[E]: https://github.com/Alloyed/loverocks/blob/master/example-conf.lua
 
 Libraries
 ---------

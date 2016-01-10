@@ -9,6 +9,7 @@ local function main(...)
 	local parser = argparse "loverocks" {
 		description = string.format(desc, fullname),
 	}
+	parser:command_target("cmd")
 	local help = commands.modules.help
 	help.add_command("main", parser)
 
@@ -43,12 +44,7 @@ local function main(...)
 		end)
 
 	local B = parser:parse{...}
-
-	for name, cmd in pairs(commands.modules) do
-		if B[name] then
-			return cmd.run(B)
-		end
-	end
+	return commands.modules[B.cmd].run(B)
 end
 
 return main

@@ -21,6 +21,7 @@ EOT
 
 set -e
 _rspec_ver=$(lua -e "$script")
+git pull
 
 echo "::Updating to $_version, rockspec version $_rspec_ver"
 

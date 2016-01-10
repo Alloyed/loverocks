@@ -25,7 +25,27 @@ local function loader(modname)
 			return love.filesystem.load(elem)
 		end
 	end
+
 	return "\n\tno module '" .. modname .. "' in LOVERocks path."
+end
+
+local function get_os()
+	if love.system and love.system.getOS then -- >= 0.9.0
+		return love.system.getOS()
+	elseif love._os then -- < 0.9.0
+		return love._os
+	else
+		-- either love.system wasn't loaded or something else happened
+		return nil
+	end
+end
+
+local function mkdir(dir)
+	if love.filesystem.createDirectory then
+		love.filesystem.createDirectory(dir)
+	else
+		love.filesystem.mkdir(dir)
+	end
 end
 
 --- Loads native lockrocks libraries. These modules can either be stored in a
@@ -33,11 +53,12 @@ end
 --  inside the .love file itself. In each case though, the module must follow
 --  the loverocks folder structure.
 local function c_loader(mod_name)
-	if not love.system then
-		return "\n\tCannot load native modules, love.system not initialized."
+	local os = get_os()
+	if not os then
+		return "\n\tCannot load LOVERocks modules, OS not found."
 	end
 
-	local ext  = love.system.getOS() == 'windows' and ".dll" or ".so"
+	local ext  = os == 'Windows' and ".dll" or ".so"
 	local file = mod_name:gsub("%.", "/") .. ext
 	local fn   = mod_name:gsub("%.", "_")
 
@@ -45,21 +66,25 @@ local function c_loader(mod_name)
 		elem = elem:gsub('%?', file)
 
 		local real_dir = love.filesystem.getRealDirectory(elem)
+		local save_dir = love.filesystem.getSaveDirectory()
+		local elem_dir = elem:gsub("/[^/]+$", "")
+		local path     = save_dir .. "/" .. elem
 		if real_dir then
 			-- this duplicates binaries needlessly, eg. if a dll is in the same
 			-- directory as the exe, it'll get copied to the save dir anyways.
-			-- Since I can't find way to tell a real file from a zipped file,
-			-- this'll have to do.
-			if real_dir ~= love.filesystem.getSaveDirectory() then
-				love.filesystem.write(elem, love.filesystem.read(elem))
+			-- Since I can't find a way to tell a real file from a zipped
+			-- file, this'll have to do.
+			if real_dir ~= save_dir then
+				mkdir(elem_dir)
+				love.filesystem.write(elem, (love.filesystem.read(elem)))
 			end
 
-			local path = save_dir .. "/" .. elem
 			return package.loadlib(path, "loveopen_" .. fn) or
 			       package.loadlib(path, "luaopen_" .. fn)
 		end
-		return"\n\tno library '" .. file .. "' in LOVERocks path."
 	end
+
+	return"\n\tno library '" .. file .. "' in LOVERocks path."
 end
 
 --- Installs the LOVERocks package loader if it's not already installed.

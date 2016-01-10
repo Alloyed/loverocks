@@ -25,6 +25,9 @@ to work, although the test suite still mostly fails, and I've heard that
 Mac OS seems to work as well. Any issue reports or patches /w/r/t
 porting would be greatly appreciated.
 
+LÖVERocks has been tested against luarocks 2.2.2 and luarocks 2.3.0, so
+if possible, use those.
+
 [U]: https://github.com/keplerproject/luarocks/wiki/Installation-instructions-for-Unix
 [W]: https://github.com/keplerproject/luarocks/wiki/Installation-instructions-for-Windows
 
@@ -43,19 +46,9 @@ To create a new LÖVERocks-managed project, use:
 $ loverocks new my-project
 ```
 
-If you already have a LÖVE project you'd like to manage with luarocks, do:
-
-```shell
-$ loverocks init my-project
-```
-
-instead.
-
 This will install the necessary shims and config files into `my-project/`.
 This includes:
 * A `rocks/` directory to store your modules.
-* A `my-project-scm-1.rockspec` file, which you can use to declare your
-  dependencies.
 * A `conf.lua`, which is configured to add your rocks modules to the
   search path. You can always comment out
 
@@ -65,17 +58,35 @@ This includes:
 
   to disable LOVERocks and only use local files, and uncomment it to bring it
   back.
-* A `.gitignore` tuned to the needs of LÖVERocks. **If you do not use Git,
-  please remember to look over .gitignore and adapt it to your SCM!**
+
+If you already have a LÖVE project you'd like to manage with luarocks, just 
+add these lines to your conf.lua instead:
+```
+if love.filesystem then
+    require 'rocks' ()
+end
+
+function love.conf()
+    t.dependencies = {
+    }
+end
+```
+
+and loverocks will automatically install your rocks folder for you.
+If you'd like to customize your install more than that an
+[extended example][example-conf] is also available.
 
 Now you can start working on your project. Lets say you decide you need
 to use dkjson in your project. To install it, all you need to do is add
+dkjson to your dependencies table, like so:
 
 ```lua
-    "dkjson ~> 2"
+function love.conf(t)
+    t.dependencies = { "dkjson ~> 2" }
+end
 ```
 
-to your dependencies list in `my-project-scm-1.rockspec`, and run
+and then run
 
 ```shell
 $ loverocks deps
@@ -89,8 +100,8 @@ local json = require 'dkjson'
 ```
 
 This does not complicate sharing your game, either. Since all modules
-are stored locally, and external modules are explicitly disabled, you
-can continue packaging your game the way you always have:
+are stored inside your project folder, and external modules are explicitly
+disabled, you can continue packaging your game the way you always have:
 
 ```shell
 $ loverocks purge
@@ -101,16 +112,18 @@ $ zip -r my-project.love *
 will refresh your package cache and install everything, rocks modules
 included, into `my-project.love`.
 
+[example-conf][example-conf.lua]
+
 Libraries
 ---------
 If you are a library writer, good news! You do not have to do anything
 special to support LÖVERocks. Just follow the
 [Luarocks documentation][M] and you should be fine. Just remember, if
 you depend on LÖVE modules in your code, be sure to make that explicit.
-For example, if you support LÖVE 0.8 and 0.9, use the dependency string:
+For example, if you support LÖVE 0.9 and 0.10, use the dependency string:
 
 ```lua
-    "love >= 0.8, < 0.10"
+    "love >= 0.9, < 0.11"
 ```
 
 and LÖVERocks will automatically check that for you.
@@ -120,18 +133,12 @@ and LÖVERocks will automatically check that for you.
 Known Issues
 ------------
 
-* Even though LÖVERocks can install native libraries, like for example
-  luafilesystem, there isn't a recommended way (yet) to package them
-  with your application. They are installed at `rocks/lib/lua/5.1/` if
+* Even though LÖVERocks can install and load native libraries, like for
+  example [luafilesystem][lfs], there isn't a recommended way (yet) to package
+  them with your application. They are installed at `rocks/lib/lua/5.1/` if
   you'd like to get your hands dirty.
 
-* Luarocks always expects a build configuration table, even if you don't
-  plan on building with it. Use the null build type:
-
-  ```lua
-      build = { type = 'none' }
-  ```
-  and it should stay happy.
+[lfs]: https://luarocks.org/modules/hisham/luafilesystem
 
 Testing
 -------
@@ -163,7 +170,7 @@ $ unzip loverocks-test-repo.zip
 LICENSE
 -------
 
-Copyright (c) 2015, Kyle McLamb <alloyed@tfwno.gf> under the MIT License
+Copyright (c) 2016, Kyle McLamb <alloyed@tfwno.gf> under the MIT License
 
 Permission is hereby granted, free of charge, to any person obtaining a
 copy of this software and associated documentation files (the

@@ -4,7 +4,7 @@ local T = require 'loverocks.schema'
 
 -- FIXME: non-love version numbers are pretty much made up
 -- FIXME: Add the luajit rocks-provided modules too
-local STABLE = "0.9.2"
+local STABLE = "0.10.0"
 local versions = {
 	["0.9.0"] = {
 		lua        = "5.1-1",

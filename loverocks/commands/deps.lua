@@ -1,6 +1,6 @@
 local log = require 'loverocks.log'
 local api = require 'loverocks.api'
-local loadconf = require 'loadconf'
+local loadconf = require 'loverocks.loadconf'
 
 local deps = {}
 
@@ -16,7 +16,7 @@ function deps.build(parser)
 end
 
 function deps.run(args)
-	local conf = log:assert(loadconf.parse_file("./conf.lua"))
+	local conf = log:assert(loadconf.require())
 	if not conf.dependencies then
 		log:error("please add a dependency table to your conf.lua FIXME: better error")
 	end
@@ -48,7 +48,7 @@ function deps.run(args)
 		}, "one")
 	end))
 
-	print("Dependencies installed succesfully!")
+	log:info("Dependencies installed succesfully!")
 end
 
 return deps

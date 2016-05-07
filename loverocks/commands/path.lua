@@ -1,6 +1,6 @@
 local util = require 'loverocks.util'
 local log = require 'loverocks.log'
-local loadconf = require 'loadconf'
+local loadconf = require 'loverocks.loadconf'
 
 local Path = {}
 
@@ -31,7 +31,7 @@ end
 
 function Path.run()
 	local rocks_tree = "rocks"
-	local conf = loadconf.parse_file("./conf.lua")
+	local conf = loadconf.require()
 	if conf and conf.rocks_tree then
 		rocks_tree = conf.rocks_tree
 	end
@@ -52,7 +52,7 @@ function Path.run()
 	local path_str  = table.concat(path, ';')
 	local cpath_str = table.concat(cpath, ';')
 
-	print(string.format(script, path_str, cpath_str))
+	io.write(string.format(script, path_str, cpath_str))
 end
 
 return Path

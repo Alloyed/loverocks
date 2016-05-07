@@ -1,4 +1,4 @@
-local loadconf = require 'loadconf'
+local loadconf = require 'loverocks.loadconf'
 local lfs      = require 'lfs'
 local util     = require 'loverocks.util'
 
@@ -81,7 +81,7 @@ function modules.run(args)
 	end
 
 	if args.rocks then
-		local conf = loadconf.parse_file("./conf.lua")
+		local conf = loadconf.require()
 		local rocks_tree = "rocks"
 		if conf and conf.rocks_tree then
 			rocks_tree = conf.rocks_tree

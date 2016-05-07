@@ -1,4 +1,4 @@
-local loadconf = require 'loadconf'
+local loadconf = require 'loverocks.loadconf'
 local api  = require 'loverocks.api'
 local log  = require 'loverocks.log'
 
@@ -15,7 +15,7 @@ function list.build(parser)
 end
 
 function list.run(args)
-	local conf = loadconf.parse_file("./conf.lua")
+	local conf = loadconf.require()
 
 	local flags = api.make_flags(conf)
 	if args.outdated then

@@ -1,4 +1,4 @@
-local loadconf = require 'loadconf'
+local loadconf = require 'loverocks.loadconf'
 local log      = require 'loverocks.log'
 local api      = require 'loverocks.api'
 
@@ -17,7 +17,7 @@ function remove.build(parser)
 end
 
 function remove.run(args)
-	local conf = log:assert(loadconf.parse_file("./conf.lua"))
+	local conf = log:assert(loadconf.require())
 
 	local flags = api.make_flags(conf)
 

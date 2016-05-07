@@ -20,9 +20,9 @@ function help.run(args)
 		if not parser then
 			log:error("no such command %s", args.command)
 		end
-		print(parser:get_help())
+		io.write(parser:get_help().."\n")
 	else
-		print(help.commands.main:get_help())
+		io.write(help.commands.main:get_help().."\n")
 	end
 end
 

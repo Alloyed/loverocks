@@ -1,4 +1,4 @@
-local loadconf = require 'loadconf'
+local loadconf = require 'loverocks.loadconf'
 local api      = require 'loverocks.api'
 local log      = require 'loverocks.log'
 
@@ -9,7 +9,7 @@ function purge.build(parser)
 end
 
 function purge.run()
-	local conf = loadconf.parse_file("./conf.lua")
+	local conf = loadconf.require()
 	local flags = api.make_flags(conf)
 
 	log:fs("luarocks purge --tree=" .. (flags.tree or "rocks"))

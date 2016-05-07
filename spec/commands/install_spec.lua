@@ -68,6 +68,7 @@ describe("loverocks install", function()
 			purge.run()
 		end)
 
+		require('loverocks.loadconf')._config = nil
 		util.spit([[ function love.conf(t) 
 			t.rocks_tree = "foobar"
 		end ]], "conf.lua")
@@ -76,7 +77,8 @@ describe("loverocks install", function()
 			packages = {"inspect"},
 			only_server = cwd .. "/test-repo"
 		}
-		assert.equal(type(loadfile("foobar/share/lua/5.1/inspect.lua")()), 'table')
+		local mod = loadfile("foobar/share/lua/5.1/inspect.lua")
+		assert.equal(type(mod()), 'table')
 	end)
 
 	it("can use custom rocks servers", function()
@@ -84,6 +86,7 @@ describe("loverocks install", function()
 			purge.run()
 		end)
 
+		require('loverocks.loadconf')._config = nil
 		util.spit(string.format([[ function love.conf(t) 
 			t.rocks_servers = {%q}
 		end ]], cwd.."/test-repo"), "conf.lua")

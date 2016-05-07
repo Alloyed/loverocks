@@ -24,7 +24,7 @@ local function main(...)
 	parser:flag "--version"
 		:description "Print version info."
 		:action(function()
-			print(fullname)
+			io.write(fullname .. "\n")
 			os.exit(0)
 		end)
 	parser:flag "-v" "--verbose"

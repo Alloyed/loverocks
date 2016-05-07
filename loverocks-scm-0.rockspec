@@ -46,6 +46,7 @@ build = {
       ["loverocks.love-versions"]    = "loverocks/love-versions.lua",
       ["loverocks.template"]         = "loverocks/template.lua",
       ["loverocks.module_data"]      = "loverocks/module_data.lua",
+      ["loverocks.loadconf"]         = "loverocks/loadconf.lua",
    },
    install = {
       bin = {"bin/loverocks"}

@@ -1,10 +1,12 @@
 local util = require 'loverocks.util'
 local log = require 'loverocks.log'
 local T = require 'loverocks.schema'
+local loadconf = require 'loverocks.loadconf'
 
 -- FIXME: non-love version numbers are pretty much made up
 -- FIXME: Add the luajit rocks-provided modules too
-local STABLE = "0.10.1"
+local STABLE = loadconf.stable_love
+assert(type(STABLE) == 'string')
 local versions = {
 	["0.9.0"] = {
 		lua        = "5.1-1",

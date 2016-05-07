@@ -21,7 +21,7 @@ dependencies = {
    "luafilesystem ~> 1.6",
    "datafile >= 0.2",
    "argparse ~> 0.5",
-   "loadconf ~> 0.1"
+   "loadconf ~> 0.2"
 }
 build = {
    type = "builtin",

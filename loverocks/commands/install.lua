@@ -30,18 +30,25 @@ function install.run(args)
 	if args.server then
 		table.insert(flags.from, 1, args.server)
 	end
+
 	if args.only_server then
 		flags.only_from = args.only_server
 	end
 
 	for _, pkg in ipairs(args.packages) do
-		local version = "" -- TODO: specify versions
-		log:info("Installing %q", pkg)
-		log:fs("luarocks install %s %s", pkg, version)
+		local lr_args = {pkg} -- TODO: specify versions
+		
+		if args.only_deps then
+			table.insert(lr_args, "--only-deps")
+			log:info("Installing dependencies for %q", pkg)
+		else
+			log:info("Installing %q", pkg)
+		end
 
+		log:fs("luarocks install %s", table.concat(lr_args, " "))
 		log:assert(api.in_luarocks(flags, function()
 			local lr_install = require 'luarocks.install'
-			return lr_install.run(pkg)
+			return lr_install.run(unpack(lr_args))
 		end))
 	end
 

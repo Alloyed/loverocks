@@ -1,3 +1,4 @@
+require 'spec.test_config'()
 describe("module listing", function()
 	it("can list/load every module in this project", function()
 		local modules = require 'loverocks.commands.modules'

@@ -1,9 +1,9 @@
+require 'spec.test_config'()
 local util = require 'loverocks.util'
 local lfs  = require 'lfs'
-local New = require 'loverocks.commands.new'
+local New  = require 'loverocks.commands.new'
 
 describe("loverocks new", function()
-	require 'spec.test_config'()
 	setup(function()
 		New.run {
 			project      = "my-project",

@@ -13,8 +13,13 @@ return setmetatable({},{__call = function()
 		log.use.error = true
 	end
 
+	if _G.os._patched then
+		return
+	end
 	local _os = _G.os
 	_G.os = setmetatable({
-		exit = function(i) error(string.format("os.exit(%d)", i or 1)) end
+		exit = function(i) error(string.format("os.exit(%d)", i or 1)) end,
+		real_exit = _os.exit,
+		_patched = true
 	}, {__index = _os})
 end})

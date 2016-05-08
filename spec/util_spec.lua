@@ -1,3 +1,4 @@
+require 'spec.test_config'()
 local util = require 'loverocks.util'
 local lfs = require 'lfs'
 

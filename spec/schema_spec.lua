@@ -1,3 +1,4 @@
+require 'spec.test_config'()
 describe("schema", function()
 	local T = require 'loverocks.schema'
 	it("checks primitive types", function()

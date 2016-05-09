@@ -42,6 +42,8 @@ local function main(...)
 		:action(function()
 			log.use.ask = false
 		end)
+	parser:option "--game" "-g"
+		:description "Manage the game represented by this file/folder."
 
 	local B = parser:parse{...}
 	return commands.modules[B.cmd].run(B)

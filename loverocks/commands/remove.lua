@@ -17,22 +17,21 @@ function remove.build(parser)
 end
 
 function remove.run(args)
-	local conf = log:assert(loadconf.require())
+	local conf = log:assert(loadconf.require(args.game))
 
 	local flags = api.make_flags(conf)
 
 	for _, pkg in ipairs(args.packages) do
-		local version = "" -- TODO: specify versions
+		local lr_args = {pkg}
+		if args.force then
+			table.insert(lr_args, "--force")
+		end
 		log:info("Removing %q", pkg)
-		log:fs("luarocks remove %s %s", pkg, version)
+		log:fs("luarocks remove %s", table.concat(lr_args, " "))
 
 		log:assert(api.in_luarocks(flags, function()
 			local lr_remove = require 'luarocks.remove'
-			if args.force then
-				return lr_remove.run(pkg, "--force")
-			else
-				return lr_remove.run(pkg)
-			end
+			return lr_remove.run(unpack(lr_args))
 		end))
 	end
 end

@@ -29,9 +29,9 @@ local function add_cdir(t, d)
 	end
 end
 
-function Path.run()
+function Path.run(args)
 	local rocks_tree = "rocks"
-	local conf = loadconf.require()
+	local conf = loadconf.require(args.game)
 	if conf and conf.rocks_tree then
 		rocks_tree = conf.rocks_tree
 	end

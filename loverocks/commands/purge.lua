@@ -8,8 +8,8 @@ function purge.build(parser)
 	parser:description "Remove all dependencies/internal loverocks state."
 end
 
-function purge.run()
-	local conf = loadconf.require()
+function purge.run(args)
+	local conf = assert(loadconf.require(args.game))
 	local flags = api.make_flags(conf)
 
 	log:fs("luarocks purge --tree=" .. (flags.tree or "rocks"))

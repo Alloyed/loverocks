@@ -16,7 +16,7 @@ function deps.build(parser)
 end
 
 function deps.run(args)
-	local conf = log:assert(loadconf.require())
+	local conf = log:assert(loadconf.require(args.game))
 	if not conf.dependencies then
 		log:error("please add a dependency table to your conf.lua FIXME: better error")
 	end

@@ -24,7 +24,7 @@ function install.build(parser)
 end
 
 function install.run(args)
-	local conf = log:assert(loadconf.require())
+	local conf = log:assert(loadconf.require(args.game))
 
 	local flags = api.make_flags(conf)
 	if args.server then

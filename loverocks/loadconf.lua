@@ -1,4 +1,5 @@
 -- Monkeypatched loadconf.
+-- Why am I patching my own library? because!
 
 local _loadconf = require 'loadconf'
 local loadconf = {}
@@ -6,7 +7,13 @@ for k, v in pairs(_loadconf) do
 	loadconf[k] = v
 end
 
-local util = require 'loverocks.util'
+local lfs   = require 'lfs'
+
+local rfs   = require 'luarocks.fs'
+
+local log   = require 'loverocks.log'
+local util  = require 'loverocks.util'
+local unzip = require 'loverocks.unzip'
 
 -- Simple shallow merge.
 -- New values replace old, so base[k] == new[k] for every k in new
@@ -18,28 +25,53 @@ local function merge(base, new)
 	return true -- Mutates!
 end
 
+local function load_dir(dir)
+	local conf = {}
+
+	local base_conf, err = loadconf.parse_file(dir .. "/conf.lua")
+	if not base_conf then return base_conf, err end
+
+	merge(conf, base_conf)
+
+	return conf
+end
+
+local function load_archive(fname)
+	local conf = {}
+
+	local body, err = unzip.read(fname, "conf.lua")
+	if not body then return nil, err end
+
+	local base_conf, err = loadconf.parse_string(body)
+
+	if not base_conf then return base_conf, err end
+
+	merge(conf, base_conf)
+
+	return conf
+end
+
 -- builds and returns a loadconf table.
-function loadconf.require()
+function loadconf.require(...)
+	assert(select('#', ...) == 1) -- ensure src was passed in
+	local src = ...
+	
+	if src == nil then
+		src = lfs.currentdir() -- game source is the working dir
+	end
+
+	src = util.clean_path(src)
+
 	if not loadconf._config then
-		local conf = {}
-		local base_conf, err = loadconf.parse_file("./conf.lua")
-		if not base_conf then return base_conf, err end
+		local conf, err = nil, tostring(src) .. " is not a file or directory"
+		if util.is_file(src) then
+			conf, err = load_archive(src)
+		elseif util.is_dir(src) then
+			conf, err = load_dir(src)
+		end
 
-		merge(conf, base_conf)
-		if not conf.dependencies then -- check for a makefile
-			spec_name = util.get_first("./", "scm-%d%.rockspec$")
-			if spec_name then
-
-				local chunk
-				chunk, err = loadfile(spec_name)
-				if not chunk then return chunk, err end
-
-				local rock = {}
-				setfenv(chunk, rock)
-				chunk()
-
-				conf.dependencies = rock.dependencies
-			end
+		if not conf then
+			log:error("%s", err)
 		end
 		loadconf._config = conf
 	end

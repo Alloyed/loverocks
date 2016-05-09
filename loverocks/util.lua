@@ -26,6 +26,7 @@ local function slurp_dir(dir)
 	return t
 end
 
+-- TODO: what about symlinks to dirs?
 function util.is_dir(path)
 	T(path, 'string')
 

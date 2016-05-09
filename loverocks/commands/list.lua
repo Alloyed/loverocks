@@ -15,7 +15,7 @@ function list.build(parser)
 end
 
 function list.run(args)
-	local conf = loadconf.require()
+	local conf = loadconf.require(args.game)
 
 	local flags = api.make_flags(conf)
 	if args.outdated then

@@ -81,7 +81,7 @@ function modules.run(args)
 	end
 
 	if args.rocks then
-		local conf = loadconf.require()
+		local conf = loadconf.require(args.game)
 		local rocks_tree = "rocks"
 		if conf and conf.rocks_tree then
 			rocks_tree = conf.rocks_tree

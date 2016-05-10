@@ -177,6 +177,12 @@ local function make_env(flags)
 	return env
 end
 
+local function pack(...)
+	local t = {...}
+	t.n = select('#', ...)
+	return t
+end
+
 function api.in_luarocks(flags, f)
 	local env = make_env(flags)
 	local function lr()
@@ -184,10 +190,10 @@ function api.in_luarocks(flags, f)
 		local fs = require('luarocks.fs')
 		local cwd = fs.current_dir()
 		check_flags(flags)
-		local r = {f()}
+		local r = pack(f())
 		util.run_scheduled_functions()
 		assert(fs.change_dir(cwd))
-		return unpack(r)
+		return unpack(r, 1, r.n)
 	end
 	setfenv(lr, env)
 

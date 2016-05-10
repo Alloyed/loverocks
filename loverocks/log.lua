@@ -52,7 +52,12 @@ end
 
 function log:assert(ok, ...)
 	if not ok then
-		self:error("%s", ...)
+		local err = ...
+		if type(err) == 'string' then
+			self:error("%s", err)
+		else
+			self:error("assertion failed!")
+		end
 	end
 	return ok, ...
 end

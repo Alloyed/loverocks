@@ -48,19 +48,14 @@ local function mkdir(dir)
 	end
 end
 
---- Loads native lockrocks libraries. These modules can either be stored in a
---  folder in the current working directory, in the user's save folder, or
---  inside the .love file itself. In each case though, the module must follow
---  the loverocks folder structure.
-local function c_loader(mod_name)
+local function c_loader(mod_name, fn_name)
 	local os = get_os()
 	if not os then
-		return "\n\tCannot load LOVERocks modules, OS not found."
+		return "\n\tCannot load native LOVERocks modules, OS not found."
 	end
 
 	local ext  = os == 'Windows' and ".dll" or ".so"
 	local file = mod_name:gsub("%.", "/") .. ext
-	local fn   = mod_name:gsub("%.", "_")
 
 	for _, elem in ipairs(loverocks_cpaths) do
 		elem = elem:gsub('%?', file)
@@ -79,12 +74,31 @@ local function c_loader(mod_name)
 				love.filesystem.write(elem, (love.filesystem.read(elem)))
 			end
 
-			return package.loadlib(path, "loveopen_" .. fn) or
-			       package.loadlib(path, "luaopen_" .. fn)
+			return package.loadlib(path, "loveopen_" .. fn_name) or
+			       package.loadlib(path, "luaopen_"  .. fn_name)
 		end
 	end
 
 	return"\n\tno library '" .. file .. "' in LOVERocks path."
+end
+
+--- Loads native lockrocks libraries. These modules can either be stored in a
+--  folder in the current working directory, in the user's save folder, or
+--  inside the .love file itself. In each case though, the module must follow
+--  the loverocks folder structure.
+local function c_1_loader(mod_name)
+	return c_loader(mod_name, mod_name:gsub("%.", "_"))
+end
+
+--- Loads all-in-one native lockrocks libraries. These modules can either be
+--stored in a folder in the current working directory, in the user's save
+--folder, or inside the .love file itself. In each case though, the module must
+--follow the loverocks folder structure.
+local function c_all_loader(mod_name)
+	local base_mod = mod_name:match("^.+%.")
+	if base_mod then
+		return c_loader(base_mod, mod_name:gsub("%.", "_"))
+	end
 end
 
 --- Installs the LOVERocks package loader if it's not already installed.
@@ -92,7 +106,8 @@ end
 --                           using system-level dependencies in your project.
 local function inject(use_external_deps)
 	local installed = false
-	local c_installed = false
+	local c_1_installed = false
+	local c_all_installed = false
 
 	-- Done in reverse because the modules are most likely
 	-- to be installed at the end
@@ -101,12 +116,17 @@ local function inject(use_external_deps)
 
 		if i_loader == loader then
 			installed = true
-			if c_installed then
+			if c_1_installed and c_all_installed then
 				break
 			end
 		elseif i_loader == c_loader then
 			c_installed = true
-			if installed then
+			if installed and c_all_installed then
+				break
+			end
+		elseif i_loader == c_all_loader then
+			c_all_installed = true
+			if installed and c_1_installed then
 				break
 			end
 		end
@@ -116,8 +136,12 @@ local function inject(use_external_deps)
 		table.insert(package.loaders, loader)
 	end
 
-	if not c_installed then
-		table.insert(package.loaders, c_loader)
+	if not c_1_installed then
+		table.insert(package.loaders, c_1_loader)
+	end
+
+	if not c_all_installed then
+		table.insert(package.loaders, c_all_loader)
 	end
 
 	if not external_deps then

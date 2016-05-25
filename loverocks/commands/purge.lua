@@ -1,6 +1,7 @@
 local loadconf = require 'loverocks.loadconf'
 local api      = require 'loverocks.api'
 local log      = require 'loverocks.log'
+local T        = require 'loverocks.schema'
 
 local purge = {}
 
@@ -9,7 +10,8 @@ function purge.build(parser)
 end
 
 function purge.run(args)
-	local conf = assert(loadconf.require(args.game))
+	assert(type(args) == 'table')
+	local conf = log:assert(loadconf.require(args.game))
 	local flags = api.make_flags(conf)
 
 	log:fs("luarocks purge --tree=" .. (flags.tree or "rocks"))

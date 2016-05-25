@@ -52,9 +52,9 @@ describe("loverocks install", function()
 			parser:parse{'inspect', '-s', 'wat'})
 	end)
 
-	it("Can install normal rocks", function()
+	it("Can install normal rocks #atm", function()
 		finally(function()
-			purge.run()
+			purge.run {}
 		end)
 
 		require('loverocks.loadconf')._config = nil
@@ -68,7 +68,7 @@ describe("loverocks install", function()
 
 	it("can install to custom rocks trees", function()
 		finally(function()
-			purge.run()
+			purge.run {}
 		end)
 
 		util.spit([[ function love.conf(t) 
@@ -86,7 +86,7 @@ describe("loverocks install", function()
 
 	it("can use custom rocks servers", function()
 		finally(function()
-			purge.run()
+			purge.run {}
 		end)
 
 		util.spit(string.format([[ function love.conf(t) 
@@ -102,7 +102,7 @@ describe("loverocks install", function()
 
 	it("can install dependencies of a rock", function()
 		finally(function()
-			purge.run()
+			purge.run {}
 		end)
 
 		require('loverocks.loadconf')._config = nil

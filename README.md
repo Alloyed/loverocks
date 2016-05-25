@@ -1,6 +1,7 @@
 LOVEROCKS
 =========
 [![Circle CI](https://circleci.com/gh/Alloyed/loverocks.svg?style=svg&circle-token=badf14e71fb7fbecee7120a1fda86fa642be9dd2)](https://circleci.com/gh/Alloyed/loverocks)
+[![Coverage Status](https://coveralls.io/repos/github/Alloyed/loverocks/badge.svg?branch=master)](https://coveralls.io/github/Alloyed/loverocks?branch=master)
 
 LÖVERocks is a CLI wrapper around [luarocks][L] that teaches your [LÖVE][O]
 projects how to download and use standard luarocks packages.
@@ -26,7 +27,8 @@ Mac OS seems to work as well. Any issue reports or patches /w/r/t
 porting would be greatly appreciated.
 
 LÖVERocks has been tested against luarocks 2.2.2 and luarocks 2.3.0, so
-if possible, use those.
+if possible, use those. Notably, Lua For Windows does _not_ work: its
+luarocks version is too old.
 
 [U]: https://github.com/keplerproject/luarocks/wiki/Installation-instructions-for-Unix
 [W]: https://github.com/keplerproject/luarocks/wiki/Installation-instructions-for-Windows

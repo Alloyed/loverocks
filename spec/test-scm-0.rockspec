@@ -10,7 +10,10 @@ dependencies = {
    "lua ~> 5.1",
    "luasocket",
    "luasec",
-   "busted"
+   "busted",
+   "luacheck",
+   "luacov",
+   "luacov-coveralls"
 }
 build = {
    type = "none"

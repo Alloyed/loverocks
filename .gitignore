@@ -1,3 +1,5 @@
 manifest
 *.rock
 test-repo
+luacov.report.out
+luacov.stats.out

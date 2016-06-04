@@ -1,8 +1,6 @@
 -- Library for reading .zip files (and by extension, .love files!)
 
-
 local os = require 'loverocks.os'
-local util = require 'loverocks.util'
 local unzip_ok, luazip = pcall(require, 'zip')
 
 local unzip = {}
@@ -48,7 +46,7 @@ elseif os == 'unix' then -- use unzip binary
 elseif os == 'windows' then -- use builtin 7z
 	local fs   = require 'luarocks.fs'
 	local vars = require 'luarocks.cfg'.variables
-	function unzip.read()
+	function unzip.read(archive, fname)
 		local tmpdir, err
 		tmpdir, err = fs.tmpdir("read")
 		if not tmpdir then return nil, err end

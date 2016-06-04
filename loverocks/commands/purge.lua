@@ -1,7 +1,5 @@
-local loadconf = require 'loverocks.loadconf'
 local luarocks = require 'loverocks.luarocks'
 local log      = require 'loverocks.log'
-local T        = require 'loverocks.schema'
 
 local purge = {}
 

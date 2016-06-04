@@ -1,6 +1,5 @@
-local log = require 'loverocks.log'
+local log   = require 'loverocks.log'
 local etlua = require 'etlua'
-local util = require 'loverocks.util'
 
 local template = {}
 

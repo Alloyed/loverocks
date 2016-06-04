@@ -8,8 +8,6 @@
 
 local luarocks = {}
 
-local lfs = require 'lfs'
-
 local T = require 'loverocks.schema'
 local log = require 'loverocks.log'
 local template = require 'loverocks.template'
@@ -42,15 +40,11 @@ local function use_tree(root, tree_name)
 	cfg.deploy_lib_dir = path.deploy_lib_dir(root)
 end
 
-local Lutil = require 'luarocks.util'
-local old_printout, old_printerr = Lutil.printout, Lutil.printerr
-local path_sep = package.config:sub(1, 1)
-
-function q_printout(...)
+local function q_printout(...)
 	log:info("L: %s", table.concat({...}, "\t"))
 end
 
-function q_printerr(...)
+local function q_printerr(...)
 	log:_warning("L: %s", table.concat({...}, "\t"))
 end
 
@@ -74,7 +68,7 @@ local function old_init_file(rocks_tree)
 		local body = log:assert(util.slurp(fname))
 		for field in body:gmatch("%b||") do
 			field = field:sub(2, -2)
-			old_ver = field:match("^version: (%d+%.%d+%.%d+-%d+)") 
+			local old_ver = field:match("^version: (%d+%.%d+%.%d+-%d+)") 
 			if old_ver then
 				if version_gt(require'loverocks.version', old_ver) then
 					return true -- our version is newer, update
@@ -130,11 +124,9 @@ local function check_flags(flags)
 	T(rocks_tree, 'string')
 
 	local cfg = require("luarocks.cfg")
-	local util = require("luarocks.util")
 	local manif_core = require("luarocks.manif_core")
 
 	local fs = require("luarocks.fs")
-	local path = require("luarocks.path")
 
 	-- FIXME make configurable
 	local cwd = fs.current_dir()
@@ -161,8 +153,10 @@ local function check_flags(flags)
 			table.insert(cfg.rocks_servers, 1, flags.from[i])
 		end
 	end
-	util.printout = q_printout
-	util.printerr = q_printerr
+
+	local lr_util = require("luarocks.util")
+	lr_util.printout = q_printout
+	lr_util.printerr = q_printerr
 end
 
 luarocks.check_flags = check_flags
@@ -198,12 +192,12 @@ end
 function luarocks.sandbox(flags, f)
 	local env = make_env(flags)
 	local function lr()
-		local util = require('luarocks.util')
+		local l_util = require('luarocks.util')
 		local fs = require('luarocks.fs')
 		local cwd = fs.current_dir()
 		check_flags(flags)
 		local r = pack(f())
-		util.run_scheduled_functions()
+		l_util.run_scheduled_functions()
 		assert(fs.change_dir(cwd))
 		return unpack(r, 1, r.n)
 	end

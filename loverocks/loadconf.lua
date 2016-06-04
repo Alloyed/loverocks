@@ -9,9 +9,6 @@ end
 
 local lfs   = require 'lfs'
 
-local rfs   = require 'luarocks.fs'
-
-local log   = require 'loverocks.log'
 local util  = require 'loverocks.util'
 local unzip = require 'loverocks.unzip'
 
@@ -42,7 +39,8 @@ local function load_archive(fname)
 	local body, err = unzip.read(fname, "conf.lua")
 	if not body then return nil, err end
 
-	local base_conf, err = loadconf.parse_string(body)
+	local base_conf
+	base_conf, err = loadconf.parse_string(body)
 
 	if not base_conf then return base_conf, err end
 

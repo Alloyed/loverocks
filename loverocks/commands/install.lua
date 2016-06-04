@@ -1,4 +1,3 @@
-local loadconf = require 'loverocks.loadconf'
 local log      = require 'loverocks.log'
 local luarocks      = require 'loverocks.luarocks'
 

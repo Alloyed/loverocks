@@ -20,7 +20,7 @@ function new.build(parser)
 		:description "the name of the project"
 end
 
-function new.run(conf, args)
+function new.run(_, args)
 	local versions = love_versions.get(args.love_version)
 	local env = template.new_env(versions, args.project)
 

@@ -14,7 +14,7 @@ function help.build(parser)
 		:description "the command to look up the help for"
 end
 
-function help.run(conf, args)
+function help.run(_, args)
 	if args.command then
 		local parser = help.commands[args.command]
 		if not parser then

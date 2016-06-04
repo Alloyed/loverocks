@@ -1,7 +1,5 @@
-local loadconf = require 'loverocks.loadconf'
 local luarocks  = require 'loverocks.luarocks'
 local log  = require 'loverocks.log'
-
 
 local list = {}
 
@@ -15,7 +13,6 @@ function list.build(parser)
 end
 
 function list.run(conf, args)
-
 	local flags = luarocks.make_flags(conf)
 	if args.outdated then
 		flags.outdated = true

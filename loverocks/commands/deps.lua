@@ -1,6 +1,5 @@
-local log = require 'loverocks.log'
+local log      = require 'loverocks.log'
 local luarocks = require 'loverocks.luarocks'
-local loadconf = require 'loverocks.loadconf'
 
 local deps = {}
 

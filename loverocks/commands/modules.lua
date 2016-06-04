@@ -1,4 +1,3 @@
-local loadconf = require 'loverocks.loadconf'
 local lfs      = require 'lfs'
 local util     = require 'loverocks.util'
 

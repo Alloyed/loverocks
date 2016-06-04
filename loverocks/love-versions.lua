@@ -1,6 +1,3 @@
-local util = require 'loverocks.util'
-local log = require 'loverocks.log'
-local T = require 'loverocks.schema'
 local loadconf = require 'loverocks.loadconf'
 
 -- FIXME: non-love version numbers are pretty much made up

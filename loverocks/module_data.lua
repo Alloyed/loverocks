@@ -111,4 +111,6 @@ modules.love["0.10.0"] = { -- {{{
 "utf8",
 } -- }}}
 
+modules.love["0.10.1"] = modules.love["0.10.0"]
+
 return modules

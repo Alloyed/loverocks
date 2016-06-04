@@ -189,6 +189,7 @@ local function pack(...)
 	return t
 end
 
+-- 
 function luarocks.sandbox(flags, f)
 	local env = make_env(flags)
 	local function lr()
@@ -206,7 +207,19 @@ function luarocks.sandbox(flags, f)
 	return lr()
 end
 
--- 
+-- attempts to find current version of luarocks. false if failure.
+function luarocks.version()
+	local ok, v = pcall(luarocks.sandbox({}, function()
+		local cfg = require 'luarocks.cfg'
+		return cfg.program_version
+	end))
+
+	if ok then
+		return v
+	end
+	return false
+end
+
 function luarocks.make_flags(conf)
 	conf = conf or {}
 	local t = {

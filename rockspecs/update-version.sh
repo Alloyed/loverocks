@@ -2,6 +2,11 @@
 
 _version="$1"
 
+if [ -z "$_version" ]; then
+	echo "Version number required, format x.y.z"
+	exit 1
+fi
+
 tags=$(git tag -l "v$_version")
 if [ -n "${tags//}" ]; then
 	echo "Tag v$_version exists"

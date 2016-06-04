@@ -1,6 +1,6 @@
 -- Setup project environments.
 local New         = require 'loverocks.commands.new'
-local util        = require 'loverocks.util'
+local s_util      = require 'spec.util'
 local loadconf    = require 'loverocks.loadconf'
 local lfs         = require 'lfs'
 local before_each = require 'busted'.before_each
@@ -22,7 +22,7 @@ end
 function env.stop()
 	assert(_G.cwd)
 	lfs.chdir(_G.cwd)
-	assert(util.rm("my-project"))
+	assert(s_util.rm("my-project"))
 end
 
 function env.setup()

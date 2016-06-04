@@ -1,7 +1,6 @@
-local lfs      = require 'lfs'
-local T        = require 'loverocks.schema'
-
-local log    = require 'loverocks.log'
+local lfs = require 'lfs'
+local T   = require 'loverocks.schema'
+local log = require 'loverocks.log'
 
 local util = {}
 
@@ -145,27 +144,6 @@ function util.clean_path(path)
 	return path
 end
 
-function util.rm(path)
-	T(path, 'string')
-
-	local ftype, ok, err
-	log:fs("rm -r %s", path)
-	ftype, err = lfs.attributes(path, 'mode')
-	if not ftype then return nil, err end
-
-	if ftype == 'directory' then
-		for f in lfs.dir(path) do
-			if f ~= "." and f ~= ".." then
-				local fp = path .. "/" .. f
-				ok, err = util.rm(fp)
-				if not ok then return nil, err end
-			end
-		end
-	end
-
-	return os.remove(path)
-end
-
 function util.exists(path)
 	T(path, 'string')
 
@@ -175,34 +153,6 @@ function util.exists(path)
 		return true
 	end
 	return nil, err
-end
-
-function util.mkdir_p(directory)
-	T(directory, 'string')
-
-	directory = util.clean_path(directory)
-	local path = nil
-	if directory:sub(2, 2) == ":" then
-		path = directory:sub(1, 2)
-		directory = directory:sub(4)
-	else
-		if directory:match("^/") then
-			path = ""
-		end
-	end
-	for d in directory:gmatch("([^".."/".."]+)".."/".."*") do
-		path = path and path .. "/" .. d or d
-		local mode = lfs.attributes(path, "mode")
-		if not mode then
-			local ok, err = lfs.mkdir(path)
-			if not ok then
-				return false, err
-			end
-		elseif mode ~= "directory" then
-			return false, path.." is not a directory"
-		end
-	end
-	return true
 end
 
 return util

@@ -1,7 +1,9 @@
 require 'spec.test_config'()
-local util = require 'loverocks.util'
-local lfs  = require 'lfs'
-local New  = require 'loverocks.commands.new'
+local util  = require 'spec.util'
+local slurp = require 'loverocks.util'.slurp
+local spit  = require 'loverocks.util'.spit
+local lfs   = require 'lfs'
+local New   = require 'loverocks.commands.new'
 
 describe("loverocks new", function()
 	setup(function()
@@ -27,7 +29,7 @@ describe("loverocks new", function()
 	end)
 
 	it("gives deterministic results", function()
-		util.spit((util.slurp("my-project")), "my-projectB")
+		spit((slurp("my-project")), "my-projectB")
 		finally(function() assert(util.rm("my-projectB")) end)
 		assert(util.rm("my-project"))
 
@@ -37,7 +39,7 @@ describe("loverocks new", function()
 			love_version = "0.9.2",
 		})
 
-		assert.same(util.slurp("my-project"), util.slurp("my-projectB"))
+		assert.same(slurp("my-project"), slurp("my-projectB"))
 	end)
 end)
 

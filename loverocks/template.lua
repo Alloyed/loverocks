@@ -27,17 +27,13 @@ function template.apply(files, env)
 		if type(file) == 'table' then
 			done[name] = template.apply(file, env)
 		elseif not name:match("%.swp$") then
-			local new_name = name
-			if new_name:match("PROJECT") then
-				new_name = new_name:gsub("PROJECT", env.project_name)
-			end
 
 			local d, err = etlua.render(file, env)
 			if not d then
 				log:error("%s", name .. ": " .. err)
 			end
 
-			done[new_name] = d
+			done[name] = d
 		end
 	end
 

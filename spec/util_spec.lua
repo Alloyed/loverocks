@@ -1,6 +1,7 @@
 require 'spec.test_config'()
 local util = require 'loverocks.util'
-local lfs = require 'lfs'
+local rm   = require 'spec.util'.rm
+local lfs  = require 'lfs'
 
 describe("util", function()
 	-- TODO: add error cases
@@ -10,7 +11,7 @@ describe("util", function()
 
 		assert(util.spit(data, path))
 		assert.equal(data, util.slurp(path))
-		assert(util.rm(path))
+		assert(rm(path))
 		assert.falsy(util.is_dir(path))
 	end)
 
@@ -30,7 +31,7 @@ describe("util", function()
 		}
 		assert(util.spit(data, out))
 		assert.same(data, util.slurp(out))
-		assert(util.rm(out))
+		assert(rm(out))
 		assert.falsy(util.is_dir(out))
 	end)
 
@@ -71,7 +72,7 @@ describe("util", function()
 			"lr/dirA/dirB/fileD",
 			"lr/fileA"
 		}, set(util.files(out)))
-		assert(util.rm(out))
+		assert(rm(out))
 		assert.falsy(util.is_dir(out))
 	end)
 
@@ -82,14 +83,5 @@ describe("util", function()
 		assert.equal(util.clean_path("hi"), lfs.currentdir() .. "/hi")
 	end)
 
-	it("can mkdir directories", function()
-		assert(util.mkdir_p("/tmp/hello_friend/okay/sure"))
-		assert(util.is_dir("/tmp/hello_friend/okay/sure"))
-		assert(util.rm("/tmp/hello_friend"))
-
-		assert(util.mkdir_p("hello_friend/okay/sure"))
-		assert(util.is_dir("hello_friend/okay/sure"))
-		assert(util.rm("hello_friend"))
-	end)
 end)
 

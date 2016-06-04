@@ -24,16 +24,48 @@ if unzip_ok then
 		return data
 	end
 elseif os == 'unix' then -- use unzip binary
+	local fs   = require 'luarocks.fs'
+	local vars = require 'luarocks.cfg'.variables
 	function unzip.read(archive, fname)
-		local s, err = util.stropen(string.format("unzip -p %q %q 2> /dev/null", archive, fname))
-		if s == "" then
-			return nil, "unzip failed"
-		end
+		assert(archive)
+		assert(fname)
+		local tmpdir = fs.make_temp_dir("read")
+		-- unzip -d tmpdir archive fname
+		local ok = fs.execute_quiet(vars.UNZIP.." -d", tmpdir, archive, fname)
+		if not ok then return nil, "unzip failed" end
+
+		local f, err
+		f, err = io.open(tmpdir.."/"..fname)
+		if not f then return nil, err end
+
+		local s = f:read('*a')
+		f:close()
+
+		fs.delete(tmpdir)
+
 		return s
 	end
-elseif os == 'windows' then -- nope.
+elseif os == 'windows' then -- use builtin 7z
+	local fs   = require 'luarocks.fs'
+	local vars = require 'luarocks.cfg'.variables
 	function unzip.read()
-		error("FIXME: Not yet implemented")
+		local tmpdir, err
+		tmpdir, err = fs.tmpdir("read")
+		if not tmpdir then return nil, err end
+		-- 7z e archive fname -otmpdir
+		local ok = fs.execute_quiet(vars.SEVENZ .. " x", archive, fname, "-o"..tmpdir)
+		if not ok then return nil, "unzip failed" end
+
+		local f
+		f, err = io.open(tmpdir.."/"..fname)
+		if not f then return nil, err end
+
+		local s = f:read('*a')
+		f:close()
+
+		fs.delete(tmpdir)
+
+		return s
 	end
 end
 

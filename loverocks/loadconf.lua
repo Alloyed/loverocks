@@ -73,8 +73,9 @@ function loadconf.require(...)
 		end
 
 		if not conf then
-			log:error("%s", err)
+			conf = {_loverocks_no_config = err}
 		end
+
 		loadconf._config = conf
 	end
 

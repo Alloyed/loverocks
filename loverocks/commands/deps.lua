@@ -24,6 +24,8 @@ function deps.run(conf, args)
 	assert(type(name) == 'string')
 
 	local flags = luarocks.make_flags(conf)
+	flags.init_rocks = true
+
 	if args.server then
 		table.insert(flags.from, 1, args.server)
 	end

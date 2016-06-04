@@ -25,6 +25,8 @@ end
 
 function install.run(conf, args)
 	local flags = luarocks.make_flags(conf)
+	flags.init_rocks = true
+
 	if args.server then
 		table.insert(flags.from, 1, args.server)
 	end

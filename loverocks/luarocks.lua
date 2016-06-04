@@ -112,8 +112,17 @@ local function init_rocks(rocks_tree, provided)
 	return false
 end
 
-local project_cfg = nil
-local cwd = nil
+local function assert_rocks(rocks_tree)
+	if not util.is_dir(rocks_tree) then
+		log:warning("Rocks tree %q not found", rocks_tree)
+		return true
+	elseif old_init_file(rocks_tree) then
+		log:warning("Rocks tree %q is outdated, run `loverocks deps` to get a new one", rocks_tree)
+		return true
+	end
+
+end
+
 local function check_flags(flags)
 	T(flags, 'table')
 
@@ -127,15 +136,19 @@ local function check_flags(flags)
 	local fs = require("luarocks.fs")
 	local path = require("luarocks.path")
 
-	cwd = fs.current_dir()
+	-- FIXME make configurable
+	local cwd = fs.current_dir()
 	use_tree(cwd .. "/" .. rocks_tree, rocks_tree)
-	if not project_cfg then
-		project_cfg = {}
-		local provided = versions.get(flags.version)
-		project_cfg.rocks_provided = provided
+
+	local project_cfg = {}
+	local provided = versions.get(flags.version)
+	project_cfg.rocks_provided = provided
+	if flags.init_rocks then
 		init_rocks(rocks_tree, provided)
-		copy(project_cfg, cfg)
+	else
+		assert_rocks(rocks_tree)
 	end
+	copy(project_cfg, cfg)
 
 	manif_core.manifest_cache = {} -- clear cache
 	flags._old_servers = cfg.rocks_servers

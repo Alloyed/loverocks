@@ -1,15 +1,11 @@
 require 'spec.test_config'()
 
-local purge = require 'loverocks.commands.purge'
-
-describe("loverocks install", function()
-	local Install = require 'loverocks.commands.install'
-	require 'spec.env'.setup()
-
-	it("parses command line arguments correctly", function()
+describe("install.build", function()
+	local install = require 'loverocks.commands.install'
+	it("works", function()
 		local argparse = require 'argparse'
 		local parser = argparse()
-		Install.build(parser)
+		install.build(parser)
 
 		assert.same(
 			{packages = {'inspect'}},
@@ -35,9 +31,16 @@ describe("loverocks install", function()
 			{packages = {'inspect'}, server = 'wat'},
 			parser:parse{'inspect', '-s', 'wat'})
 	end)
+end)
+
+describe("loverocks install", function()
+	local install = require 'loverocks.commands.install'
+	local purge = require 'loverocks.commands.purge'
+
+	require 'spec.env'.setup()
 
 	it("Can install normal rocks", function()
-		Install.run(conf, {
+		install.run(conf, {
 			packages = {"inspect"},
 			only_server = cwd .. "/test-repo"
 		})
@@ -47,7 +50,7 @@ describe("loverocks install", function()
 
 	it("can install to custom rocks trees", function()
 		conf.rocks_tree = "foobar"
-		Install.run(conf, {
+		install.run(conf, {
 			packages = {"inspect"},
 			only_server = cwd .. "/test-repo"
 		})
@@ -57,14 +60,14 @@ describe("loverocks install", function()
 
 	it("can use custom rocks servers", function()
 		conf.rocks_servers = { cwd .. "/test-repo" }
-		Install.run(conf, {
+		install.run(conf, {
 			packages = {"cpml"},
 		})
 		assert.equal('table', type(loadfile("rocks/share/lua/5.1/cpml/modules/utils.lua")()))
 	end)
 
 	it("can install dependencies of a rock", function()
-		Install.run(conf, {
+		install.run(conf, {
 			packages = {"love3d"},
 			only_deps = true,
 			only_server = cwd .. "/test-repo"

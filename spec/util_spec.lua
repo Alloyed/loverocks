@@ -1,6 +1,6 @@
 require 'spec.test_config'()
 local util = require 'loverocks.util'
-local rm   = require 'spec.util'.rm
+local spec_util = require 'spec.util'
 local lfs  = require 'lfs'
 
 describe("util", function()
@@ -11,7 +11,7 @@ describe("util", function()
 
 		assert(util.spit(data, path))
 		assert.equal(data, util.slurp(path))
-		assert(rm(path))
+		assert(spec_util.rm(path))
 		assert.falsy(util.is_dir(path))
 	end)
 
@@ -31,7 +31,7 @@ describe("util", function()
 		}
 		assert(util.spit(data, out))
 		assert.same(data, util.slurp(out))
-		assert(rm(out))
+		assert(spec_util.rm(out))
 		assert.falsy(util.is_dir(out))
 	end)
 
@@ -72,7 +72,7 @@ describe("util", function()
 			"lr/dirA/dirB/fileD",
 			"lr/fileA"
 		}, set(util.files(out)))
-		assert(rm(out))
+		assert(spec_util.rm(out))
 		assert.falsy(util.is_dir(out))
 	end)
 

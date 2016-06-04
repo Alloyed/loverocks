@@ -25,4 +25,4 @@ function util.rm(path)
 	return os.remove(path)
 end
 
-return util
+return setmetatable(util, {__index = require 'loverocks.util'})

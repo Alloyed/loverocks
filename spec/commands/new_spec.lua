@@ -1,7 +1,5 @@
 require 'spec.test_config'()
 local util  = require 'spec.util'
-local slurp = require 'loverocks.util'.slurp
-local spit  = require 'loverocks.util'.spit
 local lfs   = require 'lfs'
 local New   = require 'loverocks.commands.new'
 
@@ -29,7 +27,7 @@ describe("loverocks new", function()
 	end)
 
 	it("gives deterministic results", function()
-		spit((slurp("my-project")), "my-projectB")
+		util.spit((util.slurp("my-project")), "my-projectB")
 		finally(function() assert(util.rm("my-projectB")) end)
 		assert(util.rm("my-project"))
 
@@ -39,30 +37,18 @@ describe("loverocks new", function()
 			love_version = "0.9.2",
 		})
 
-		assert.same(slurp("my-project"), slurp("my-projectB"))
+		assert.same(util.slurp("my-project"), util.slurp("my-projectB"))
 	end)
 end)
 
 describe("loverocks new parser", function()
 	local argparse = require 'argparse'
-	local parser
-	setup(function()
-		parser = argparse()
-		function parser:error(msg)
-			local log = require 'loverocks.log'
-			log:_warning(self:get_usage().."\n")
-			log:error("%s", msg)
-		end
-		New.build(parser)
-	end)
+	local parser = argparse()
+	New.build(parser)
 
 	it("errors on empty args", function()
-		require('loverocks.log').use.error = false
-		finally(function() require('loverocks.log').use.error = true end)
 
-		assert.has_errors(function()
-			return parser:parse{}
-		end)
+		assert.falsy((parser:pparse{}))
 	end)
 
 	it("passes in project files", function()

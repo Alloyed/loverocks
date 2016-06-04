@@ -1,5 +1,5 @@
 local log = require 'loverocks.log'
-local api = require 'loverocks.api'
+local luarocks = require 'loverocks.luarocks'
 local loadconf = require 'loverocks.loadconf'
 
 local deps = {}
@@ -15,8 +15,7 @@ function deps.build(parser)
 			"Fetch rocks/rockspecs from this server, ignoring other servers."
 end
 
-function deps.run(args)
-	local conf = log:assert(loadconf.require(args.game))
+function deps.run(conf, args)
 	if not conf.dependencies then
 		log:error("please add a dependency table to your conf.lua FIXME: better error")
 	end
@@ -24,7 +23,7 @@ function deps.run(args)
 	local name = conf.identity or "LOVE_GAME"
 	assert(type(name) == 'string')
 
-	local flags = api.make_flags(conf)
+	local flags = luarocks.make_flags(conf)
 	if args.server then
 		table.insert(flags.from, 1, args.server)
 	end
@@ -33,7 +32,7 @@ function deps.run(args)
 	end
 
 	log:fs("luarocks install <> --only-deps")
-	log:assert(api.in_luarocks(flags, function()
+	log:assert(luarocks.sandbox(flags, function()
 		local lr_deps = require 'luarocks.deps'
 
 		local parsed_deps = {}

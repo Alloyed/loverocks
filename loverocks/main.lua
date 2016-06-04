@@ -46,6 +46,8 @@ local function main(...)
 		:description "Manage the game represented by this file/folder."
 
 	local B = parser:parse{...}
+	local conf = log:assert(loadconf.require(args.game))
+
 	return commands.modules[B.cmd].run(B)
 end
 

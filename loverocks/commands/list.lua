@@ -1,5 +1,5 @@
 local loadconf = require 'loverocks.loadconf'
-local api  = require 'loverocks.api'
+local luarocks  = require 'loverocks.luarocks'
 local log  = require 'loverocks.log'
 
 
@@ -14,10 +14,9 @@ function list.build(parser)
 		:description "Only return dependencies that have newer versions available."
 end
 
-function list.run(args)
-	local conf = loadconf.require(args.game)
+function list.run(conf, args)
 
-	local flags = api.make_flags(conf)
+	local flags = luarocks.make_flags(conf)
 	if args.outdated then
 		flags.outdated = true
 	end
@@ -31,7 +30,7 @@ function list.run(args)
 	end
 
 	log:fs("luarocks list %s", table.concat(f, " "))
-	log:assert(api.in_luarocks(flags, function()
+	log:assert(luarocks.sandbox(flags, function()
 		local lr_list = require 'luarocks.list'
 
 		return lr_list.run(unpack(f))

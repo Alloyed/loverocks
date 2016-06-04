@@ -2,9 +2,9 @@ local util = require 'loverocks.util'
 local log = require 'loverocks.log'
 local loadconf = require 'loverocks.loadconf'
 
-local Path = {}
+local path = {}
 
-function Path.build(parser)
+function path.build(parser)
 	parser:description(
 		"Generates a script to set LUA_PATH to match the current project's path. " ..
 		"This can be used to test scripts and path outside of LOVE.")
@@ -29,9 +29,8 @@ local function add_cdir(t, d)
 	end
 end
 
-function Path.run(args)
+function path.run(conf, args)
 	local rocks_tree = "rocks"
-	local conf = loadconf.require(args.game)
 	if conf and conf.rocks_tree then
 		rocks_tree = conf.rocks_tree
 	end
@@ -55,4 +54,4 @@ function Path.run(args)
 	io.write(string.format(script, path_str, cpath_str))
 end
 
-return Path
+return path

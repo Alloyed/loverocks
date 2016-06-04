@@ -18,7 +18,7 @@ return setmetatable({},{__call = function()
 	end
 	local _os = _G.os
 	_G.os = setmetatable({
-		exit = function(i) error(string.format("os.exit(%d)", i or 1)) end,
+		exit = function(i) error(string.format("os.exit(%d)", i or 1), 2) end,
 		real_exit = _os.exit,
 		_patched = true
 	}, {__index = _os})

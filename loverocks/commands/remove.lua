@@ -1,6 +1,6 @@
 local loadconf = require 'loverocks.loadconf'
 local log      = require 'loverocks.log'
-local api      = require 'loverocks.api'
+local luarocks      = require 'loverocks.luarocks'
 
 local remove = {}
 
@@ -16,10 +16,8 @@ function remove.build(parser)
 			"Remove package, even if required by other packages"
 end
 
-function remove.run(args)
-	local conf = log:assert(loadconf.require(args.game))
-
-	local flags = api.make_flags(conf)
+function remove.run(conf, args)
+	local flags = luarocks.make_flags(conf)
 
 	for _, pkg in ipairs(args.packages) do
 		local lr_args = {pkg}
@@ -29,7 +27,7 @@ function remove.run(args)
 		log:info("Removing %q", pkg)
 		log:fs("luarocks remove %s", table.concat(lr_args, " "))
 
-		log:assert(api.in_luarocks(flags, function()
+		log:assert(luarocks.sandbox(flags, function()
 			local lr_remove = require 'luarocks.remove'
 			return lr_remove.run(unpack(lr_args))
 		end))

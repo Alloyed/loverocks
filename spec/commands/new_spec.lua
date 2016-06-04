@@ -5,11 +5,11 @@ local New  = require 'loverocks.commands.new'
 
 describe("loverocks new", function()
 	setup(function()
-		New.run {
+		New.run(nil, {
 			project      = "my-project",
 			template     = "love",
 			love_version = "0.9.2",
-		}
+		})
 	end)
 
 	teardown(function()
@@ -31,11 +31,11 @@ describe("loverocks new", function()
 		finally(function() assert(util.rm("my-projectB")) end)
 		assert(util.rm("my-project"))
 
-		New.run {
+		New.run(nil, {
 			project      = "my-project",
 			template     = "love",
 			love_version = "0.9.2",
-		}
+		})
 
 		assert.same(util.slurp("my-project"), util.slurp("my-projectB"))
 	end)

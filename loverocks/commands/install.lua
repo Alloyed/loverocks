@@ -1,6 +1,6 @@
 local loadconf = require 'loverocks.loadconf'
 local log      = require 'loverocks.log'
-local api      = require 'loverocks.api'
+local luarocks      = require 'loverocks.luarocks'
 
 local install = {}
 
@@ -23,10 +23,8 @@ function install.build(parser)
 			"Fetch rocks/rockspecs from this server, ignoring other servers."
 end
 
-function install.run(args)
-	local conf = log:assert(loadconf.require(args.game))
-
-	local flags = api.make_flags(conf)
+function install.run(conf, args)
+	local flags = luarocks.make_flags(conf)
 	if args.server then
 		table.insert(flags.from, 1, args.server)
 	end
@@ -46,7 +44,7 @@ function install.run(args)
 		end
 
 		log:fs("luarocks install %s", table.concat(lr_args, " "))
-		log:assert(api.in_luarocks(flags, function()
+		log:assert(luarocks.sandbox(flags, function()
 			local lr_install = require 'luarocks.install'
 			return lr_install.run(unpack(lr_args))
 		end))

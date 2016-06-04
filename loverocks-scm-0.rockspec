@@ -41,6 +41,7 @@ build = {
       ["loverocks.commands.modules"] = "loverocks/commands/modules.lua",
       ["loverocks.commands.remove"]  = "loverocks/commands/remove.lua",
       ["loverocks.commands.deps"]    = "loverocks/commands/deps.lua",
+      ["loverocks.luarocks"]         = "loverocks/luarocks.lua",
       ["loverocks.api"]              = "loverocks/api.lua",
       ["loverocks.schema"]           = "loverocks/schema.lua",
       ["loverocks.love-versions"]    = "loverocks/love-versions.lua",

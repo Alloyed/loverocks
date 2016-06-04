@@ -62,7 +62,7 @@ function modules.list_modules(fn, prefix, inner)
 	end
 end
 
-function modules.run(args)
+function modules.run(conf, args)
 	local provided = require 'loverocks.module_data'
 	if not args.love and not args['local'] and not args.rocks then
 		args.love     = true
@@ -81,7 +81,6 @@ function modules.run(args)
 	end
 
 	if args.rocks then
-		local conf = loadconf.require(args.game)
 		local rocks_tree = "rocks"
 		if conf and conf.rocks_tree then
 			rocks_tree = conf.rocks_tree

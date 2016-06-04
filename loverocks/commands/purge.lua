@@ -1,5 +1,5 @@
 local loadconf = require 'loverocks.loadconf'
-local api      = require 'loverocks.api'
+local luarocks = require 'loverocks.luarocks'
 local log      = require 'loverocks.log'
 local T        = require 'loverocks.schema'
 
@@ -9,13 +9,12 @@ function purge.build(parser)
 	parser:description "Remove all dependencies/internal loverocks state."
 end
 
-function purge.run(args)
+function purge.run(conf, args)
 	assert(type(args) == 'table')
-	local conf = log:assert(loadconf.require(args.game))
-	local flags = api.make_flags(conf)
+	local flags = luarocks.make_flags(conf)
 
 	log:fs("luarocks purge --tree=" .. (flags.tree or "rocks"))
-	log:assert(api.in_luarocks(flags, function()
+	log:assert(luarocks.sandbox(flags, function()
 		local lr_purge = require 'luarocks.purge'
 
 		return lr_purge.run("--tree=" .. (flags.tree or "rocks"))

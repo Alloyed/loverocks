@@ -1,5 +1,5 @@
 local log = require 'loverocks.log'
-local api  = require 'loverocks.api'
+local luarocks  = require 'loverocks.luarocks'
 local search = {}
 
 function search.build(parser)
@@ -18,7 +18,7 @@ function search.build(parser)
 	)
 end
 
-function search.run(args)
+function search.run(conf, args)
 	local flags = {}
 	local a = {}
 	if args.all then
@@ -36,7 +36,7 @@ function search.run(args)
 	end
 
 	log:fs("luarocks search %s", table.concat(a, " "))
-	log:assert(api.in_luarocks(flags, function()
+	log:assert(luarocks.sandbox(flags, function()
 		local lr_search = require 'luarocks.search'
 		return lr_search.run(unpack(a))
 	end))

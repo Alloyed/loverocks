@@ -52,6 +52,8 @@ local function load_archive(fname)
 end
 
 -- builds and returns a loadconf table.
+-- This is on a best-effort basis. If we can't find any config then we return
+-- an empty table
 function loadconf.require(...)
 	assert(select('#', ...) == 1) -- ensure src was passed in
 	local src = ...

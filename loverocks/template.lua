@@ -45,15 +45,4 @@ function template.apply(files, env)
 	return done
 end
 
-function template.path(name)
-	if require 'loverocks.os' == "unix" then
-		return util.dpath("templates/" .. name)
-	else
-		-- hack to avoid datafile's inability to resolve directories on windows
-		local path, err = util.dpath("templates/" .. name .. "/.gitignore")
-		if path then return path:gsub("%/%.gitignore", "") end
-		return nil, err
-	end
-end
-
 return template

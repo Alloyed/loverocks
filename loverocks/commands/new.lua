@@ -24,10 +24,8 @@ function new.run(conf, args)
 	local versions = love_versions.get(args.love_version)
 	local env = template.new_env(versions, args.project)
 
-	local path = log:assert(template.path(args.template))
-
-	log:info("Using template %q", path)
-	local files = assert(util.slurp(path))
+	log:info("Using template %q", args.template)
+	local files = require("loverocks.templates." .. args.template)
 	files = template.apply(files, env)
 
 	local f = io.open(env.project_name)

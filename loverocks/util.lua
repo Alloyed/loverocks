@@ -1,5 +1,4 @@
 local lfs      = require 'lfs'
-local datafile = require 'datafile'
 local T        = require 'loverocks.schema'
 
 local log    = require 'loverocks.log'
@@ -176,52 +175,6 @@ function util.exists(path)
 		return true
 	end
 	return nil, err
-end
-
--- a replacement datafile.path()
-function util.dpath(resource)
-	T(resource, 'string')
-
-	-- for some reason datafile.path doesn't work
-	local tmpfile, path = datafile.open(resource, 'r')
-	local err = path
-
-	if not tmpfile then
-		return nil, err
-	end
-	tmpfile:close()
-
-	return path
-end
-
--- get first file matching pat
-function util.get_first(path, pat)
-	T(path, 'string')
-	T(pat, 'string')
-
-	local ftype = lfs.attributes(path, 'mode')
-	assert(ftype == 'directory', tostring(path) .. " is not a directory")
-	for f in lfs.dir(path) do
-		if f:match(pat) then
-			return f
-		end
-	end
-	return nil, "Not found"
-end
-
--- like io.popen, but returns a string instead of a file
-function util.stropen(cli)
-	T(cli, 'string')
-
-	local f = io.popen(cli, 'r')
-	local s = f:read('*a')
-	f:close()
-	return s
-end
-
--- produce str with magic characters escaped, for pattern-building
-function util.escape_str(s)
-	return (s:gsub('[%-%.%+%[%]%(%)%$%^%%%?%*]','%%%1'))
 end
 
 function util.mkdir_p(directory)

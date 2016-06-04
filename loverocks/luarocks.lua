@@ -93,8 +93,7 @@ end
 
 local function reinstall_tree(rocks_tree, provided)
 	local env = template.new_env(provided)
-	local path = log:assert(template.path('love/rocks'))
-	local files = assert(util.slurp(path))
+	local files = require("loverocks.templates.love").rocks
 	files = template.apply(files, env)
 	assert(util.spit(files, rocks_tree))
 end

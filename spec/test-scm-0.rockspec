@@ -13,7 +13,8 @@ dependencies = {
    "busted",
    "luacheck",
    "luacov",
-   "luacov-coveralls"
+   "luacov-coveralls",
+   "ser-alloyed ~> 1.0"
 }
 build = {
    type = "none"

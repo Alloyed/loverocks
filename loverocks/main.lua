@@ -1,5 +1,6 @@
 local argparse = require 'argparse'
 local commands = require 'loverocks.commands'
+local loadconf = require 'loverocks.loadconf'
 local log      = require 'loverocks.log'
 
 local function main(...)
@@ -46,9 +47,9 @@ local function main(...)
 		:description "Manage the game represented by this file/folder."
 
 	local B = parser:parse{...}
-	local conf = log:assert(loadconf.require(args.game))
+	local conf = log:assert(loadconf.require(B.game))
 
-	return commands.modules[B.cmd].run(B)
+	return commands.modules[B.cmd].run(conf, B)
 end
 
 return main

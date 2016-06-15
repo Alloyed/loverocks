@@ -126,7 +126,7 @@ function rocks.inject(use_external_deps)
 	table.insert(package.loaders, rocks.c_all_loader)
 	package._loverocks = true
 
-	if not external_deps then
+	if not use_external_deps then
 		-- It would be nice to just yoink the native loaders out entirely
 		package.path = ""
 		package.cpath = ""

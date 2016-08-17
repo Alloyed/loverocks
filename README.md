@@ -2,34 +2,48 @@ LOVEROCKS
 =========
 [![Circle CI](https://circleci.com/gh/Alloyed/loverocks.svg?style=svg&circle-token=badf14e71fb7fbecee7120a1fda86fa642be9dd2)](https://circleci.com/gh/Alloyed/loverocks)
 
-LÖVERocks is a CLI wrapper around [luarocks][L] that teaches your [LÖVE][O]
-projects how to download and use standard luarocks packages.
+LÖVERocks is a CLI wrapper around [Luarocks][L] that teaches your [LÖVE][O]
+projects how to download and use standard Luarocks packages.
 
 [L]: https://luarocks.org
 [O]: https://love2d.org
 
 Installing
 ----------
-LÖVERocks can itself be installed using luarocks. Just run
+
+To install LÖVERocks you'll first need a copy of Luarocks to host it.
+Luarocks should itself use either Lua 5.1 or Luajit (because that's what
+LÖVE itself uses) and it should be relatively up-to-date, which as of
+writing means either Luarocks 2.2.0 or 2.3.0.
+
+If you're on Windows, [the official package][W] works. Notably, Lua For
+Windows does _not_ work: its Luarocks version is too old.
+
+MacOS users can use brew:
+```
+# brew install lua51
+```
+
+This will install both Lua 5.1 and an appropriate Luarocks version.
+
+Linux users should check their package managers. On Ubuntu/Debian,
+`luarocks` will work, on Arch Linux the package is called `luarocks5.1`
+instead.
+
+Once you have that, installing LÖVERocks is easy. Just run:
 
 ```shell
 $ luarocks install loverocks
 ```
 
 and make sure the directory you installed to is in your ``$PATH`` and
-you should be good to go. If you don't have luarocks installed already,
-here are installation instructions for [Unix][U] and [Windows][W].
+you should be good to go.
 
 Linux is the primary development platform for loverocks. Windows seems
 to work, although the test suite still mostly fails, and I've heard that
 Mac OS seems to work as well. Any issue reports or patches /w/r/t
 porting would be greatly appreciated.
 
-LÖVERocks has been tested against luarocks 2.2.2 and luarocks 2.3.0, so
-if possible, use those. Notably, Lua For Windows does _not_ work: its
-luarocks version is too old.
-
-[U]: https://github.com/keplerproject/luarocks/wiki/Installation-instructions-for-Unix
 [W]: https://github.com/keplerproject/luarocks/wiki/Installation-instructions-for-Windows
 
 Using
@@ -60,7 +74,7 @@ This includes:
   to disable LOVERocks and only use local files, and uncomment it to bring it
   back.
 
-If you already have a LÖVE project you'd like to manage with luarocks, just 
+If you already have a LÖVE project you'd like to manage with Luarocks, just 
 add these lines to your conf.lua instead:
 ```lua
 if love.filesystem then
@@ -73,7 +87,7 @@ function love.conf()
 end
 ```
 
-and loverocks will automatically install your rocks folder for you.
+and LÖVErocks will automatically install your rocks folder for you.
 If you'd like to customize your install more than that an
 [extended example][E] is also available.
 
@@ -149,7 +163,7 @@ LÖVERocks uses busted to test. Install it using
 $ luarocks install busted
 ```
 
-In addition, a mock luarocks repository is necessary to keep the tests
+In addition, a mock Luarocks repository is necessary to keep the tests
 from touching the network. use
 
 ```shell

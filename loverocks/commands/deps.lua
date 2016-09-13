@@ -43,7 +43,7 @@ function deps.run(conf, args)
 
 		return lr_deps.fulfill_dependencies({
 			name = name,
-			version = "",
+			version = "(love)",
 			dependencies = parsed_deps
 		}, "one")
 	end))

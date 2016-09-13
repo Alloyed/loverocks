@@ -2,13 +2,17 @@ local argparse = require 'argparse'
 local commands = require 'loverocks.commands'
 local loadconf = require 'loverocks.loadconf'
 local log      = require 'loverocks.log'
+local luarocks = require 'loverocks.luarocks'
 
 local function main(...)
 	local fullname = "Loverocks " .. (require 'loverocks.version')
-	local desc = "%s, a wrapper to make luarocks and love play nicely."
+	local lr_version = luarocks.version()
+	assert(lr_version)
+	local lr_name = "Luarocks " .. tostring(lr_version)
+	local desc = "%s, a wrapper to make %s and LOVE play nicely."
 
 	local parser = argparse "loverocks" {
-		description = string.format(desc, fullname),
+		description = string.format(desc, fullname, lr_name),
 	}
 	parser:command_target("cmd")
 	local help = commands.modules.help
@@ -25,7 +29,7 @@ local function main(...)
 	parser:flag "--version"
 		:description "Print version info."
 		:action(function()
-			io.write(fullname .. "\n")
+			io.write(fullname .. "\n" .. lr_name .. "\n")
 			os.exit(0)
 		end)
 	parser:flag "-v" "--verbose"

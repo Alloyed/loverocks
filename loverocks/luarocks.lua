@@ -207,15 +207,17 @@ function luarocks.sandbox(flags, f)
 	return lr()
 end
 
--- attempts to find current version of luarocks. false if failure.
+-- attempts to find current version of luarocks as a string. false if failure.
 function luarocks.version()
-	local ok, v = pcall(luarocks.sandbox({}, function()
-		local cfg = require 'luarocks.cfg'
-		return cfg.program_version
-	end))
+	local ok, cfg = pcall(require, 'luarocks.cfg')
 
-	if ok then
-		return v
+	--local ok, v = pcall(luarocks.sandbox({}, function()
+	--	local cfg = require 'luarocks.cfg'
+	--	return cfg.program_version
+	--end))
+
+	if ok and cfg.program_version then
+		return cfg.program_version
 	end
 	return false
 end

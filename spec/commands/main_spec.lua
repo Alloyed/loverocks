@@ -3,6 +3,7 @@ require 'spec.test_config'()
 describe("loverocks", function()
 	local main  = require 'loverocks.main' 
 	local match = require 'luassert.match'
+	local luarocks = require 'loverocks.luarocks'
 	it("can dispatch to commands", function()
 		local new = require 'loverocks.commands.new'
 		stub(new, 'run')
@@ -19,7 +20,7 @@ describe("loverocks", function()
 	it("returns version", function()
 		stub(io, "write")
 		assert.has_errors(function() main("--version") end, "os.exit(0)")
-		local version = "Loverocks " .. (require 'loverocks.version') .. "\n"
+		local version = "Loverocks " .. (require 'loverocks.version') .. "\nLuarocks " .. (luarocks.version()) .. "\n"
 		assert.stub(io.write).was.called_with(version)
 	end)
 end)

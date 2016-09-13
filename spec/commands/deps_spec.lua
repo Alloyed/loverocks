@@ -42,7 +42,7 @@ describe("loverocks deps", function()
 		deps.run(conf, {only_server = cwd .. "/test-repo"})
 		assert.equal('table', type(loadfile("rocks/share/lua/5.1/inspect.lua")()))
 		assert.equal('function', type(loadfile("rocks/share/lua/5.1/love3d/init.lua")))
-		assert.equal('table', type(loadfile("rocks/share/lua/5.1/cpml/modules/utils.lua")()))
+		assert.equal('table', type(loadfile("rocks/share/lua/5.1/cpml/modules/vec2.lua")()))
 	end)
 
 	it("will error if missing deps table", function()

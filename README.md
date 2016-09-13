@@ -14,7 +14,7 @@ Installing
 To install LÖVERocks you'll first need a copy of Luarocks to host it.
 Luarocks should itself use either Lua 5.1 or Luajit (because that's what
 LÖVE itself uses) and it should be relatively up-to-date, which as of
-writing means either Luarocks 2.2.0 or 2.3.0.
+writing means either Luarocks 2.3.0 or 2.4.0.
 
 If you're on Windows, [the official package][W] works. Notably, Lua For
 Windows does _not_ work: its Luarocks version is too old.

@@ -63,7 +63,7 @@ describe("loverocks install", function()
 		install.run(conf, {
 			packages = {"cpml"},
 		})
-		assert.equal('table', type(loadfile("rocks/share/lua/5.1/cpml/modules/utils.lua")()))
+		assert.equal('table', type(loadfile("rocks/share/lua/5.1/cpml/modules/vec2.lua")()))
 	end)
 
 	it("can install dependencies of a rock", function()
@@ -74,6 +74,6 @@ describe("loverocks install", function()
 		})
 
 		assert.equal('nil', type(loadfile("rocks/share/lua/5.1/love3d/init.lua")))
-		assert.equal('table', type(loadfile("rocks/share/lua/5.1/cpml/modules/utils.lua")()))
+		assert.equal('table', type(loadfile("rocks/share/lua/5.1/cpml/modules/vec2.lua")()))
 	end)
 end)

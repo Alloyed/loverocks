@@ -135,10 +135,14 @@ end
 function util.clean_path(path)
 	T(path, 'string')
 
+	local os = require 'loverocks.os'
+
 	if path:match("^%~/") then
 		path = path:gsub("^%~/", util.get_home() .. "/")
 	end
-	if not path:match("^/") and not path:match("%./") then
+	if not path:match("^/") and   -- /my-file
+	   not path:match("^%./") and -- ./my-file
+	   not path:match("^%a:") then -- C:\my-file
 		path = lfs.currentdir() .. "/" .. path
 	end
 	return path

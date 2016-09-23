@@ -15,6 +15,9 @@ function deps.build(parser)
 end
 
 function deps.run(conf, args)
+	if conf._loverocks_no_config then
+		log:error("conf.lua error: %s", conf._loverocks_no_config)
+	end
 	if not conf.dependencies then
 		log:error("please add a dependency table to your conf.lua FIXME: better error")
 	end

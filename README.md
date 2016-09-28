@@ -81,7 +81,7 @@ if love.filesystem then
     require 'rocks' ()
 end
 
-function love.conf()
+function love.conf(t)
     t.dependencies = {
     }
 end

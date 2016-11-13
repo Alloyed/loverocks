@@ -17,10 +17,10 @@ so your entire LÖVE project is self-contained.
 dependencies = {
    "lua ~> 5.1",
    -- "luarocks >= 2.2, < 2.4", Doesn't work on windows
-   "etlua ~> 1.2",
+   "etlua ~> 1.3",
    "luafilesystem ~> 1.6",
    "argparse ~> 0.5",
-   "loadconf ~> 0.2"
+   "loadconf ~> 0.3"
 }
 build = {
    type = "builtin",

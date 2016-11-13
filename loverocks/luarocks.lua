@@ -191,7 +191,7 @@ end
 function luarocks.sandbox(flags, f)
 	-- FIXME: required packages are leaking! This is a hack to avoid the
 	-- consequences of this...
-	for k, v in pairs(package.loaded) do
+	for k, _ in pairs(package.loaded) do
 		if k:match('^luarocks') then
 			package.loaded[k] = nil
 		end

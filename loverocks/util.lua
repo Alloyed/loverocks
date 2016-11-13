@@ -135,8 +135,6 @@ end
 function util.clean_path(path)
 	T(path, 'string')
 
-	local os = require 'loverocks.os'
-
 	if path:match("^%~/") then
 		path = path:gsub("^%~/", util.get_home() .. "/")
 	end

@@ -8,7 +8,6 @@ function util.rm(path)
 	T(path, 'string')
 
 	local ftype, ok, err
-	log:fs("rm -r %s", path)
 	ftype, err = lfs.attributes(path, 'mode')
 	if not ftype then return nil, err end
 
@@ -22,6 +21,7 @@ function util.rm(path)
 		end
 	end
 
+	log:fs("rm %s", path)
 	return os.remove(path)
 end
 

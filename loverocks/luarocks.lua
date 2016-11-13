@@ -124,7 +124,6 @@ local function check_flags(flags)
 	T(rocks_tree, 'string')
 
 	local cfg = require("luarocks.cfg")
-	local manif_core = require("luarocks.manif_core")
 
 	local fs = require("luarocks.fs")
 
@@ -142,7 +141,6 @@ local function check_flags(flags)
 	end
 	copy(project_cfg, cfg)
 
-	manif_core.manifest_cache = {} -- clear cache
 	flags._old_servers = cfg.rocks_servers
 	if flags.only_from then
 		T(flags.only_from, 'string')
@@ -191,13 +189,20 @@ end
 
 -- 
 function luarocks.sandbox(flags, f)
+	-- FIXME: required packages are leaking! This is a hack to avoid the
+	-- consequences of this...
+	for k, v in pairs(package.loaded) do
+		if k:match('^luarocks') then
+			package.loaded[k] = nil
+		end
+	end
 	local env = make_env(flags)
 	local function lr()
-		local l_util = require('luarocks.util')
 		local fs = require('luarocks.fs')
 		local cwd = fs.current_dir()
 		check_flags(flags)
 		local r = pack(f())
+		local l_util = require('luarocks.util')
 		l_util.run_scheduled_functions()
 		assert(fs.change_dir(cwd))
 		return unpack(r, 1, r.n)

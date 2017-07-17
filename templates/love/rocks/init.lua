@@ -52,6 +52,12 @@ local function can_open(fname)
 end
 
 local function c_loader(modname, fn_name)
+	-- turn periods into underscores, and remove a hyphen-prefix.
+	-- The rules for this are here:
+	-- https://www.lua.org/manual/5.1/manual.html#pdf-package.loaders
+	-- I might have the details wrong, PRs welcome
+	fn_name = fn_name:gsub("%.", "_"):gsub("^[^-]*-", "")
+
 	local os = get_os()
 	if not os then
 		return "\n\tCannot load native LOVERocks modules, OS not found."
@@ -100,7 +106,7 @@ end
 --  it is run from a folder. Notably, there is no way to load a library that
 --  is packed into a love file.
 function rocks.c_1_loader(modname)
-	return c_loader(modname, modname:gsub("%.", "_"))
+	return c_loader(modname, modname)
 end
 
 ---
@@ -110,7 +116,7 @@ end
 function rocks.c_all_loader(modname)
 	local base_mod = modname:match("^.+%.")
 	if base_mod then
-		return c_loader(base_mod, modname:gsub("%.", "_"))
+		return c_loader(base_mod, modname)
 	end
 end
 

@@ -22,6 +22,7 @@ describe("loverocks purge", function()
 	local deps  = require 'loverocks.commands.deps'
 
 	require 'spec.env'.setup()
+	--luacheck: push ignore conf cwd
 
 	it("removes all modules without removing the tree", function()
 		conf.dependencies = {"inspect", "love3d"}
@@ -44,4 +45,6 @@ describe("loverocks purge", function()
 		assert.has_errors(function() purge.run(conf, {}) end, "os.exit(1)")
 		assert.falsy(loadfile("rocks/init.lua"))
 	end)
+
+	--luacheck: pop
 end)

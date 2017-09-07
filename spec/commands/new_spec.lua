@@ -1,6 +1,5 @@
 require 'spec.test_config'()
 local util  = require 'spec.util'
-local lfs   = require 'lfs'
 local New   = require 'loverocks.commands.new'
 
 describe("loverocks new", function()

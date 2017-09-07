@@ -29,6 +29,7 @@ describe("loverocks deps", function()
 	local deps = require 'loverocks.commands.deps'
 
 	require 'spec.env'.setup()
+	--luacheck: push ignore conf cwd
 
 	it("satisfies deps listed in conf", function()
 		conf.dependencies = {"inspect"}
@@ -66,4 +67,6 @@ describe("loverocks deps", function()
 		assert.truthy(util.is_file("./rocks/init.lua"))
 		assert.equal('table', type(loadfile("rocks/share/lua/5.1/inspect.lua")()))
 	end)
+
+	--luacheck: pop
 end)

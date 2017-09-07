@@ -35,9 +35,10 @@ end)
 
 describe("loverocks install", function()
 	local install = require 'loverocks.commands.install'
-	local purge = require 'loverocks.commands.purge'
+	--local purge = require 'loverocks.commands.purge'
 
 	require 'spec.env'.setup()
+	--luacheck: push ignore conf cwd
 
 	it("Can install normal rocks", function()
 		install.run(conf, {
@@ -76,4 +77,6 @@ describe("loverocks install", function()
 		assert.equal('nil', type(loadfile("rocks/share/lua/5.1/love3d/init.lua")))
 		assert.equal('table', type(loadfile("rocks/share/lua/5.1/cpml/modules/vec2.lua")()))
 	end)
+
+	--luacheck: pop
 end)

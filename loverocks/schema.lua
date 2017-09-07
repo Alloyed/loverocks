@@ -86,7 +86,7 @@ function schema.maybe(s)
    return schema.sum('nil', s)
 end
 
---- Returns an enum predicate. An object will typecheck if it is 
+--- Returns an enum predicate. An object will typecheck if it is
 --  the same as at least one of the inputs, ie. rawequal()
 function schema.enum(...)
    local set = {}

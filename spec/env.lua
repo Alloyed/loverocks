@@ -21,7 +21,8 @@ end
 function env.stop()
 	assert(_G.cwd)
 	fs.change_dir(_G.cwd)
-	assert(fs.delete("my-project"))
+	fs.delete("my-project")
+	assert(not fs.is_dir("my-project"))
 end
 
 function env.setup()

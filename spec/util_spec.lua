@@ -10,7 +10,8 @@ describe("util", function()
 
 		assert(util.spit(data, path))
 		assert.equal(data, util.slurp(path))
-		assert(fs.delete(path))
+
+		fs.delete(path)
 		assert.falsy(fs.is_dir(path))
 	end)
 
@@ -30,7 +31,8 @@ describe("util", function()
 		}
 		assert(util.spit(data, out))
 		assert.same(data, util.slurp(out))
-		assert(fs.delete(out))
+
+		fs.delete(out)
 		assert.falsy(fs.is_dir(out))
 	end)
 

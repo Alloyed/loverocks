@@ -7,7 +7,7 @@ for k, v in pairs(_loadconf) do
 	loadconf[k] = v
 end
 
-local lfs   = require 'lfs'
+local fs   = require 'luarocks.fs'
 
 local util  = require 'loverocks.util'
 local unzip = require 'loverocks.unzip'
@@ -55,18 +55,18 @@ end
 function loadconf.require(...)
 	assert(select('#', ...) == 1) -- ensure src was passed in
 	local src = ...
-	
+
 	if src == nil then
-		src = lfs.currentdir() -- game source is the working dir
+		src = fs.current_dir() -- game source is the working dir
 	end
 
 	src = util.clean_path(src)
 
 	if not loadconf._config then
 		local conf, err = nil, tostring(src) .. " is not a file or directory"
-		if util.is_file(src) then
+		if fs.is_file(src) then
 			conf, err = load_archive(src)
-		elseif util.is_dir(src) then
+		elseif fs.is_dir(src) then
 			conf, err = load_dir(src)
 		end
 

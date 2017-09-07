@@ -1,4 +1,4 @@
-local util = require 'loverocks.util'
+local fs = require 'luarocks.fs'
 local log = require 'loverocks.log'
 
 local path = {}
@@ -34,7 +34,7 @@ function path.run(conf, _)
 		rocks_tree = conf.rocks_tree
 	end
 
-	if not util.is_dir(rocks_tree) then
+	if not fs.is_dir(rocks_tree) then
 		log:error("rocks tree %q not found", rocks_tree)
 	end
 

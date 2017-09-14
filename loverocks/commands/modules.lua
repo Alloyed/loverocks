@@ -1,5 +1,4 @@
-local lfs      = require 'lfs'
-local util     = require 'loverocks.util'
+local fs     = require 'luarocks.fs'
 
 local modules = {}
 
@@ -41,15 +40,12 @@ local function p(...)
 	return table.concat(t, "/")
 end
 
-local ignore = {["."] = true, [".."] = true}
 function modules.list_modules(fn, prefix, inner)
 	local dir = p(prefix, inner)
-	for f in lfs.dir(dir) do
+	for f in fs.dir(dir) do
 		local path = p(prefix, inner, f)
-		if util.is_dir(path) then
-			if not ignore[f] then
-				modules.list_modules(fn, prefix, p(inner, f))
-			end
+		if fs.is_dir(path) then
+			modules.list_modules(fn, prefix, p(inner, f))
 		else
 			if f:match("%.lua$") or f:match("%.dll$") or f:match("%.so$") then
 				local mod = modules.file_to_module(p(inner, f))
@@ -85,11 +81,11 @@ function modules.run(conf, args)
 			rocks_tree = conf.rocks_tree
 		end
 
-		if util.exists(rocks_tree .. "/share/lua/5.1") then
+		if fs.exists(rocks_tree .. "/share/lua/5.1") then
 			modules.list_modules(print, rocks_tree .. "/share/lua/5.1")
 		end
 
-		if util.exists(rocks_tree .. "/lib/lua/5.1") then
+		if fs.exists(rocks_tree .. "/lib/lua/5.1") then
 			modules.list_modules(print, rocks_tree .. "/lib/lua/5.1")
 		end
 	end

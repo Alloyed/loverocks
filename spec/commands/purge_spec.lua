@@ -1,4 +1,4 @@
-local util = require 'spec.util'
+local fs = require 'luarocks.fs'
 require 'spec.test_config'()
 
 describe("purge.build", function()
@@ -22,6 +22,7 @@ describe("loverocks purge", function()
 	local deps  = require 'loverocks.commands.deps'
 
 	require 'spec.env'.setup()
+	--luacheck: push ignore conf cwd
 
 	it("removes all modules without removing the tree", function()
 		conf.dependencies = {"inspect", "love3d"}
@@ -39,9 +40,11 @@ describe("loverocks purge", function()
 		finally(function() log.use.error = e end)
 		log.use.error = false
 
-		util.rm("rocks")
+		fs.delete("rocks")
 		assert.falsy(loadfile("rocks/init.lua"))
 		assert.has_errors(function() purge.run(conf, {}) end, "os.exit(1)")
 		assert.falsy(loadfile("rocks/init.lua"))
 	end)
+
+	--luacheck: pop
 end)

@@ -1,6 +1,6 @@
 require 'spec.test_config'()
-local util  = require 'spec.util'
-local lfs   = require 'lfs'
+local fs  = require 'luarocks.fs'
+local util = require 'loverocks.util'
 local New   = require 'loverocks.commands.new'
 
 describe("loverocks new", function()
@@ -13,7 +13,8 @@ describe("loverocks new", function()
 	end)
 
 	teardown(function()
-		assert(util.rm("my-project"))
+		fs.delete("my-project")
+		assert(not fs.is_dir("my-project"))
 	end)
 
 	it("installs files", function()
@@ -28,8 +29,13 @@ describe("loverocks new", function()
 
 	it("gives deterministic results", function()
 		util.spit((util.slurp("my-project")), "my-projectB")
-		finally(function() assert(util.rm("my-projectB")) end)
-		assert(util.rm("my-project"))
+		finally(function()
+			fs.delete("my-projectB")
+			assert(not fs.is_dir("my-projectB"))
+		end)
+
+		fs.delete("my-project")
+		assert(not fs.is_dir("my-project"))
 
 		New.run(nil, {
 			project      = "my-project",

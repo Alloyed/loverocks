@@ -1,4 +1,4 @@
-local lfs = require 'lfs'
+local fs = require 'luarocks.fs'
 local T   = require 'loverocks.schema'
 local log = require 'loverocks.log'
 
@@ -15,38 +15,22 @@ end
 local function slurp_dir(dir)
 	local t = {}
 
-	for f in lfs.dir(dir) do
-		if f ~= "." and f ~= ".." then
-			t[f] = assert(util.slurp(dir .. "/" .. f))
-		end
+	for f in fs.dir(dir) do
+		t[f] = assert(util.slurp(dir .. "/" .. f))
 	end
 
 	return t
 end
 
--- TODO: what about symlinks to dirs?
-function util.is_dir(path)
-	T(path, 'string')
-
-	return lfs.attributes(path, 'mode') == 'directory'
-end
-
-function util.is_file(path)
-	T(path, 'string')
-
-	return lfs.attributes(path, 'mode') == 'file'
-end
-
 function util.slurp(path)
 	T(path, 'string')
 
-	local ftype, err = lfs.attributes(path, 'mode')
-	if ftype == 'directory' then
+	if fs.is_dir(path) then
 		return slurp_dir(path)
-	elseif ftype then
+	elseif fs.is_file(path) then
 		return slurp_file(path)
 	else
-		return nil, err
+		return nil, 'The path provided is neither a directory nor a file'
 	end
 end
 
@@ -67,8 +51,8 @@ end
 
 local function spit_dir(tbl, dest)
 	log:fs("mkdir %s", dest)
-	if not util.is_dir(dest) then
-		local ok, err = lfs.mkdir(dest)
+	if not fs.is_dir(dest) then
+		local ok, err = fs.make_dir(dest)
 		if not ok then return nil, err end
 	end
 
@@ -94,40 +78,6 @@ function util.spit(o, dest)
 	end
 end
 
-local function ls_dir(dir)
-	local t = {}
-	for entry in lfs.dir(dir) do
-		if entry ~= "." and entry ~= ".." then
-			local file_or_dir = util.files(dir .. "/" .. entry)
-			if type(file_or_dir) == 'table' then
-				for _, file in ipairs(file_or_dir) do
-					table.insert(t, file)
-				end
-			else
-				table.insert(t, file_or_dir)
-			end
-		end
-	end
-	return t
-end
-
-local function ls_file(path)
-	return path
-end
-
-function util.files(path)
-	T(path, 'string')
-
-	local ftype, err = lfs.attributes(path, 'mode')
-	if ftype == 'directory' then
-		return ls_dir(path)
-	elseif ftype then
-		return ls_file(path)
-	else
-		return nil, err
-	end
-end
-
 function util.get_home()
 	return (os.getenv("HOME") or os.getenv("USERPROFILE"))
 end
@@ -141,20 +91,9 @@ function util.clean_path(path)
 	if not path:match("^/") and   -- /my-file
 	   not path:match("^%./") and -- ./my-file
 	   not path:match("^%a:") then -- C:\my-file
-		path = lfs.currentdir() .. "/" .. path
+		path = fs.current_dir() .. "/" .. path
 	end
 	return path
-end
-
-function util.exists(path)
-	T(path, 'string')
-
-	local f, err = io.open(path, 'r')
-	if f then
-		f:close()
-		return true
-	end
-	return nil, err
 end
 
 return util

@@ -8,6 +8,8 @@
 
 local luarocks = {}
 
+local fs = require 'luarocks.fs'
+
 local T = require 'loverocks.schema'
 local log = require 'loverocks.log'
 local template = require 'loverocks.template'
@@ -64,11 +66,11 @@ end
 local function old_init_file(rocks_tree)
 	local fname = rocks_tree .. "/init.lua"
 
-	if util.is_file(fname) then
+	if fs.is_file(fname) then
 		local body = log:assert(util.slurp(fname))
 		for field in body:gmatch("%b||") do
 			field = field:sub(2, -2)
-			local old_ver = field:match("^version: (%d+%.%d+%.%d+-%d+)") 
+			local old_ver = field:match("^version: (%d+%.%d+%.%d+-%d+)")
 			if old_ver then
 				if version_gt(require'loverocks.version', old_ver) then
 					return true -- our version is newer, update
@@ -93,7 +95,7 @@ local function reinstall_tree(rocks_tree, provided)
 end
 
 local function init_rocks(rocks_tree, provided)
-	if not util.is_dir(rocks_tree) then
+	if not fs.is_dir(rocks_tree) then
 		log:info("Rocks tree %q not found, reinstalling.", rocks_tree)
 		reinstall_tree(rocks_tree, provided)
 		return true
@@ -107,7 +109,7 @@ local function init_rocks(rocks_tree, provided)
 end
 
 local function assert_rocks(rocks_tree)
-	if not util.is_dir(rocks_tree) then
+	if not fs.is_dir(rocks_tree) then
 		log:warning("Rocks tree %q not found", rocks_tree)
 		return true
 	elseif old_init_file(rocks_tree) then
@@ -125,7 +127,7 @@ local function check_flags(flags)
 
 	local cfg = require("luarocks.cfg")
 
-	local fs = require("luarocks.fs")
+	-- local fs = require("luarocks.fs")
 
 	-- FIXME make configurable
 	local cwd = fs.current_dir()
@@ -187,7 +189,7 @@ local function pack(...)
 	return t
 end
 
--- 
+--
 function luarocks.sandbox(flags, f)
 	-- FIXME: required packages are leaking! This is a hack to avoid the
 	-- consequences of this...
@@ -198,7 +200,7 @@ function luarocks.sandbox(flags, f)
 	end
 	local env = make_env(flags)
 	local function lr()
-		local fs = require('luarocks.fs')
+		-- local fs = require('luarocks.fs')
 		local cwd = fs.current_dir()
 		check_flags(flags)
 		local r = pack(f())

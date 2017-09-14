@@ -36,7 +36,7 @@ function install.run(conf, args)
 
 	for _, pkg in ipairs(args.packages) do
 		local lr_args = {pkg} -- TODO: specify versions
-		
+
 		if args.only_deps then
 			table.insert(lr_args, "--only-deps")
 			log:info("Installing dependencies for %q", pkg)

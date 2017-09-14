@@ -1,7 +1,7 @@
 require 'spec.test_config'()
 
 describe("loverocks", function()
-	local main  = require 'loverocks.main' 
+	local main  = require 'loverocks.main'
 	local match = require 'luassert.match'
 	local luarocks = require 'loverocks.luarocks'
 	it("can dispatch to commands", function()

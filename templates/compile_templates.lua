@@ -11,6 +11,10 @@ for _, t_name in ipairs(templates) do
    local fname = "loverocks/templates/"..t_name..".lua"
    io.stderr:write("generating " .. fname .. "\n")
    local f = assert(io.open(fname, 'w'))
+   f:write("-- This is automatically generated using")
+   f:write("\n-- templates/compile_templates.lua on "..os.date())
+   f:write("\n-- luacheck: push ignore\n")
    f:write(s)
+   f:write("\n-- luacheck: pop\n")
    f:close()
 end

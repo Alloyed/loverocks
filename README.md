@@ -135,10 +135,10 @@ If you are a library writer, good news! You do not have to do anything
 special to support LÖVERocks. Just follow the
 [Luarocks documentation][M] and you should be fine. Just remember, if
 you depend on LÖVE modules in your code, be sure to make that explicit.
-For example, if you support LÖVE 0.9 and 0.10, use the dependency string:
+For example, if you support LÖVE 0.10 and 11.0, use the dependency string:
 
 ```lua
-    "love >= 0.9, < 0.11"
+    "love >= 0.10, < 12.0"
 ```
 
 and LÖVERocks will automatically check that for you.

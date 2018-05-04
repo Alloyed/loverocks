@@ -20,7 +20,7 @@ dependencies = {
    "etlua ~> 1.3",
    -- "luafilesystem ~> 1.6",
    "argparse ~> 0.5",
-   "loadconf >= 0.3.3, < 0.4"
+   "loadconf >= 0.3.4, < 0.4"
 }
 build = {
    type = "builtin",

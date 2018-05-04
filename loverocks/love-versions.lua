@@ -49,11 +49,20 @@ local versions = {
 	},
 	["11.0"] = {
 		lua        = "5.1-1",
-		love       = "0.10.2-1",
+		love       = "11.0-1",
 		luasocket  = "2.0.2-5",
 		enet       = "1.2-1",
 		utf8       = "0.1.0-1"
-	}
+	},
+	["11.1"] = {
+		lua        = "5.1-1",
+		love       = "11.1-1",
+		luasocket  = "2.0.2-5",
+		enet       = "1.2-1",
+		utf8       = "0.1.0-1"
+	},
+	-- HEY DUMMY, SEE THAT KEY NAMED LOVE?
+	-- YEAH THAT SHOULD BE THE SAME AS THE VERSION NUMBER
 }
 
 local function get_versions_for(v)

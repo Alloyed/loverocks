@@ -2,12 +2,7 @@ language: python
 sudo: false
 
 env:
-  - LUA="--lua=5.3"    LUAROCKS=""
   - LUA="--lua=5.1"    LUAROCKS=""
-  - LUA="--lua=5.1"    LUAROCKS=""
-  - LUA="--lua=5.2"    LUAROCKS=""
-  - LUA="--lua=5.3"    LUAROCKS=""
-  - LUA="--lua=5.3"    LUAROCKS=""
   - LUA="--luajit=2.1" LUAROCKS=""
   - LUA="--lua=5.1"    LUAROCKS="--luarocks=3"
 
@@ -17,7 +12,7 @@ cache:
 
 before_install:
   - pip install hererocks
-  - hererocks lua_install -r^ --$LUA
+  - hererocks lua_install -r^ $LUA $LUAROCKS
   - export PATH=$PATH:$PWD/lua_install/bin # Add directory with all installed binaries to PATH
 
 install:
@@ -27,7 +22,7 @@ install:
   - luarocks install --only-deps loverocks-scm-0.rockspec
 
 script:
-  - luacheck -ur .
+  - luacheck -ur loverocks
   - busted --verbose --coverage
 
 after_success:

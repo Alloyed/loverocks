@@ -1,6 +1,5 @@
 LOVEROCKS
 =========
-[![Circle CI](https://circleci.com/gh/Alloyed/loverocks.svg?style=svg&circle-token=badf14e71fb7fbecee7120a1fda86fa642be9dd2)](https://circleci.com/gh/Alloyed/loverocks)
 
 LÖVERocks is a CLI wrapper around [Luarocks][L] that teaches your [LÖVE][O]
 projects how to download and use standard Luarocks packages.
@@ -11,10 +10,11 @@ projects how to download and use standard Luarocks packages.
 Installing
 ----------
 
-To install LÖVERocks you'll first need a copy of Luarocks to host it.
-Luarocks should itself use either Lua 5.1 or Luajit (because that's what
-LÖVE itself uses) and it should be relatively up-to-date, which as of
-writing means either Luarocks 2.3.0 or 2.4.0.
+To install LÖVERocks you'll first need a copy of Luarocks to host it.  Luarocks
+should itself use either Lua 5.1 or Luajit (because that's what LÖVE itself
+uses) and it should be relatively up-to-date, which as of writing means either
+Luarocks 2.3.0 or 2.4.0. Note that luarocks 3 is not yet supported but is being
+actively worked on.
 
 If you're on Windows, [the official package][W] works. Notably, Lua For
 Windows does _not_ work: its Luarocks version is too old.

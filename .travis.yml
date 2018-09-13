@@ -1,0 +1,43 @@
+language: python
+sudo: false
+
+env:
+  - LUA="--lua=5.3"    LUAROCKS=""
+  - LUA="--lua=5.1"    LUAROCKS=""
+  - LUA="--lua=5.1"    LUAROCKS=""
+  - LUA="--lua=5.2"    LUAROCKS=""
+  - LUA="--lua=5.3"    LUAROCKS=""
+  - LUA="--lua=5.3"    LUAROCKS=""
+  - LUA="--luajit=2.1" LUAROCKS=""
+  - LUA="--lua=5.1"    LUAROCKS="--luarocks=3"
+
+cache:
+    directories:
+        - lua_install
+
+before_install:
+  - pip install hererocks
+  - hererocks lua_install -r^ --$LUA
+  - export PATH=$PATH:$PWD/lua_install/bin # Add directory with all installed binaries to PATH
+
+install:
+  - wget http://alloyed.me/loverocks/loverocks-test-repo.zip
+  - unzip loverocks-test-repo.zip
+  - luarocks install --only-deps spec/test-scm-0.rockspec
+  - luarocks install --only-deps loverocks-scm-0.rockspec
+
+script:
+  - luacheck -ur .
+  - busted --verbose --coverage
+
+after_success:
+  - "luacov-coveralls --include 'loverocks'"
+
+branches:
+  except:
+    - gh-pages
+
+notifications:
+  email:
+    on_success: change
+    on_failure: always

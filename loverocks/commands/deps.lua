@@ -37,18 +37,20 @@ function deps.run(conf, args)
 
 	log:fs("luarocks install <> --only-deps")
 	log:assert(luarocks.sandbox(flags, function()
+		local lr_rockspecs = require 'luarocks.rockspecs'
 		local lr_deps = require 'luarocks.deps'
 
-		local parsed_deps = {}
-		for _, s in ipairs(conf.dependencies) do
-			table.insert(parsed_deps, lr_deps.parse_dep(s))
-		end
+		local NO_GLOBALS = nil
+		local SKIP_VALIDATION = true
+		local rockspec = assert(lr_rockspecs.from_persisted_table("", {
+			package = name,
+			version = "love-0",
+			source = {url=""},
+			dependencies = conf.dependencies,
+		}, NO_GLOBALS, SKIP_VALIDATION))
 
-		return lr_deps.fulfill_dependencies({
-			name = name,
-			version = "(love)",
-			dependencies = parsed_deps
-		}, "one")
+		--error(require'inspect'(rockspec))
+		return lr_deps.fulfill_dependencies(rockspec, "dependencies", "one")
 	end))
 
 	log:info("Dependencies installed succesfully!")

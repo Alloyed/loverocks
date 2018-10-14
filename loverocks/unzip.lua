@@ -23,7 +23,7 @@ if unzip_ok then
 	end
 elseif os == 'unix' then -- use unzip binary
 	local fs   = require 'luarocks.fs'
-	local vars = require 'luarocks.cfg'.variables
+	local vars = require 'luarocks.core.cfg'.variables
 	function unzip.read(archive, fname)
 		assert(archive)
 		assert(fname)
@@ -45,7 +45,7 @@ elseif os == 'unix' then -- use unzip binary
 	end
 elseif os == 'windows' then -- use builtin 7z
 	local fs   = require 'luarocks.fs'
-	local vars = require 'luarocks.cfg'.variables
+	local vars = require 'luarocks.core.cfg'.variables
 	function unzip.read(archive, fname)
 		local tmpdir, err
 		tmpdir, err = fs.tmpdir("read")

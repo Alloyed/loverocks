@@ -2,8 +2,8 @@ language: python
 sudo: false
 
 env:
-  - LUA="--lua=5.1"    LUAROCKS=""
-  - LUA="--luajit=2.1" LUAROCKS=""
+  #  - LUA="--lua=5.1"    LUAROCKS=""
+  #  - LUA="--luajit=2.1" LUAROCKS=""
   - LUA="--lua=5.1"    LUAROCKS="--luarocks=3"
 
 cache:

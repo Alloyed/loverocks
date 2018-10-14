@@ -1,3 +1,4 @@
+require 'loverocks.luarocks_init'
 local fs = require 'luarocks.fs'
 local T   = require 'loverocks.schema'
 local log = require 'loverocks.log'

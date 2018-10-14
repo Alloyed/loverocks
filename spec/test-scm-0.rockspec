@@ -14,7 +14,8 @@ dependencies = {
    "luacheck",
    "luacov",
    "luacov-coveralls",
-   "ser-alloyed ~> 1.0"
+   "inspect",
+   "ser-alloyed ~> 1.0",
 }
 build = {
    type = "none"

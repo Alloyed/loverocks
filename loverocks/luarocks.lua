@@ -8,8 +8,8 @@
 
 local luarocks = {}
 
+require 'loverocks.luarocks_init'
 local fs = require 'luarocks.fs'
-
 local T = require 'loverocks.schema'
 local log = require 'loverocks.log'
 local template = require 'loverocks.template'
@@ -31,7 +31,7 @@ local function use_tree(root, tree_name)
 	T(root,      'string')
 	T(tree_name, 'string')
 
-	local cfg = require 'luarocks.cfg'
+	local cfg = require 'luarocks.core.cfg'
 	local path = require("luarocks.path")
 
 	cfg.root_dir = root
@@ -125,9 +125,9 @@ local function check_flags(flags)
 	local rocks_tree = flags.tree or "rocks"
 	T(rocks_tree, 'string')
 
-	local cfg = require("luarocks.cfg")
+	local cfg = require("luarocks.core.cfg")
 
-	-- local fs = require("luarocks.fs")
+	local fs = require("luarocks.fs")
 
 	-- FIXME make configurable
 	local cwd = fs.current_dir()
@@ -190,20 +190,22 @@ local function pack(...)
 end
 
 --
-function luarocks.sandbox(flags, f)
+function luarocks.sandbox(flags, sandbox_fn)
 	-- FIXME: required packages are leaking! This is a hack to avoid the
 	-- consequences of this...
 	for k, _ in pairs(package.loaded) do
 		if k:match('^luarocks') then
-			package.loaded[k] = nil
+			--package.loaded[k] = nil
 		end
 	end
 	local env = make_env(flags)
 	local function lr()
-		-- local fs = require('luarocks.fs')
+		require('luarocks.core.cfg').init()
+		fs = require('luarocks.fs')
+		fs.init()
 		local cwd = fs.current_dir()
 		check_flags(flags)
-		local r = pack(f())
+		local r = pack(sandbox_fn())
 		local l_util = require('luarocks.util')
 		l_util.run_scheduled_functions()
 		assert(fs.change_dir(cwd))
@@ -216,10 +218,10 @@ end
 
 -- attempts to find current version of luarocks as a string. false if failure.
 function luarocks.version()
-	local ok, cfg = pcall(require, 'luarocks.cfg')
+	local ok, cfg = pcall(require, 'luarocks.core.cfg')
 
 	--local ok, v = pcall(luarocks.sandbox({}, function()
-	--	local cfg = require 'luarocks.cfg'
+	--	local cfg = require 'luarocks.core.cfg'
 	--	return cfg.program_version
 	--end))
 

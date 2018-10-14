@@ -13,9 +13,9 @@ function purge.run(conf, args)
 
 	log:fs("luarocks purge --tree=" .. (flags.tree or "rocks"))
 	log:assert(luarocks.sandbox(flags, function()
-		local lr_purge = require 'luarocks.purge'
+		local lr_purge = require 'luarocks.cmd.purge'
 
-		return lr_purge.run("--tree=" .. (flags.tree or "rocks"))
+		return lr_purge.command{tree=flags.tree or "rocks"}
 	end))
 end
 

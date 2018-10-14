@@ -46,8 +46,8 @@ function install.run(conf, args)
 
 		log:fs("luarocks install %s", table.concat(lr_args, " "))
 		log:assert(luarocks.sandbox(flags, function()
-			local lr_install = require 'luarocks.install'
-			return lr_install.run(unpack(lr_args))
+			local lr_install = require 'luarocks.cmd.install'
+			return lr_install.command({only_deps = args.only_deps}, pkg)
 		end))
 	end
 

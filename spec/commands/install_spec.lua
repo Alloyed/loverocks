@@ -40,7 +40,7 @@ describe("loverocks install", function()
 	require 'spec.env'.setup()
 	--luacheck: push ignore conf cwd
 
-	it("Can install normal rocks", function()
+	it("Can install normal rocks #atm", function()
 		install.run(conf, {
 			packages = {"inspect"},
 			only_server = cwd .. "/test-repo"

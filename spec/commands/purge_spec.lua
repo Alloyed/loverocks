@@ -1,3 +1,4 @@
+require 'loverocks.luarocks_init'
 local fs = require 'luarocks.fs'
 require 'spec.test_config'()
 

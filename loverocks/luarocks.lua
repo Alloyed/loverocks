@@ -144,13 +144,13 @@ local function check_flags(flags)
 	copy(project_cfg, cfg)
 
 	flags._old_servers = cfg.rocks_servers
-	if flags.only_from then
-		T(flags.only_from, 'string')
-		cfg.rocks_servers = { flags.only_from }
-	elseif flags.from then
-		T(flags.from, T.all('string'))
-		for i=#flags.from, 1, -1 do
-			table.insert(cfg.rocks_servers, 1, flags.from[i])
+	if flags["only-from"] then
+		T(flags["only-from"], 'string')
+		cfg.rocks_servers = { flags["only-from"] }
+	elseif flags.server then
+		T(flags.server, T.all('string'))
+		for i=#flags.server, 1, -1 do
+			table.insert(cfg.rocks_servers, 1, flags.server[i])
 		end
 	end
 
@@ -236,12 +236,12 @@ function luarocks.make_flags(conf)
 	local t = {
 		tree    = conf.rocks_tree,
 		version = conf.version,
-		from    = {}
+		server  = {},
 	}
 
 	if conf.rocks_servers then
 		T(conf.rocks_servers, T.all('string'))
-		t.from = conf.rocks_servers
+		t["server"] = conf.rocks_servers
 	end
 
 	return t

@@ -74,8 +74,12 @@ describe("loverocks install", function()
 			only_server = cwd .. "/test-repo"
 		})
 
-		assert.equal('nil', type(loadfile("rocks/share/lua/5.1/love3d/init.lua")))
-		assert.equal('table', type(loadfile("rocks/share/lua/5.1/cpml/modules/vec2.lua")()))
+		local mod = loadfile("rocks/share/lua/5.1/love3d/init.lua")
+		assert.is_nil(mod)
+
+		mod = loadfile("rocks/share/lua/5.1/cpml/modules/vec2.lua")
+		assert.is_not_nil(mod)
+		assert.equal('table', type(mod()))
 	end)
 
 	--luacheck: pop

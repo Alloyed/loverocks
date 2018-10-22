@@ -27,11 +27,11 @@ function install.run(conf, args)
 	flags.init_rocks = true
 
 	if args.server then
-		table.insert(flags.from, 1, args.server)
+		table.insert(flags["server"], 1, args.server)
 	end
 
 	if args.only_server then
-		flags.only_from = args.only_server
+		flags["only-server"] = args.only_server
 	end
 
 	for _, pkg in ipairs(args.packages) do
@@ -47,7 +47,7 @@ function install.run(conf, args)
 		log:fs("luarocks install %s", table.concat(lr_args, " "))
 		log:assert(luarocks.sandbox(flags, function()
 			local lr_install = require 'luarocks.cmd.install'
-			return lr_install.command({only_deps = args.only_deps}, pkg)
+			return lr_install.command({["only-deps"] = args.only_deps}, pkg)
 		end))
 	end
 

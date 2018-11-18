@@ -17,20 +17,7 @@ rocks.cpaths = {
 	rocks_tree .. "/lib/lua/5.1/?"
 }
 
----
--- Loads loverocks modules.
-function rocks.loader(modname)
-	local modpath = modname:gsub('%.', '/')
-	for _, elem in ipairs(rocks.paths) do
-		elem = elem:gsub('%?', modpath)
-		if love.filesystem.isFile(elem) then
-			return love.filesystem.load(elem)
-		end
-	end
-
-	return "\n\tno module '" .. modname .. "' in LOVERocks path."
-end
-
+-- love API shims
 local function get_os()
 	if love.system and love.system.getOS then -- >= 0.9.0
 		return love.system.getOS()
@@ -40,6 +27,37 @@ local function get_os()
 		-- either love.system wasn't loaded or something else happened
 		return nil
 	end
+end
+
+local function file_exists(name)
+	if love.filesystem.getInfo then -- >= 11
+		return love.filesystem.getInfo(name, 'file') ~= nil
+	else -- < 11
+		return love.filesystem.isFile(name)
+	end
+end
+
+local function path_exists(name)
+	if love.filesystem.getInfo then -- >= 11
+		return love.filesystem.getInfo(name) ~= nil
+	else -- < 11
+		return love.filesystem.exists(name)
+	end
+end
+
+
+---
+-- Loads loverocks modules.
+function rocks.loader(modname)
+	local modpath = modname:gsub('%.', '/')
+	for _, elem in ipairs(rocks.paths) do
+		elem = elem:gsub('%?', modpath)
+		if file_exists(elem) then
+			return love.filesystem.load(elem)
+		end
+	end
+
+	return "\n\tno module '" .. modname .. "' in LOVERocks path."
 end
 
 local function can_open(fname)
@@ -75,7 +93,7 @@ local function c_loader(modname, fn_name)
 			if can_open(base .. "/" ..elem) == false then
 				base = nil -- actually, file not found
 			end
-		elseif love.filesystem.exists(elem) then
+		elseif path_exists(elem) then
 			base = love.filesystem.getRealDirectory(elem)
 		end
 

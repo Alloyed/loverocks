@@ -29,12 +29,15 @@ local function get_os()
 	end
 end
 
-local function file_exists(name)
-	if love.filesystem.getInfo then -- >= 11
-		return love.filesystem.getInfo(name, 'file') ~= nil
-	else -- < 11
-		return love.filesystem.isFile(name)
+local file_exists
+
+if love.filesystem.getInfo then -- >= 11
+	local temp = {}
+	file_exists = function (name)
+		return love.filesystem.getInfo(name, 'file', temp) ~= nil
 	end
+else -- < 11
+	file_exists = love.filesystem.isFile
 end
 
 local function path_exists(name)

@@ -16,7 +16,7 @@ so your entire LÖVE project is self-contained.
 }
 dependencies = {
    "lua ~> 5.1",
-   -- "luarocks >= 2.2, < 2.4", Doesn't work on windows
+   -- "luarocks >= 3.0, < 3.2", Doesn't work on windows
    "etlua ~> 1.3",
    -- "luafilesystem ~> 1.6",
    "argparse ~> 0.5",
@@ -40,6 +40,7 @@ build = {
       ["loverocks.commands.modules"] = "loverocks/commands/modules.lua",
       ["loverocks.commands.remove"]  = "loverocks/commands/remove.lua",
       ["loverocks.commands.deps"]    = "loverocks/commands/deps.lua",
+      ["loverocks.luarocks_init"]    = "loverocks/luarocks_init.lua",
       ["loverocks.luarocks"]         = "loverocks/luarocks.lua",
       ["loverocks.api"]              = "loverocks/api.lua",
       ["loverocks.schema"]           = "loverocks/schema.lua",

@@ -32,25 +32,38 @@ function deps.run(conf, args)
 		table.insert(flags.from, 1, args.server)
 	end
 	if args.only_server then
-		flags.only_from = args.only_server
+		flags["only-from"] = args.only_server
 	end
 
 	log:fs("luarocks install <> --only-deps")
 	log:assert(luarocks.sandbox(flags, function()
-		local lr_rockspecs = require 'luarocks.rockspecs'
 		local lr_deps = require 'luarocks.deps'
+		local lr_queries = require 'luarocks.queries'
+		local lr_cfg = require 'luarocks.core.cfg'
 
-		local NO_GLOBALS = nil
-		local SKIP_VALIDATION = true
-		local rockspec = assert(lr_rockspecs.from_persisted_table("", {
-			package = name,
-			version = "love-0",
-			source = {url=""},
-			dependencies = conf.dependencies,
-		}, NO_GLOBALS, SKIP_VALIDATION))
+		local dependencies = {}
+		for i, depstring in ipairs(conf.dependencies) do
+			local parsed, err = lr_queries.from_dep_string(depstring)
+			if not parsed then
+				local errorstring = string.format("Parse error processing dependency %q: %s", depstring, err)
+				return nil, errorstring
+			end
+			dependencies[i] = parsed
+		end
 
-		--error(require'inspect'(rockspec))
-		return lr_deps.fulfill_dependencies(rockspec, "dependencies", "one")
+		local version = ""
+		local deps_mode = "one"
+		local rocks_provided = lr_cfg.rocks_provided
+		lr_deps.report_missing_dependencies(name, version, dependencies, deps_mode, rocks_provided)
+
+		for _, dep in ipairs(dependencies) do
+			local ok, err = lr_deps.fulfill_dependency(dep, deps_mode, name, version, rocks_provided)
+			if not ok then
+				return nil, err
+			end
+		end
+
+		return true
 	end))
 
 	log:info("Dependencies installed succesfully!")

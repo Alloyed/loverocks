@@ -19,14 +19,15 @@ function remove.run(conf, args)
 	local flags = luarocks.make_flags(conf)
 
 	for _, pkg in ipairs(args.packages) do
-		local lr_args = {rock=pkg}
+		local lr_args = {}
 		lr_args.force = args.force
 		log:info("Removing %q", pkg)
 
 		log:fs("luarocks remove %s%s", pkg, args.force and " --force" or "")
 		log:assert(luarocks.sandbox(flags, function()
 			local lr_remove = require 'luarocks.cmd.remove'
-			return lr_remove.command(lr_args)
+			local NO_VERSION = nil
+			return lr_remove.command(lr_args, pkg, NO_VERSION)
 		end))
 	end
 end

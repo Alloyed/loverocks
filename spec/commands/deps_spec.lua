@@ -39,10 +39,10 @@ describe("loverocks deps", function()
 	end)
 
 	it("can follow deps chains", function()
-		conf.dependencies = {"inspect", "love3d"}
+		conf.dependencies = {"gabe", "inspect"}
 		deps.run(conf, {only_server = cwd .. "/test-repo"})
 		assert.equal('table', type(loadfile("rocks/share/lua/5.1/inspect.lua")()))
-		assert.equal('function', type(loadfile("rocks/share/lua/5.1/love3d/init.lua")))
+		assert.equal('table', type(loadfile("rocks/share/lua/5.1/gabe/init.lua")))
 		assert.equal('table', type(loadfile("rocks/share/lua/5.1/cpml/modules/vec2.lua")()))
 	end)
 

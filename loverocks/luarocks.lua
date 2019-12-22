@@ -119,7 +119,7 @@ local function assert_rocks(rocks_tree)
 
 end
 
-local function check_flags(flags)
+local function apply_flags(flags)
 	T(flags, 'table')
 
 	local rocks_tree = flags.tree or "rocks"
@@ -127,15 +127,16 @@ local function check_flags(flags)
 
 	local cfg = require("luarocks.core.cfg")
 
-	local fs = require("luarocks.fs")
+	local lr_fs = require("luarocks.fs")
 
 	-- FIXME make configurable
-	local cwd = fs.current_dir()
+	local cwd = lr_fs.current_dir()
 	use_tree(cwd .. "/" .. rocks_tree, rocks_tree)
 
 	local project_cfg = {}
 	local provided = versions.get(flags.version)
 	project_cfg.rocks_provided = provided
+	project_cfg.rocks_provided_3_0 = provided
 	if flags.init_rocks then
 		init_rocks(rocks_tree, provided)
 	else
@@ -146,7 +147,7 @@ local function check_flags(flags)
 	flags._old_servers = cfg.rocks_servers
 	if flags["only-from"] then
 		T(flags["only-from"], 'string')
-		cfg.rocks_servers = { flags["only-from"] }
+		cfg.rocks_servers[1] = flags["only-from"]
 	elseif flags.server then
 		T(flags.server, T.all('string'))
 		for i=#flags.server, 1, -1 do
@@ -159,13 +160,13 @@ local function check_flags(flags)
 	lr_util.printerr = q_printerr
 end
 
-luarocks.check_flags = check_flags
+luarocks.apply_flags = apply_flags
 
 local function make_env(flags)
 	local env = setmetatable({}, {__index = _G})
 	env._G = env
 	env.package = setmetatable({}, {__index = package})
-	env.check_flags = check_flags
+	env.apply_flags = apply_flags
 	env.flags = flags
 	env.T = T -- TODO: remove
 
@@ -201,14 +202,14 @@ function luarocks.sandbox(flags, sandbox_fn)
 	local env = make_env(flags)
 	local function lr()
 		require('luarocks.core.cfg').init()
-		fs = require('luarocks.fs')
-		fs.init()
-		local cwd = fs.current_dir()
-		check_flags(flags)
+		local lr_fs = require('luarocks.fs')
+		lr_fs.init()
+		local cwd = lr_fs.current_dir()
+		apply_flags(flags)
 		local r = pack(sandbox_fn())
 		local l_util = require('luarocks.util')
 		l_util.run_scheduled_functions()
-		assert(fs.change_dir(cwd))
+		assert(lr_fs.change_dir(cwd))
 		return unpack(r, 1, r.n)
 	end
 	setfenv(lr, env)

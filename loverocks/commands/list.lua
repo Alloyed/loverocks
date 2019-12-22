@@ -18,19 +18,14 @@ function list.run(conf, args)
 		flags.outdated = true
 	end
 
-	local f = {table.concat(args.filter, " ")}
-	if flags.outdated then
-		table.insert(f, "--outdated")
-	end
-	if flags.porcelain then
-		table.insert(f, "--porcelain")
-	end
+	local lr_args = { filter = table.concat(args.filter, " ") }
+	lr_args.outdated = args.outdated
+	lr_args.porcelain = args.porcelain
 
-	log:fs("luarocks list %s", table.concat(f, " "))
 	log:assert(luarocks.sandbox(flags, function()
-		local lr_list = require 'luarocks.list'
+		local lr_list = require 'luarocks.cmd.list'
 
-		return lr_list.run(unpack(f))
+		return lr_list.run(lr_args)
 	end))
 end
 

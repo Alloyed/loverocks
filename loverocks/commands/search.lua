@@ -21,9 +21,7 @@ end
 function search.run(conf, args)
 	local flags = luarocks.make_flags(conf)
 	local a = {}
-	if args.all then
-		table.insert(a, "--all")
-	end
+	a.all = args.all
 
 	if args.server then
 		flags.only_from = args.server

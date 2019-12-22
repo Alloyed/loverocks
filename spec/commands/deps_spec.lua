@@ -34,16 +34,15 @@ describe("loverocks deps", function()
 	it("satisfies deps listed in conf", function()
 		conf.dependencies = {"inspect"}
 		deps.run(conf, {only_server = cwd .. "/test-repo"})
-		local mod = loadfile("rocks/share/lua/5.1/inspect.lua")
-		assert.equal('table', type(mod()))
+		assert(loadfile("rocks/share/lua/5.1/inspect.lua"))
 	end)
 
-	it("can follow deps chains", function()
-		conf.dependencies = {"gabe", "inspect"}
+	it("can follow deps chains #atm", function()
+		conf.dependencies = {"inspect", "love3d"}
 		deps.run(conf, {only_server = cwd .. "/test-repo"})
-		assert.equal('table', type(loadfile("rocks/share/lua/5.1/inspect.lua")()))
-		assert.equal('table', type(loadfile("rocks/share/lua/5.1/gabe/init.lua")))
-		assert.equal('table', type(loadfile("rocks/share/lua/5.1/cpml/modules/vec2.lua")()))
+		assert(loadfile("rocks/share/lua/5.1/inspect.lua"))
+		assert(loadfile("rocks/share/lua/5.1/love3d/init.lua"))
+		assert(loadfile("rocks/share/lua/5.1/cpml/modules/vec2.lua"))
 	end)
 
 	it("will error if missing deps table", function()
@@ -59,13 +58,13 @@ describe("loverocks deps", function()
 		end)
 	end)
 
-	it("will regen missing rockstrees", function()
+	it("will regen missing rockstrees #atm", function()
 		fs.delete("./rocks")
 		assert.falsy(fs.is_dir("./rocks"))
 		conf.dependencies = {"inspect"}
 		deps.run(conf, {only_server = cwd .. "/test-repo"})
 		assert.truthy(fs.is_file("./rocks/init.lua"))
-		assert.equal('table', type(loadfile("rocks/share/lua/5.1/inspect.lua")()))
+		assert(loadfile("rocks/share/lua/5.1/inspect.lua"))
 	end)
 
 	--luacheck: pop

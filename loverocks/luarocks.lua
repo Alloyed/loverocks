@@ -192,13 +192,6 @@ end
 
 --
 function luarocks.sandbox(flags, sandbox_fn)
-	-- FIXME: required packages are leaking! This is a hack to avoid the
-	-- consequences of this...
-	for k, _ in pairs(package.loaded) do
-		if k:match('^luarocks') then
-			--package.loaded[k] = nil
-		end
-	end
 	local env = make_env(flags)
 	local function lr()
 		require('luarocks.core.cfg').init()
@@ -221,14 +214,10 @@ end
 function luarocks.version()
 	local ok, cfg = pcall(require, 'luarocks.core.cfg')
 
-	--local ok, v = pcall(luarocks.sandbox({}, function()
-	--	local cfg = require 'luarocks.core.cfg'
-	--	return cfg.program_version
-	--end))
-
 	if ok and cfg.program_version then
 		return cfg.program_version
 	end
+
 	return false
 end
 

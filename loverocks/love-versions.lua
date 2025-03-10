@@ -61,6 +61,34 @@ local versions = {
 		enet       = "1.2-1",
 		utf8       = "0.1.0-1"
 	},
+	["11.2"] = {
+		lua        = "5.1-1",
+		love       = "11.1-1",
+		luasocket  = "2.0.2-5",
+		enet       = "1.2-1",
+		utf8       = "0.1.0-1"
+	},
+	["11.3"] = {
+		lua        = "5.1-1",
+		love       = "11.1-1",
+		luasocket  = "2.0.2-5",
+		enet       = "1.2-1",
+		utf8       = "0.1.0-1"
+	},
+	["11.4"] = {
+		lua        = "5.1-1",
+		love       = "11.1-1",
+		luasocket  = "2.0.2-5",
+		enet       = "1.2-1",
+		utf8       = "0.1.0-1"
+	},
+	["11.5"] = {
+		lua        = "5.1-1",
+		love       = "11.1-1",
+		luasocket  = "2.0.2-5",
+		enet       = "1.2-1",
+		utf8       = "0.1.0-1"
+	},
 	-- HEY DUMMY, SEE THAT KEY NAMED LOVE?
 	-- YEAH THAT SHOULD BE THE SAME AS THE VERSION NUMBER
 }
